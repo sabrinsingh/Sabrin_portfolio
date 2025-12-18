@@ -236,7 +236,7 @@ export const recommendations = [
         id: 2,
         text: "Sabrin demonstrated strong technical skills by automating testing scripts using SQL, Python, Pandas, and AWS Redshift... Beyond his technical strengths, he was a supportive team player—mentoring junior members and consistently advocating for best practices in data quality across the team.",
         author: "Silu Pandit",
-        role: "Data Analytics Analyist",
+        role: "Data Analytics Analyst",
         relation: "Colleague",
         company: "Cedar Gate Services Pvt. Ltd."
     }
