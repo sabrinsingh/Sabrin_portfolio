@@ -228,7 +228,7 @@ export const recommendations = [
         id: 1,
         text: "I've had the pleasure of working alongside Sabrin Lal Singh at TechkraftInc... he's one of those rare professionals who truly makes everyone around him better. What strikes me most about Sabrin is his integrity... As a mentor, Sabrin is outstanding... He's not just technically excellent he's the kind of person who makes the whole team stronger just by being part of it.",
         author: "Paras Gautam",
-        role: "Data Infra Enthusiast",
+        role: "Senior Data Engineer",
         relation: "Colleague",
         company: "TechkraftInc"
     },
@@ -236,9 +236,9 @@ export const recommendations = [
         id: 2,
         text: "Sabrin demonstrated strong technical skills by automating testing scripts using SQL, Python, Pandas, and AWS Redshift... Beyond his technical strengths, he was a supportive team player—mentoring junior members and consistently advocating for best practices in data quality across the team.",
         author: "Silu Pandit",
-        role: "Senior QA Engineer",
+        role: "Data Analytics Analyist",
         relation: "Colleague",
-        company: "TechkraftInc"
+        company: "Cedar Gate Services Pvt. Ltd."
     }
 ];
 
