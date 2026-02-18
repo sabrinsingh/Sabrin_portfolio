@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 interface TiltCardProps {
     children: ReactNode;
     className?: string;
+    key?: React.Key;
 }
 
 export function TiltCard({ children, className = "" }: TiltCardProps) {

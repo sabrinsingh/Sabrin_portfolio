@@ -1,30 +1,26 @@
 import { Button } from "@/components/ui/button";
-import { Linkedin, Mail, Github, ArrowUp, ExternalLink } from "lucide-react";
+import { Linkedin, Mail, Github, ArrowUp, ExternalLink, Zap } from "lucide-react";
 import { MobileNav } from "@/components/mobile-nav";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ModeToggle } from "@/components/mode-toggle";
-import { StatsCounter } from "@/components/stats-counter";
 import { ScrollProgress } from "@/components/scroll-progress";
-import { TechOrbit } from "@/components/tech-orbit";
 import { TiltCard } from "@/components/tilt-card";
-import { FloatingIcons } from "@/components/floating-icons";
 import { Helmet } from "react-helmet-async";
-import { projects, experience, certifications } from "@/data/portfolio";
-import profilePic from "./assets/profile.jpg";
+import { projects, certifications } from "@/data/portfolio";
 
 import { RecommendationsSection } from "@/components/recommendations-section";
 import { Footer } from "@/components/footer";
 import { TerminalHero } from "@/components/terminal-hero";
 import { SkillsSection } from "@/components/skills-section";
+import { MedallionPipeline } from "@/components/medallion-pipeline";
+import { ExperienceSection } from "@/components/experience-section";
+import TechnicalBlueprint from "@/components/architecture-blueprint";
+import { SiUpwork } from "react-icons/si";
+import { SystemPulse } from "@/components/system-pulse";
+import { PerformanceBattle } from "@/components/performance-battle";
 
-/**
- * Design Philosophy: Modern Minimalist with Data Visualization Accent
- * - Clean grid-based layouts with generous whitespace
- * - Monochromatic base with teal accent (#0D7377)
- * - Data-inspired visual elements
- * - Professional, tech-forward aesthetic
- */
+// Data Analytics Engineer Persona: Refined Slate & Arctic palette
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState("all");
@@ -76,8 +72,6 @@ export default function Home() {
             {/* Scroll Progress Bar */}
             <ScrollProgress />
 
-            {/* Floating Background Icons */}
-            <FloatingIcons />
 
             {/* Navigation */}
             <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300">
@@ -95,7 +89,7 @@ export default function Home() {
                             animate={{ opacity: 1, x: 0 }}
                             className="hidden md:flex items-center gap-8"
                         >
-                            {["About", "Experience", "Projects", "Certifications", "Contact"].map((item) => (
+                            {["About", "Experience", "Projects", "Performance", "Certifications", "Contact"].map((item) => (
                                 <a
                                     key={item}
                                     href={`#${item.toLowerCase()}`}
@@ -112,170 +106,91 @@ export default function Home() {
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section className="relative overflow-hidden pt-32 pb-32 md:pt-48 md:pb-48 min-h-screen flex items-center justify-center">
-                <div className="absolute inset-0 bg-grid-pattern animate-grid-fade opacity-40 pointer-events-none" />
+            <section className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32 min-h-[90vh] flex items-center justify-center">
+                <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
                 <div className="container mx-auto px-6 relative z-10">
                     <TerminalHero />
                 </div>
             </section>
 
+            {/* System Pulse Section */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative z-20 -mt-12 md:-mt-20 mb-12"
+            >
+                <SystemPulse />
+            </motion.div>
+
             {/* About Section */}
             <motion.section
                 id="about"
-                className="py-20 md:py-32 bg-muted/30"
+                className="py-24 bg-background border-t border-border/50"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="container mx-auto px-6">
-                    <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
-                        {/* Profile Image Column */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                            className="w-full md:w-1/3 flex justify-center"
-                        >
-                            <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-teal-400 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
-                                <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-background shadow-2xl">
-                                    {/* Profile Picture */}
-                                    <img
-                                        src={profilePic}
-                                        alt="Sabrin Singh"
-                                        className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
+                <div className="container mx-auto px-6 max-w-4xl">
+                    <div className="space-y-12">
+                        <div className="space-y-4 text-center">
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                className="text-primary font-mono text-sm tracking-widest uppercase"
+                            >
+                                01. Professional Profile
+                            </motion.p>
+                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground italic">Data Strategy & Engineering</h2>
+                        </div>
 
-                        {/* Text Column */}
-                        <motion.div
-                            className="w-full md:w-2/3 space-y-8"
-                            initial={{ opacity: 0, x: 50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: 0.4 }}
-                        >
-                            <div className="space-y-4 text-center md:text-left">
-                                <p className="text-primary font-semibold text-sm tracking-wider uppercase">
-                                    Professional Summary
-                                </p>
-                                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">About Me</h2>
-                            </div>
-                            <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-                                <p>
-                                    I am a seasoned Data Engineer with extensive expertise in
-                                    building and optimizing large-scale data pipelines across AWS
-                                    and Databricks platforms. My focus lies in ETL/ELT design,
-                                    complex data modeling, and implementing robust data quality frameworks
-                                    that ensure reliability and compliance at enterprise scale.
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-muted-foreground leading-relaxed">
+                            <div className="space-y-6">
+                                <p className="text-lg">
+                                    I am a <span className="text-foreground font-semibold">Data Analytics Engineer</span> with a deep focus on architecting resilient, high-throughput systems. My expertise spans the entire data lifecycle—from ingestion orchestration to complex state management in distributed environments.
                                 </p>
                                 <p>
-                                    Specializing in high-stakes domains like healthcare, I have a proven
-                                    track record of engineering secure, HIPAA-compliant systems.
-                                    I have successfully led impactful migrations to modern data platforms,
-                                    delivering significant scalability improvements and operational efficiency through strategic architectural optimization.
-                                </p>
-                                <p>
-                                    Beyond core data engineering, I am deeply engaged in the evolving landscape of AI
-                                    and LLM operations. I actively work on data quality validation, prompt
-                                    engineering, and governance frameworks to drive responsible and effective AI adoption.
+                                    Specializing in <span className="text-primary font-bold">mission-critical healthcare infrastructure</span>, I engineer systems that balance extreme reliability with rigorous security standards. My approach is rooted in systems theory: building modular, observable, and scalable foundations.
                                 </p>
                             </div>
-                        </motion.div>
+                            <div className="space-y-6">
+                                <p>
+                                    Beyond traditional infrastructure, I spearhead efforts in <span className="text-foreground font-semibold">Strategic Data Governance</span> and AI orchestration. I build the validation layers that make Large Language Models (LLMs) production-ready for enterprise use cases.
+                                </p>
+                                <ul className="space-y-2 font-mono text-xs pt-4 border-t border-border/50">
+                                    <li className="flex items-center gap-2">
+                                        <span className="text-primary">▸</span> Data Quality Frameworks
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <span className="text-primary">▸</span> Modern Lakehouse Patterns
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <span className="text-primary">▸</span> Scalable Ingestion Logic
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </motion.section>
 
-            {/* Stats Counter Section */}
-            < StatsCounter />
-
             {/* Skills Section */}
             <SkillsSection />
-            {/* Tech Orbit Visualization */}
-            < section className="py-16 md:py-24 bg-background relative overflow-hidden" >
-                <div className="container mx-auto px-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center mb-8"
-                    >
-                        <p className="text-primary font-semibold text-sm tracking-wider uppercase mb-4">
-                            Technology Stack
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                            Tools I Work With
-                        </h2>
-                    </motion.div>
-                    <TechOrbit />
-                </div>
-            </section >
+
+            {/* Technical Architecture Section */}
+            <TechnicalBlueprint />
+
+            {/* Medallion Architecture Pipeline */}
+            <MedallionPipeline />
+
+            {/* Performance Logic Battle */}
+            <PerformanceBattle />
 
             {/* Experience Section */}
-            < section id="experience" className="py-20 md:py-32 bg-muted/30" >
-                <div className="container mx-auto px-6">
-                    <div className="space-y-16">
-                        <motion.div
-                            className="space-y-4 text-center md:text-left"
-                            {...fadeInUp}
-                        >
-                            <p className="text-primary font-semibold text-sm tracking-wider uppercase">
-                                Career Path
-                            </p>
-                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Professional Experience</h2>
-                        </motion.div>
-                        <div className="space-y-8 relative">
-                            {/* Vertical line connection */}
-                            <div className="absolute left-[19px] top-6 bottom-6 w-0.5 bg-border hidden md:block" />
-
-                            {experience.map((job, idx) => (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className="relative grid md:grid-cols-[auto_1fr] gap-8 group"
-                                >
-                                    {/* Timeline dot */}
-                                    <div className="hidden md:flex justify-center pt-2 relative z-10 w-10">
-                                        <div className="w-4 h-4 rounded-full bg-background border-4 border-muted group-hover:border-primary transition-colors duration-300" />
-                                    </div>
-
-                                    <div className="card-minimal p-8 transition-all hover:shadow-lg hover:border-primary/20 bg-card">
-                                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-foreground">
-                                                    {job.role}
-                                                </h3>
-                                                <p className="text-primary font-medium text-lg mt-1">{job.company}</p>
-                                            </div>
-                                            <div className="text-sm text-muted-foreground md:text-right font-medium bg-secondary/50 px-4 py-2 rounded-lg self-start">
-                                                <p className="text-foreground">{job.period}</p>
-                                                <p>{job.location}</p>
-                                            </div>
-                                        </div>
-                                        <ul className="space-y-3">
-                                            {job.highlights.map((highlight, hidx) => (
-                                                <li key={hidx} className="flex gap-3 text-muted-foreground/90">
-                                                    <span className="text-primary mt-1.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                                                    <span className="leading-relaxed">{highlight}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section >
+            <ExperienceSection />
 
             {/* Projects Section */}
             < section id="projects" className="py-20 md:py-32 bg-background relative" >
@@ -311,7 +226,7 @@ export default function Home() {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"}`}
+                                        className={`px-5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all duration-300 ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "bg-card border border-border text-muted-foreground hover:bg-secondary/80 hover:text-foreground"}`}
                                     >
                                         {tab.label}
                                     </button>
@@ -342,23 +257,32 @@ export default function Home() {
                                                             {project.category.toUpperCase()}
                                                         </div>
                                                     </div>
-                                                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                                        {project.impact}
+                                                    <div className="flex flex-col gap-1">
+                                                        <p className="text-sm font-medium text-primary flex items-center gap-1.5 leading-none">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                                            {project.impact}
+                                                        </p>
+                                                        {project.metrics && (
+                                                            <p className="text-xs font-mono text-muted-foreground flex items-center gap-1.5 opacity-70">
+                                                                <Zap className="w-3 h-3 text-primary" />
+                                                                {project.metrics}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-muted-foreground text-sm leading-relaxed">
+                                                        {project.description}
                                                     </p>
-                                                </div>
-                                                <p className="text-muted-foreground text-sm leading-relaxed">
-                                                    {project.description}
-                                                </p>
-                                                <div className="flex flex-wrap gap-2 pt-2">
-                                                    {project.technologies.map((tech, tidx) => (
-                                                        <span
-                                                            key={tidx}
-                                                            className="text-xs font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-md"
-                                                        >
-                                                            {tech}
-                                                        </span>
-                                                    ))}
+
+                                                    <div className="flex flex-wrap gap-2 pt-2">
+                                                        {project.technologies.map((tech, tidx) => (
+                                                            <span
+                                                                key={tidx}
+                                                                className="text-[10px] font-mono font-bold bg-secondary/50 text-secondary-foreground border border-border/50 px-2.5 py-1 rounded"
+                                                            >
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </motion.div>
@@ -449,11 +373,17 @@ export default function Home() {
                             </p>
                         </div>
 
-                        <div className="flex gap-4 justify-center pt-8">
+                        <div className="flex flex-wrap gap-4 justify-center pt-8">
                             <a href="mailto:sabrinlalsingh@gmail.com">
                                 <Button variant="outline" size="lg" className="h-14 px-8 text-lg rounded-full border-border hover:bg-secondary hover:text-primary transition-all duration-300">
                                     <Mail className="w-5 h-5 mr-2" />
                                     Say Hello
+                                </Button>
+                            </a>
+                            <a href="https://www.upwork.com/freelancers/~019c63b7c8441f7142" target="_blank" rel="noopener noreferrer">
+                                <Button variant="outline" size="lg" className="h-14 px-8 text-lg rounded-full border-border hover:bg-secondary hover:text-primary transition-all duration-300">
+                                    <SiUpwork className="w-5 h-5 mr-2 text-[#14a800]" />
+                                    Upwork
                                 </Button>
                             </a>
                             <a

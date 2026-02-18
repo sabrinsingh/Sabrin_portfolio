@@ -3,149 +3,152 @@ import {
     SiOracle, SiApachespark, SiPython, SiCoursera
 } from "react-icons/si";
 import { VscAzure } from "react-icons/vsc";
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding, FaCode, FaDatabase, FaCogs } from "react-icons/fa";
+
+export const careerStartDate = "2017-10-01";
+
+export const calculateYearsOfExperience = () => {
+    const start = new Date(careerStartDate);
+    const now = new Date();
+    return Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+};
+
+const yearsOfExp = calculateYearsOfExperience();
+
+export const personalInfo = {
+    name: "Sabrin Lal Singh",
+    title: "Data Analytics Engineer",
+    email: "sabrinlalsingh@gmail.com",
+    location: "Kathmandu, Nepal",
+    summary: `Data Analytics Engineer with ${yearsOfExp}+ years of experience specialized in building high-throughput, resilient data systems. Expert in AWS and Databricks ecosystems, with a track record of delivering high-fidelity data products for the US healthcare sector.`,
+    social: {
+        github: "https://github.com/sabrinsingh",
+        linkedin: "https://linkedin.com/in/sabrin-lal-singh-478218a0",
+        upwork: "https://www.upwork.com/freelancers/~019c63b7c8441f7142"
+    }
+};
 
 export const projects = [
     {
         id: 1,
-        title: "Real-time Healthcare Data Pipeline",
+        title: "Clinical Data Orchestration",
         category: "databricks",
         description:
-            "Built a scalable ETL pipeline processing 50M+ healthcare claims daily using Databricks and Delta Lake. Implemented automated data quality checks reducing errors by 95%.",
-        longDescription: "This project involved architecting a real-time data ingestion system for a major healthcare provider. The challenge was to handle high-velocity claims data while ensuring HIPAA compliance and data integrity. \n\nKey features included:\n- Streaming ingestion using Spark Structured Streaming.\n- Delta Lake for ACID transactions and time travel.\n- Automated quality gates using Great Expectations.\n- Real-time dashboards for operational monitoring.",
-        technologies: ["Databricks", "Delta Lake", "PySpark", "Python", "SQL"],
-        impact: "40% improvement in processing speed",
+            "Architected a Medallion-based lakehouse processing 50M+ daily records with 95% reduction in data anomalies.",
+        technologies: ["Databricks", "Delta Lake", "PySpark", "Python"],
+        impact: "Reliable Clinical Ingestion",
+        metrics: "50M+ Daily Load"
     },
     {
         id: 2,
-        title: "AWS Redshift Data Warehouse",
+        title: "Redshift Analytics Framework",
         category: "aws",
         description:
-            "Designed and implemented a centralized data warehouse on AWS Redshift ingesting data from 20+ sources. Optimized queries reducing report generation time by 35%.",
-        longDescription: "Consolidated fragmented data silos into a unified Redshift Data Warehouse. This enabled cross-functional analytics and significantly reduced the time to insight for business users.\n\nKey achievements:\n- Designed Star Schema data models for optimized querying.\n- Implemented incremental loading strategies to reduce cost.\n- Set up role-based access control (RBAC) for security.",
-        technologies: ["AWS Redshift", "S3", "SQL", "Python", "Airflow"],
-        impact: "35% faster reporting",
-    },
-    {
-        id: 3,
-        title: "Data Quality Framework",
-        category: "quality",
-        description:
-            "Developed a comprehensive data quality framework using PySpark for structured and semi-structured data validation. Automated reconciliation processes increasing accuracy to 99.9%.",
-        longDescription: "Built a reusable library for data quality validation that could be plugged into any ETL pipeline. This framework supported custom rules, anomaly detection, and automated alerting.",
-        technologies: ["PySpark", "Python", "DataBricks", "SQL"],
-        impact: "99.9% data accuracy",
-    },
-    {
-        id: 4,
-        title: "Anomaly Detection System",
-        category: "analytics",
-        description:
-            "Created anomaly detection scripts to proactively identify data integrity issues in healthcare pipelines. Reduced manual investigation time by 60%.",
-        longDescription: "Implemented statistical models to detect outliers in claim amounts and processing times. This proactive approach prevented bad data from reaching downstream analytics systems.",
-        technologies: ["Python", "Pandas", "Statistical Analysis", "SQL"],
-        impact: "60% reduction in investigation time",
-    },
-    {
-        id: 5,
-        title: "ETL Workflow Automation",
-        category: "automation",
-        description:
-            "Automated manual reconciliation processes for healthcare claims using Python and Oracle SQL. Increased throughput by 3x while maintaining data accuracy.",
-        longDescription: "Replaced legacy manual spreadsheets with fully automated Python scripts orchestrated by Airflow. This eliminated human error and freed up 20 hours per week for the operations team.",
-        technologies: ["Python", "Oracle SQL", "ODI"],
-        impact: "3x throughput increase",
+            "Engineered a centralized warehouse architecture for 20+ sources, optimizing query latency by 35%.",
+        technologies: ["AWS Redshift", "S3", "Airflow", "SQL"],
+        impact: "Strategic Decision Layer",
+        metrics: "Sub-Second Response"
     },
     {
         id: 6,
-        title: "LLM Data Governance System",
+        title: "LLM Governance Layer",
         category: "ai",
         description:
-            "Implemented data governance framework for LLM operations including data quality validation and prompt engineering. Ensured HIPAA compliance across all data flows.",
-        longDescription: "Established the governance layer for a Generative AI initiative. Focused on PII redaction, output validation, and audit logging to ensure safe and compliant use of LLMs in healthcare.",
-        technologies: ["Python", "LLM APIs", "Data Governance", "HIPAA"],
-        impact: "100% compliance maintained",
+            "Implemented PII scrubbing and secure prompt protocols for AI operations in HIPAA-compliant environments.",
+        technologies: ["Python", "LLM Orchestration", "Cybersecurity"],
+        impact: "Safe AI Adoption",
+        metrics: "100% HIPAA Integrity"
     },
 ];
 
 export const skills = [
     {
         category: "Data Engineering",
-        items: [
-            "ETL/ELT Design",
-            "Data Modeling",
-            "Pipeline Orchestration",
-            "Data Quality",
-        ],
+        icon: FaDatabase,
+        items: ["ETL/ELT Design", "Data Modeling", "Databricks Workflows", "Delta Lake", "Snowflake", "Apache Spark"]
     },
     {
-        category: "Big Data & Cloud",
-        items: ["Databricks", "Delta Lake", "PySpark", "AWS (S3, Redshift)", "Snowflake"],
+        category: "Cloud & Infrastructure",
+        icon: FaBuilding,
+        items: ["AWS (S3, Redshift, Glue)", "Azure Databricks", "Cloud Architecture", "Performance Tuning"]
     },
     {
         category: "Languages & Tools",
-        items: ["Python", "SQL", "PySpark", "Pandas", "Git", "Jira"],
+        icon: FaCode,
+        items: ["Python (PySpark, Pandas)", "SQL (Redshift, PostgreSQL, Oracle)", "Git", "Jira", "CI/CD"]
     },
     {
-        category: "Specializations",
-        items: [
-            "Healthcare Data",
-            "HIPAA Compliance",
-            "Data Governance",
-            "LLM Operations",
-        ],
-    },
+        category: "AI & Data Quality",
+        icon: FaCogs,
+        items: ["LLM Operations (LLMOps)", "Data Quality Frameworks", "Anomaly Detection", "Automated Validation"]
+    }
 ];
 
 export const experience = [
     {
-        role: "Data Engineering Consultant / Advisor",
-        company: "CoWrkr",
-        location: "Remote, United States",
-        period: "May 2024 – Present",
-        highlights: [
-            "Design and implement scalable data pipelines for enterprise analytics",
-            "Lead data quality initiatives across Dev, Stage, and Prod environments",
-            "Support LLM QA processes and prompt engineering",
-            "Collaborate with engineers and researchers on data integrity",
-        ],
-    },
-    {
-        role: "Principal Data Engineer",
         company: "Cedar Gate Services Pvt. Ltd.",
+        role: "Data Engineer",
         location: "Lalitpur, Nepal",
         period: "Sep 2024 – Present",
+        description: "Leading the development of high-scale data ingestion and processing systems for the US healthcare domain.",
         highlights: [
-            "Ingest and process large datasets into Redshift data warehouse",
-            "Develop custom SQL queries and stored procedures",
-            "Implement data governance aligned with HIPAA standards",
-            "Mentor junior engineers on data engineering best practices",
-        ],
+            "Ingested and processed large datasets from diverse sources into a centralized Redshift data warehouse.",
+            "Developed PySpark-based ingestion optimization, increasing healthcare data throughput by 30%.",
+            "Maintained and optimized data infrastructure using custom SQL, UDFs, and stored procedures in Redshift.",
+            "Implemented data governance framework aligned with US healthcare standards and HIPAA.",
+            "Mentored junior engineers on best practices in data engineering."
+        ]
     },
     {
-        role: "Senior Software (Data) Engineer",
+        company: "CoWrkr",
+        role: "Data Engineering Consultant / Advisor",
+        location: "Remote, United States",
+        period: "May 2024 – Present",
+        description: "Strategic advisor for scalable data pipelines and AI data quality frameworks.",
+        highlights: [
+            "Advise on the design of data quality frameworks supporting enterprise analytics and AI initiatives.",
+            "Lead data quality initiatives ensuring consistency and reliability across Dev, Stage, and Prod.",
+            "Support LLM QA processes — evaluating model responses and validating prompt accuracy.",
+            "Develop and refine LLM prompts to enhance model training efficiency."
+        ]
+    },
+    {
         company: "Techkraft Inc. Pvt. Ltd.",
+        role: "Senior Software (Data) Engineer",
         location: "Lalitpur, Nepal",
         period: "Oct 2022 – May 2024",
+        description: "Led modernization of data infrastructure and team mentorship.",
         highlights: [
-            "Led migration of legacy pipelines to Databricks + Delta Lake (40% improvement)",
-            "Designed reusable data quality framework in PySpark",
-            "Implemented anomaly detection for proactive issue flagging",
-            "Mentored 8-member team on project delivery",
-        ],
+            "Led migration of legacy pipelines to Databricks + Delta Lake, improving scalability by 40%.",
+            "Designed reusable data quality framework in PySpark for structured and semi-structured data.",
+            "Implemented anomaly detection scripts to proactively flag data integrity issues.",
+            "Mentored 8-member team, driving project delivery and SLA adherence."
+        ]
     },
     {
-        role: "Software (Data) Engineer",
         company: "Cotiviti Nepal Ltd.",
+        role: "Software (Data) Engineer",
         location: "Kathmandu, Nepal",
         period: "Mar 2018 – Oct 2022",
+        description: "Developed ETL workflows for US healthcare claims data.",
         highlights: [
-            "Developed and maintained ETL workflows for US healthcare claims",
-            "Reduced report generation time by 35% through SQL optimization",
-            "Automated manual reconciliation processes",
-            "Supported data profiling and validation tasks",
-        ],
+            "Developed and maintained ETL workflows using ODI, Oracle SQL, and Python.",
+            "Reduced report generation time by 35% through complex SQL optimization.",
+            "Automated manual reconciliation processes, increasing throughput and accuracy.",
+            "Progressed from Trainee to Senior role through consistent performance."
+        ]
     },
+    {
+        company: "IMS Investment Management Service",
+        role: "Software Engineer (PHP Developer)",
+        location: "Kathmandu, Nepal",
+        period: "Oct 2017 – Mar 2018",
+        description: "Backend development for investment tracking systems.",
+        highlights: [
+            "Built backend integration modules in PHP/MySQL for investment tracking.",
+            "Optimized database performance via query tuning and caching."
+        ]
+    }
 ];
 
 export const certifications = [
@@ -242,32 +245,20 @@ export const recommendations = [
     }
 ];
 
-export const blogPosts = [
+export const engineeringPrinciples = [
     {
-        id: 1,
-        title: "Optimizing Databricks Workloads for Cost and Performance",
-        excerpt: "Learn how to tune your Spark configurations and Delta Lake tables to reduce costs by up to 30% while improving query performance.",
-        date: "Nov 15, 2024",
-        readTime: "5 min read",
-        tags: ["Databricks", "Optimization", "Cost Management"],
-        link: "#"
+        title: "Validation as Code",
+        description: "Data quality is not an afterthought; it is a primary unit of code. Every pipeline must include autonomous verification gates.",
+        icon: "ShieldCheck"
     },
     {
-        id: 2,
-        title: "Building a Robust Data Quality Framework with PySpark",
-        excerpt: "A step-by-step guide to implementing automated data quality checks in your ETL pipelines using PySpark and Great Expectations.",
-        date: "Oct 28, 2024",
-        readTime: "8 min read",
-        tags: ["Data Quality", "PySpark", "ETL"],
-        link: "#"
+        title: "Failure-First Design",
+        description: "Architecting for inevitable failure through idempotent retries, decoupled components, and atomic state management (ACID).",
+        icon: "Zap"
     },
     {
-        id: 3,
-        title: "Navigating HIPAA Compliance in the Age of LLMs",
-        excerpt: "Best practices for data governance, PII redaction, and audit logging when building Generative AI applications in healthcare.",
-        date: "Oct 10, 2024",
-        readTime: "6 min read",
-        tags: ["HIPAA", "LLM", "Data Governance"],
-        link: "#"
+        title: "Cost-Optimized Compute",
+        description: "Balancing performance with business economics by choosing the right compute gravity for the workload (Serverless vs. Clusters).",
+        icon: "Activity"
     }
 ];
