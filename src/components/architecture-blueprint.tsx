@@ -1,67 +1,105 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Database, Server, Cpu, Globe, Lock, Activity, ShieldCheck, Binary, Info } from "lucide-react";
+import { Database, Server, Cpu, Globe, Lock, Activity, ShieldCheck, Binary, Info, Play, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { TiltCard } from "./tilt-card";
+import { Button } from "./ui/button";
 
 const nodes = [
     {
         id: "source",
-        label: "Ingestion Core",
-        sublabel: "Kafka · Airbyte · CDC",
+        label: "Source Data Ingestion",
         icon: Globe,
         color: "border-primary/40",
         glow: "shadow-[0_0_20px_hsl(var(--primary)/0.15)]",
         iconColor: "text-primary",
         bg: "bg-primary/5",
-        tech: ["Event Hub", "API Hooks", "S3 Landing"]
+        tech: ["Event Hub", "API Hooks", "S3 Landing"],
+        sublabel: ""
     },
     {
         id: "quality",
-        label: "Validation Layer",
-        sublabel: "GX · HIPAA · PII Scrub",
+        label: "Data Quality & Validation",
         icon: ShieldCheck,
         color: "border-accent/40",
         glow: "shadow-[0_0_20px_hsl(var(--accent)/0.15)]",
         iconColor: "text-accent",
         bg: "bg-accent/5",
-        tech: ["Schema Check", "Anomalies", "Masking"]
+        tech: ["Schema Check", "Anomalies", "Masking"],
+        sublabel: ""
     },
     {
         id: "compute",
-        label: "Distributed Compute",
-        sublabel: "Spark 3.5 · EMR · Airflow",
+        label: "Distributed Compute (Spark)",
         icon: Cpu,
         color: "border-primary/40",
         glow: "shadow-[0_0_20px_hsl(var(--primary)/0.15)]",
         iconColor: "text-primary",
         bg: "bg-primary/5",
-        tech: ["DAG Engine", "Shuffle Service", "UDFs"]
+        tech: ["DAG Engine", "Shuffle Service", "UDFs"],
+        sublabel: ""
     },
     {
         id: "storage",
-        label: "Delta Lakehouse",
-        sublabel: "Bronze → Silver → Gold",
+        label: "Delta Lakehouse (ACID)",
         icon: Database,
         color: "border-primary/40",
         glow: "shadow-[0_0_20px_hsl(var(--primary)/0.15)]",
         iconColor: "text-primary",
         bg: "bg-primary/5",
-        tech: ["ACID", "Z-Order", "Time Travel"]
+        tech: ["ACID", "Z-Order", "Time Travel"],
+        sublabel: ""
     },
     {
         id: "serving",
-        label: "Serving Layer",
-        sublabel: "Redshift · dbt · BI",
+        label: "Strategic Serving Layer",
         icon: Server,
         color: "border-accent/40",
         glow: "shadow-[0_0_20px_hsl(var(--accent)/0.15)]",
         iconColor: "text-accent",
         bg: "bg-accent/5",
-        tech: ["Materialized Views", "Caching", "Semantic"]
+        tech: ["Materialized Views", "Caching", "Semantic"],
+        sublabel: ""
     },
 ];
 
+const DATA_SAMPLES = [
+    {
+        raw: { patient: "John Doe", ssn: "123-45-789", zip: "90210", code: "E11.9" },
+        silver: { pt_id: "HSH_88x2", diagnosis: "Type 2 Diabetes", location: "CA-CON", mask: "*********" },
+        gold: { risk_score: 0.85, cohort: "Metabolic", predictive_los: "4d", billing_est: "$4.2k" }
+    },
+    {
+        raw: { patient: "Jane Smith", ssn: "987-65-432", zip: "10001", code: "I10" },
+        silver: { pt_id: "HSH_11z9", diagnosis: "Hypertension", location: "NY-NOR", mask: "*********" },
+        gold: { risk_score: 0.42, cohort: "Cardio", predictive_los: "1d", billing_est: "$1.1k" }
+    }
+];
 
 const TechnicalBlueprint = () => {
+    const [isTransforming, setIsTransforming] = useState(false);
+    const [piiMasking, setPiiMasking] = useState(true);
+    const [sampleIdx, setSampleIdx] = useState(0);
+    const [progress, setProgress] = useState(0); // 0 to 100
+
+    const runTransformation = () => {
+        if (isTransforming) return;
+        setIsTransforming(true);
+        setProgress(0);
+
+        let interval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => setIsTransforming(false), 2000);
+                    return 100;
+                }
+                return prev + 2;
+            });
+        }, 50);
+    };
+
+    const currentData = DATA_SAMPLES[sampleIdx];
+
     return (
         <section id="architecture" className="py-16 md:py-24 bg-background relative overflow-hidden border-t border-border/50">
             {/* Grid Background */}
@@ -97,7 +135,7 @@ const TechnicalBlueprint = () => {
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <span className="text-sm font-mono font-bold text-foreground block tracking-tight">{node.label}</span>
-                                    <span className="text-[11px] text-muted-foreground font-mono leading-none">{node.sublabel}</span>
+                                    {node.sublabel && <span className="text-[11px] text-muted-foreground font-mono leading-none">{node.sublabel}</span>}
 
                                     {/* Mobile: Performance Ledger */}
                                     <div className="flex gap-3 mt-2">
@@ -189,7 +227,7 @@ const TechnicalBlueprint = () => {
                                         </div>
                                         <div className="space-y-1">
                                             <h3 className="text-xs font-mono font-bold text-foreground tracking-tight">{node.label}</h3>
-                                            <p className="text-[10px] text-muted-foreground font-mono">{node.sublabel}</p>
+                                            {node.sublabel && <p className="text-[10px] text-muted-foreground font-mono">{node.sublabel}</p>}
                                         </div>
 
                                         {/* Dynamic tech tags on hover */}
@@ -264,46 +302,122 @@ const TechnicalBlueprint = () => {
                             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary font-bold uppercase tracking-widest">
                                 <Info className="w-3 h-3" /> The Data Morphosis
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">Witness the evolution of a single record from Raw to Strategic.</h3>
+                            <h3 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">Interactive Transformation Playground.</h3>
                             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                                Our architecture doesn't just store data; it translates it. Every ingestion event undergoes a three-stage mutation that scrubs PII, enforces schemas, and calculates business value in real-time.
+                                Experience the lifecycle of healthcare data. Toggle <span className="text-foreground font-semibold">PII Masking</span> to see real-time hashing, or process different ingestion samples through the medallion gates.
                             </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <Button
+                                    onClick={runTransformation}
+                                    disabled={isTransforming}
+                                    className="h-12 px-6 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                                >
+                                    {isTransforming ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                                    {isTransforming ? `Processing (${progress}%)` : "Run Transformation"}
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setPiiMasking(!piiMasking)}
+                                    className="h-12 px-6 rounded-xl font-bold border-border bg-background hover:bg-muted transition-all flex items-center gap-2"
+                                >
+                                    {piiMasking ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    PII: {piiMasking ? "Secured" : "Exposed"}
+                                </Button>
+
+                                <button
+                                    onClick={() => setSampleIdx((sampleIdx + 1) % DATA_SAMPLES.length)}
+                                    className="text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                                >
+                                    <RefreshCw className="w-3 h-3" /> Cycle Sample Data
+                                </button>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-3 rounded-xl bg-background/40 border border-border/50">
-                                    <div className="text-[8px] uppercase text-muted-foreground font-bold mb-1">Raw Mutation</div>
-                                    <div className="text-xs font-mono text-primary">50k Events/s</div>
+                                    <div className="text-[8px] uppercase text-muted-foreground font-bold mb-1">Compute State</div>
+                                    <div className={`text-xs font-mono transition-colors ${isTransforming ? "text-emerald-500" : "text-primary"}`}>
+                                        {isTransforming ? "ACTIVE_SESSION" : "IDLE"}
+                                    </div>
                                 </div>
                                 <div className="p-3 rounded-xl bg-background/40 border border-border/50">
                                     <div className="text-[8px] uppercase text-muted-foreground font-bold mb-1">Policy Guard</div>
-                                    <div className="text-xs font-mono text-accent">100% HIPAA</div>
+                                    <div className="text-xs font-mono text-accent">
+                                        {piiMasking ? "AES-256 HASH" : "CLEAR_TEXT"}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="w-full lg:w-1/2">
-                            <div className="bg-black/80 rounded-2xl p-6 border border-primary/30 font-mono relative">
-                                <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-lg uppercase tracking-tight">Transformer Node: 0x42f</div>
-                                <div className="space-y-4 text-[10px] sm:text-[11px]">
+                            <div className="bg-black/80 rounded-2xl p-6 border border-primary/30 font-mono relative overflow-hidden">
+                                {isTransforming && (
+                                    <motion.div
+                                        initial={{ top: "-10%" }}
+                                        animate={{ top: "110%" }}
+                                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                        className="absolute left-0 right-0 h-16 bg-gradient-to-b from-transparent via-primary/10 to-transparent pointer-events-none z-0"
+                                    />
+                                )}
+
+                                <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-lg uppercase tracking-tight z-10">Transformer Node: 0x42f</div>
+                                <div className="space-y-4 text-[10px] sm:text-[11px] relative z-10">
                                     <div className="space-y-1">
-                                        <span className="text-zinc-500 block opacity-50">// RAW INGEST (JSON)</span>
-                                        <div className="text-emerald-400 opacity-60">{"{ 'patient': 'John Doe', 'ssn': '123-45-789', 'code': 'E11.9' }"}</div>
-                                    </div>
-                                    <div className="flex justify-center items-center py-1">
-                                        <div className="h-4 w-[1px] bg-primary animate-pulse" />
-                                    </div>
-                                    <div className="space-y-1 pl-4 border-l border-primary/30">
-                                        <span className="text-zinc-500 block opacity-50">// ENRICHED (SILVER)</span>
-                                        <div className="text-primary font-bold">{"{ 'pt_id': hash('JD-123'), 'diag': 'Type 2 Diabetes', 'scrubbed': true }"}</div>
-                                    </div>
-                                    <div className="flex justify-center items-center py-1">
-                                        <div className="h-4 w-[1px] bg-primary animate-pulse" />
-                                    </div>
-                                    <div className="space-y-1 pl-8 border-l-2 border-primary">
-                                        <span className="text-zinc-500 block opacity-50">// ANALYTIC READY (GOLD)</span>
-                                        <div className="text-white bg-primary/20 p-2 rounded border border-primary/40 animate-pulse">
-                                            {"{ 'risk_score': 0.85, 'cohort': 'Metabolic', 'predictive_los': '4d' }"}
+                                        <span className="text-zinc-500 block opacity-50 flex items-center gap-2">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${isTransforming && progress < 33 ? "bg-emerald-500 animate-pulse" : "bg-zinc-700"}`} />
+                                            RAW INGEST (BRONZE)
+                                        </span>
+                                        <div className={`transition-all duration-500 ${isTransforming && progress < 33 ? "text-emerald-400 scale-[1.02]" : "text-emerald-400/40"}`}>
+                                            {"{ \"patient\": \""}
+                                            {piiMasking ? "********" : currentData.raw.patient}
+                                            {"\", \"ssn\": \""}
+                                            {piiMasking ? "###-##-####" : currentData.raw.ssn}
+                                            {"\", \"code\": \""}
+                                            {currentData.raw.code}
+                                            {"\" }"}
                                         </div>
+                                    </div>
+
+                                    <div className="flex justify-center items-center py-1">
+                                        <div className={`h-4 w-[1px] transition-colors ${isTransforming && progress >= 33 && progress < 66 ? "bg-primary" : "bg-zinc-800"}`} />
+                                    </div>
+
+                                    <div className="space-y-1 pl-4 border-l border-primary/30">
+                                        <span className="text-zinc-500 block opacity-50 flex items-center gap-2">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${isTransforming && progress >= 33 && progress < 66 ? "bg-primary animate-pulse" : "bg-zinc-700"}`} />
+                                            ENRICHED (SILVER)
+                                        </span>
+                                        <div className={`transition-all duration-500 ${isTransforming && progress >= 33 && progress < 66 ? "text-primary font-bold scale-[1.02]" : "text-primary/40"}`}>
+                                            {"{ \"pt_id\": \""}
+                                            {currentData.silver.pt_id}
+                                            {"\", \"diag\": \""}
+                                            {currentData.silver.diagnosis}
+                                            {"\", \"mask\": \""}
+                                            {currentData.silver.mask}
+                                            {"\" }"}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-center items-center py-1">
+                                        <div className={`h-4 w-[1px] transition-colors ${isTransforming && progress >= 66 ? "bg-accent" : "bg-zinc-800"}`} />
+                                    </div>
+
+                                    <div className="space-y-1 pl-8 border-l-2 border-primary">
+                                        <span className="text-zinc-500 block opacity-50 flex items-center gap-2">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${isTransforming && progress >= 66 ? "bg-accent animate-pulse" : "bg-zinc-700"}`} />
+                                            ANALYTIC READY (GOLD)
+                                        </span>
+                                        <motion.div
+                                            animate={isTransforming && progress >= 66 ? { backgroundColor: "rgba(var(--primary), 0.2)", borderColor: "rgba(var(--primary), 0.4)" } : {}}
+                                            className="text-white p-2 rounded border border-transparent transition-all duration-500"
+                                        >
+                                            {"{ \"risk\": "}{currentData.gold.risk_score}{", \"cohort\": \""}
+                                            {currentData.gold.cohort}
+                                            {"\", \"bill\": \""}
+                                            {currentData.gold.billing_est}
+                                            {"\" }"}
+                                        </motion.div>
                                     </div>
                                 </div>
                             </div>

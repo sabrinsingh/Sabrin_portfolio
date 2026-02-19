@@ -4,7 +4,7 @@ import { Terminal, Cpu, ShieldCheck, Code2, Database } from "lucide-react";
 import { SiUpwork } from "react-icons/si";
 import profilePic from "../assets/profile.jpg";
 
-import { calculateYearsOfExperience } from "@/data/portfolio";
+import { calculateYearsOfExperience, personalInfo } from "@/data/portfolio";
 
 const Typewriter = ({ text, speed, deleteSpeed, waitTime }: { text: string[], speed: number, deleteSpeed: number, waitTime: number }) => {
     const [currentText, setCurrentText] = useState("");
@@ -143,7 +143,7 @@ export const TerminalHero = () => {
                             <div className="text-primary font-mono text-sm font-bold uppercase tracking-wider flex items-center gap-1">
                                 <span className="opacity-50">#</span>
                                 <Typewriter
-                                    text={["Data Engineer", "Data Quality Engineer", "Data Analytics Analyst", "Analytics Strategist", "Data Analytics Engineer"]}
+                                    text={personalInfo.roles}
                                     speed={80}
                                     deleteSpeed={40}
                                     waitTime={1500}

@@ -91,6 +91,7 @@ const yearsOfExp = calculateYearsOfExperience();
 export const personalInfo = {
     name: "Sabrin Lal Singh",
     title: "Data Analytics Engineer",
+    roles: ["Data Engineer", "Data Quality Engineer", "Data Analytics Engineer Analyst", "Analytics Strategist", "Data Analytics Engineer"],
     email: "sabrinlalsingh@gmail.com",
     location: "Kathmandu, Nepal",
     summary: `Data Analytics Engineer with ${yearsOfExp}+ years of experience specialized in building high-throughput, resilient data systems. Expert in AWS and Databricks ecosystems, with a track record of delivering high-fidelity data products for the US healthcare sector.`,

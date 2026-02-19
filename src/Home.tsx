@@ -7,7 +7,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { TiltCard } from "@/components/tilt-card";
 import { Helmet } from "react-helmet-async";
-import { projects, certifications } from "@/data/portfolio";
+import { projects, certifications, personalInfo } from "@/data/portfolio";
 
 import { RecommendationsSection } from "@/components/recommendations-section";
 import { Footer } from "@/components/footer";
@@ -64,8 +64,8 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-accent selection:text-accent-foreground">
             <Helmet>
-                <title>Sabrin Singh | Data Engineer</title>
-                <meta name="description" content="Portfolio of Sabrin Singh, a Data Engineer specializing in scalable ETL pipelines, data warehouses, and cloud infrastructure on AWS and Databricks." />
+                <title>{personalInfo.name} | {personalInfo.title}</title>
+                <meta name="description" content={personalInfo.summary} />
                 <meta name="keywords" content="Data Engineer, ETL, AWS, Databricks, Python, SQL, Big Data" />
             </Helmet>
 
@@ -172,7 +172,7 @@ export default function Home() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 text-muted-foreground leading-relaxed">
                             <div className="space-y-5">
                                 <p className="text-sm sm:text-base border-l-4 border-primary pl-4 text-foreground/80 italic">
-                                    A Data Analytics Engineer with a deep focus on architecting resilient, high-throughput systems across the full data lifecycle.
+                                    {personalInfo.summary}
                                 </p>
                                 <p className="text-sm sm:text-base">
                                     Specializing in <span className="text-primary font-bold">mission-critical healthcare infrastructure</span>, I engineer systems that balance extreme reliability with rigorous HIPAA security standards.
