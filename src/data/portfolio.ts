@@ -5,12 +5,85 @@ import {
 import { VscAzure } from "react-icons/vsc";
 import { FaBuilding, FaCode, FaDatabase, FaCogs } from "react-icons/fa";
 
-export const careerStartDate = "2017-10-01";
+export const experience = [
+    {
+        company: "Cedar Gate Services Pvt. Ltd.",
+        role: "Data Engineer",
+        location: "Lalitpur, Nepal",
+        period: "Sep 2024 – Present",
+        description: "Leading the development of high-scale data ingestion and processing systems for the US healthcare domain.",
+        highlights: [
+            "Ingested and processed large datasets from diverse sources into a centralized Redshift data warehouse.",
+            "Developed PySpark-based ingestion optimization, increasing healthcare data throughput by 30%.",
+            "Maintained and optimized data infrastructure using custom SQL, UDFs, and stored procedures in Redshift.",
+            "Implemented data governance framework aligned with US healthcare standards and HIPAA.",
+            "Mentored junior engineers on best practices in data engineering."
+        ]
+    },
+    {
+        company: "CoWrkr",
+        role: "Data Engineering Consultant / Advisor",
+        location: "Remote, United States",
+        period: "May 2024 – Present",
+        description: "Strategic advisor for scalable data pipelines and AI data quality frameworks.",
+        highlights: [
+            "Advise on the design of data quality frameworks supporting enterprise analytics and AI initiatives.",
+            "Lead data quality initiatives ensuring consistency and reliability across Dev, Stage, and Prod.",
+            "Support LLM QA processes — evaluating model responses and validating prompt accuracy.",
+            "Develop and refine LLM prompts to enhance model training efficiency."
+        ]
+    },
+    {
+        company: "Techkraft Inc. Pvt. Ltd.",
+        role: "Senior Software (Data) Engineer",
+        location: "Lalitpur, Nepal",
+        period: "Oct 2022 – May 2024",
+        description: "Led modernization of data infrastructure and team mentorship.",
+        highlights: [
+            "Led migration of legacy pipelines to Databricks + Delta Lake, improving scalability by 40%.",
+            "Designed reusable data quality framework in PySpark for structured and semi-structured data.",
+            "Implemented anomaly detection scripts to proactively flag data integrity issues.",
+            "Mentored 8-member team, driving project delivery and SLA adherence."
+        ]
+    },
+    {
+        company: "Cotiviti Nepal Ltd.",
+        role: "Software (Data) Engineer",
+        location: "Kathmandu, Nepal",
+        period: "Mar 2018 – Oct 2022",
+        description: "Developed ETL workflows for US healthcare claims data.",
+        highlights: [
+            "Developed and maintained ETL workflows using ODI, Oracle SQL, and Python.",
+            "Reduced report generation time by 35% through complex SQL optimization.",
+            "Automated manual reconciliation processes, increasing throughput and accuracy.",
+            "Progressed from Trainee to Senior role through consistent performance."
+        ]
+    },
+    {
+        company: "IMS Investment Management Service",
+        role: "Software Engineer (PHP Developer)",
+        location: "Kathmandu, Nepal",
+        period: "Oct 2017 – Mar 2018",
+        description: "Backend development for investment tracking systems.",
+        highlights: [
+            "Built backend integration modules in PHP/MySQL for investment tracking.",
+            "Optimized database performance via query tuning and caching."
+        ]
+    }
+];
+
+// Helper to extract year from period string like "Sep 2024 – Present" or "Oct 2017 – Mar 2018"
+const getStartYear = (period: string) => {
+    const match = period.match(/\d{4}/);
+    return match ? parseInt(match[0]) : new Date().getFullYear();
+};
 
 export const calculateYearsOfExperience = () => {
-    const start = new Date(careerStartDate);
-    const now = new Date();
-    return Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+    if (!experience || experience.length === 0) return 7; // Fallback
+    const startYears = experience.map(exp => getStartYear(exp.period));
+    const earliestYear = Math.min(...startYears);
+    const currentYear = new Date().getFullYear();
+    return currentYear - earliestYear;
 };
 
 const yearsOfExp = calculateYearsOfExperience();
@@ -84,72 +157,7 @@ export const skills = [
     }
 ];
 
-export const experience = [
-    {
-        company: "Cedar Gate Services Pvt. Ltd.",
-        role: "Data Engineer",
-        location: "Lalitpur, Nepal",
-        period: "Sep 2024 – Present",
-        description: "Leading the development of high-scale data ingestion and processing systems for the US healthcare domain.",
-        highlights: [
-            "Ingested and processed large datasets from diverse sources into a centralized Redshift data warehouse.",
-            "Developed PySpark-based ingestion optimization, increasing healthcare data throughput by 30%.",
-            "Maintained and optimized data infrastructure using custom SQL, UDFs, and stored procedures in Redshift.",
-            "Implemented data governance framework aligned with US healthcare standards and HIPAA.",
-            "Mentored junior engineers on best practices in data engineering."
-        ]
-    },
-    {
-        company: "CoWrkr",
-        role: "Data Engineering Consultant / Advisor",
-        location: "Remote, United States",
-        period: "May 2024 – Present",
-        description: "Strategic advisor for scalable data pipelines and AI data quality frameworks.",
-        highlights: [
-            "Advise on the design of data quality frameworks supporting enterprise analytics and AI initiatives.",
-            "Lead data quality initiatives ensuring consistency and reliability across Dev, Stage, and Prod.",
-            "Support LLM QA processes — evaluating model responses and validating prompt accuracy.",
-            "Develop and refine LLM prompts to enhance model training efficiency."
-        ]
-    },
-    {
-        company: "Techkraft Inc. Pvt. Ltd.",
-        role: "Senior Software (Data) Engineer",
-        location: "Lalitpur, Nepal",
-        period: "Oct 2022 – May 2024",
-        description: "Led modernization of data infrastructure and team mentorship.",
-        highlights: [
-            "Led migration of legacy pipelines to Databricks + Delta Lake, improving scalability by 40%.",
-            "Designed reusable data quality framework in PySpark for structured and semi-structured data.",
-            "Implemented anomaly detection scripts to proactively flag data integrity issues.",
-            "Mentored 8-member team, driving project delivery and SLA adherence."
-        ]
-    },
-    {
-        company: "Cotiviti Nepal Ltd.",
-        role: "Software (Data) Engineer",
-        location: "Kathmandu, Nepal",
-        period: "Mar 2018 – Oct 2022",
-        description: "Developed ETL workflows for US healthcare claims data.",
-        highlights: [
-            "Developed and maintained ETL workflows using ODI, Oracle SQL, and Python.",
-            "Reduced report generation time by 35% through complex SQL optimization.",
-            "Automated manual reconciliation processes, increasing throughput and accuracy.",
-            "Progressed from Trainee to Senior role through consistent performance."
-        ]
-    },
-    {
-        company: "IMS Investment Management Service",
-        role: "Software Engineer (PHP Developer)",
-        location: "Kathmandu, Nepal",
-        period: "Oct 2017 – Mar 2018",
-        description: "Backend development for investment tracking systems.",
-        highlights: [
-            "Built backend integration modules in PHP/MySQL for investment tracking.",
-            "Optimized database performance via query tuning and caching."
-        ]
-    }
-];
+// End of file
 
 export const certifications = [
     {

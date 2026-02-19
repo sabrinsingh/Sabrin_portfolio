@@ -161,9 +161,9 @@ export const PerformanceBattle = () => {
                     </div>
 
                     {/* Right side: Simulation */}
-                    <div className="w-full lg:w-2/3 bg-card/40 backdrop-blur-2xl border border-border/40 rounded-[2rem] p-8 relative overflow-hidden min-h-[500px] shadow-2xl shadow-primary/5">
+                    <div className="w-full lg:w-2/3 bg-card/40 backdrop-blur-2xl border border-border/40 rounded-[2rem] p-4 sm:p-6 lg:p-8 relative overflow-hidden min-h-[400px] sm:min-h-[500px] shadow-2xl shadow-primary/5">
                         <div className="absolute top-0 right-0 p-4 flex gap-2">
-                            <div className="px-3 py-1 bg-secondary rounded-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Production Cluster Simulation</div>
+                            <div className="px-3 py-1 bg-secondary rounded-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground hidden sm:block">Production Cluster Simulation</div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
@@ -274,8 +274,8 @@ const EngineView = ({ name, icon: Icon, data, progress }: { name: string, icon: 
 
 const MetricCard = ({ icon: Icon, label, value, color = "" }: { icon: any, label: string, value: string, color?: string }) => (
     <div className="bg-secondary/30 p-2.5 rounded-xl border border-border/50">
-        <Icon className="w-3 h-3 text-muted-foreground mb-1" />
-        <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter leading-none mb-1">{label}</div>
-        <div className={`text-[11px] font-mono font-bold truncate ${color}`}>{value}</div>
+        <Icon className="w-3.5 h-3.5 text-muted-foreground mb-1.5" />
+        <div className="text-[11px] sm:text-sm text-muted-foreground uppercase font-bold tracking-tighter leading-none mb-1.5">{label}</div>
+        <div className={`text-sm sm:text-base font-mono font-bold truncate ${color}`}>{value}</div>
     </div>
 );

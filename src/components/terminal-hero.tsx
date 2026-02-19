@@ -116,18 +116,18 @@ export const TerminalHero = () => {
     };
 
     return (
-        <div className="flex flex-col xl:flex-row items-center justify-center gap-12 w-full max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col xl:flex-row items-center justify-center gap-8 xl:gap-12 w-full max-w-7xl mx-auto px-4 py-6 sm:py-8">
             {/* Left Column: Visual & Intro */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full xl:w-1/2 flex flex-col items-center xl:items-start text-center xl:text-left space-y-8"
+                className="w-full xl:w-1/2 flex flex-col items-center xl:items-start text-center xl:text-left space-y-6 sm:space-y-8"
             >
                 {/* Unified Profile Card */}
                 <div className="relative group">
                     <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="relative bg-card border border-border p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center gap-6">
-                        <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/50 transition-colors duration-500">
+                    <div className="relative bg-card border border-border p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                        <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/50 transition-colors duration-500">
                             <img src={profilePic} alt="Sabrin Singh" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                             {/* Innovative Cyber Lens Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
@@ -143,7 +143,7 @@ export const TerminalHero = () => {
                             <div className="text-primary font-mono text-sm font-bold uppercase tracking-wider flex items-center gap-1">
                                 <span className="opacity-50">#</span>
                                 <Typewriter
-                                    text={["Data Engineer", "Cloud Infrastructure", "Analytics Strategist", "Data Analytics Engineer"]}
+                                    text={["Data Engineer", "Data Quality Engineer", "Data Analytics Analyst", "Analytics Strategist", "Data Analytics Engineer"]}
                                     speed={80}
                                     deleteSpeed={40}
                                     waitTime={1500}
@@ -160,30 +160,41 @@ export const TerminalHero = () => {
                     </div>
                 </div>
 
-                <div className="space-y-4 max-w-2xl">
-                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
+                <div className="space-y-3 max-w-2xl">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight break-words hyphens-auto">
                         Engineering <span className="text-primary">Data Integrity</span> at Scale.
                     </h2>
-                    <p className="text-muted-foreground text-lg leading-relaxed">
+                    <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                         I build high-throughput, resilient data systems for healthcare and enterprise environments, specializing in <span className="text-foreground font-semibold">Databricks</span> and <span className="text-foreground font-semibold">AWS Redshift</span>.
                     </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center xl:justify-start gap-4">
-                    <a href="#projects">
-                        <Button className="h-12 px-8 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center xl:justify-start gap-3 w-full sm:w-auto">
+                    <a href="#projects" className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto h-12 px-8 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
                             View Infrastructure
                         </Button>
                     </a>
-                    <a href="https://www.upwork.com/freelancers/~019c63b7c8441f7142" target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="h-12 px-8 rounded-xl font-bold border-border bg-background hover:bg-muted">
+                    <a href="https://www.upwork.com/freelancers/~019c63b7c8441f7142" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full sm:w-auto h-12 px-8 rounded-xl font-bold border-border bg-background hover:bg-muted">
                             <SiUpwork className="w-4 h-4 mr-2 text-[#14a800]" />
                             Hire Expert
                         </Button>
                     </a>
                 </div>
 
-                {/* Tech Badges */}
+                {/* Impact stat strip */}
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/30">
+                    {[
+                        { value: `${yearsOfExp}+`, label: "Years Exp." },
+                        { value: "100%", label: "HIPAA Rate" },
+                    ].map((stat, i) => (
+                        <div key={i} className="text-center">
+                            <div className="text-lg sm:text-xl font-bold text-primary font-mono">{stat.value}</div>
+                            <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+                        </div>
+                    ))}
+                </div>
                 <div className="flex flex-wrap justify-center xl:justify-start gap-2 pt-2">
                     {[
                         { icon: Database, label: "Data Lake" },
@@ -223,7 +234,7 @@ export const TerminalHero = () => {
                     </div>
 
                     {/* Window Content */}
-                    <div ref={terminalRef} className="p-6 h-[400px] overflow-y-auto space-y-2 text-zinc-300 relative scrollbar-hide">
+                    <div ref={terminalRef} className="p-4 sm:p-6 h-[260px] sm:h-[320px] md:h-[380px] overflow-y-auto space-y-2 text-zinc-300 relative scrollbar-hide">
                         {lines.map((line, i) => (
                             <div key={i} className="flex gap-2">
                                 {line.startsWith(">") ? (
@@ -263,6 +274,7 @@ export const TerminalHero = () => {
                         <div className="flex gap-4">
                             <span>ENV: PRODUCTION</span>
                             <span>NODE: DATA_NODE_01</span>
+                            <span className="hidden sm:inline text-emerald-500/50 animate-pulse font-bold">TYPE 'HELP' FOR COMMANDS</span>
                         </div>
                         <span>v3.5.0-STABLE</span>
                     </div>

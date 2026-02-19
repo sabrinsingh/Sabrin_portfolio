@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, Briefcase, FolderKanban, Award, Mail } from "lucide-react";
+import { Menu, X, User, Briefcase, FolderKanban, Award, Mail, Activity } from "lucide-react";
 
 const navItems = [
     { name: "About", icon: User },
     { name: "Experience", icon: Briefcase },
     { name: "Projects", icon: FolderKanban },
+    { name: "Performance", icon: Activity },
     { name: "Certifications", icon: Award },
     { name: "Contact", icon: Mail }
 ];
@@ -117,7 +118,7 @@ export function MobileNav() {
                                 initial="closed"
                                 animate="open"
                                 exit="closed"
-                                className="fixed top-0 right-0 bottom-0 w-80 bg-card border-l-4 border-l-primary border-y border-r border-border z-[9999] flex flex-col shadow-[-8px_0_30px_-5px_rgba(0,0,0,0.3)]"
+                                className="fixed top-0 right-0 bottom-0 w-[min(20rem,calc(100vw-2rem))] bg-card border-l-4 border-l-primary border-y border-r border-border z-[9999] flex flex-col shadow-[-8px_0_30px_-5px_rgba(0,0,0,0.3)]"
                             >
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-6 border-b border-border bg-secondary/50">

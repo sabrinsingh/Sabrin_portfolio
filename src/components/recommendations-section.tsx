@@ -13,7 +13,7 @@ export function RecommendationsSection() {
                 <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
             </div>
 
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-4 sm:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export function RecommendationsSection() {
                             transition={{ delay: idx * 0.1 }}
                         >
                             <Card className="h-full bg-card/50 backdrop-blur-sm border-border/60 hover:border-primary/40 transition-all duration-300 hover:shadow-lg group">
-                                <CardContent className="p-8 flex flex-col h-full gap-6">
+                                <CardContent className="p-5 sm:p-8 flex flex-col h-full gap-4 sm:gap-6">
                                     <div className="flex justify-between items-start">
                                         <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                                             <Quote className="w-6 h-6 rotate-180" />
@@ -50,12 +50,13 @@ export function RecommendationsSection() {
                                             ref: {rec.id.toString().toUpperCase().substring(0, 6)}
                                         </Badge>
                                     </div>
+                                    <div className="space-y-4">
+                                        <blockquote className="text-sm sm:text-base md:text-lg italic text-foreground leading-relaxed">
+                                            "{rec.text}"
+                                        </blockquote>
+                                    </div>
 
-                                    <blockquote className="text-lg text-muted-foreground leading-relaxed italic flex-grow">
-                                        "{rec.text}"
-                                    </blockquote>
-
-                                    <div className="pt-6 border-t border-border/50">
+                                    <div className="pt-6 border-t border-border/50 mt-auto">
                                         <div className="flex items-center gap-4">
                                             <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white font-bold text-xl shadow-inner">
                                                 {rec.author.charAt(0)}

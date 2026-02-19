@@ -62,12 +62,12 @@ export const SystemPulse = () => {
     }, []);
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4 md:p-8">
+        <div className="w-full max-w-4xl mx-auto p-3 sm:p-4 md:p-8">
             <div className="relative group">
                 {/* Glow Effect */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-accent/30 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
 
-                <div className="relative bg-card/40 backdrop-blur-2xl border border-border/40 rounded-3xl p-6 shadow-xl overflow-hidden">
+                <div className="relative bg-card/40 backdrop-blur-2xl border border-border/40 rounded-3xl p-4 sm:p-6 shadow-xl overflow-hidden">
                     {/* Data Flow Overlay */}
                     <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
                     <div className="flex items-center justify-between mb-8 border-b border-border/50 pb-4">
@@ -87,7 +87,7 @@ export const SystemPulse = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                         {metrics.map((metric, idx) => {
                             const Icon = metric.icon;
                             // @ts-ignore
@@ -143,7 +143,7 @@ export const SystemPulse = () => {
                                             <span className={`${msg.includes('WARN') ? 'text-accent' : 'text-primary'} opacity-50`}>
                                                 [{msg.includes('WARN') ? 'WARN' : 'INFO'}]
                                             </span>
-                                            <span>{msg}</span>
+                                            <span className="flex-1 truncate">{msg}</span>
                                             {isLast && (
                                                 <motion.span
                                                     animate={{ opacity: [1, 0] }}
