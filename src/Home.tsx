@@ -90,6 +90,20 @@ export default function Home() {
                 <title>{personalInfo.name} | {personalInfo.title}</title>
                 <meta name="description" content={personalInfo.summary} />
                 <meta name="keywords" content="Data Engineer, ETL, AWS, Databricks, Python, SQL, Big Data" />
+                <link rel="canonical" href="https://sabrinsingh.com.np" />
+                
+                {/* Open Graph Tags */}
+                <meta property="og:title" content={`${personalInfo.name} | ${personalInfo.title}`} />
+                <meta property="og:description" content={personalInfo.summary} />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://sabrinsingh.com.np" />
+                <meta property="og:image" content="https://sabrinsingh.com.np/og-image.png" />
+                
+                {/* Twitter Tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${personalInfo.name} | ${personalInfo.title}`} />
+                <meta name="twitter:description" content={personalInfo.summary} />
+                <meta name="twitter:image" content="https://sabrinsingh.com.np/og-image.png" />
             </Helmet>
 
             {/* Cursor Glow — Hidden on mobile */}
@@ -128,8 +142,8 @@ export default function Home() {
                                     {activeSection === item.toLowerCase() && (
                                         <motion.div
                                             layoutId="activeNavIndicator"
-                                            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.8)]"
+                                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
                                         />
                                     )}
                                 </a>

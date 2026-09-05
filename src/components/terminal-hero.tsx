@@ -47,16 +47,17 @@ export const TerminalHero = () => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const etlSequence = [
-        { text: "ssh sabrin@data-hub", type: "command" },
-        { text: "Connection established.", type: "output" },
-        { text: "spark-submit --master k8s etl_pipeline.py", type: "command" },
-        { text: "Running Spark Session (v3.5)...", type: "output" },
-        { text: "[INFO] Ingesting Bronze Layer...", type: "output" },
-        { text: "[INFO] Data Quality: 100% Valid.", type: "output" },
-        { text: "[INFO] Silver Layer: Deduplication.", type: "output" },
-        { text: "[INFO] Gold Layer: Materializing View...", type: "output" },
-        { text: "Success. 50M records processed.", type: "output" },
-        { text: "System ready. Type 'help'.", type: "output" },
+        { text: "ssh sabrin@aurora-data-node", type: "command" },
+        { text: "Connection established. Secure shell active.", type: "output" },
+        { text: "spark-submit --deploy-mode cluster orchestrator.py", type: "command" },
+        { text: "Initializing Spark Session (v3.5)... [OK]", type: "output" },
+        { text: "[INFO] Allocating dynamic compute resources...", type: "output" },
+        { text: "[INFO] Bronze Ingestion: 50M records pulled from Kafka.", type: "output" },
+        { text: "[WARN] Schema drift detected in payload. Resolving...", type: "output" },
+        { text: "[INFO] Silver Layer: Data quality rules applied (99.9% pass).", type: "output" },
+        { text: "[INFO] Gold Layer: Z-Order optimization complete.", type: "output" },
+        { text: "Pipeline Execution: Success. Latency: 12ms.", type: "output" },
+        { text: "System ready. Type 'help' for commands.", type: "output" },
     ];
 
     useEffect(() => {
@@ -140,7 +141,7 @@ export const TerminalHero = () => {
                     />
                     <div className="relative glass-card p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                         <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/50 transition-colors duration-500">
-                            <img src={profilePic} alt="Sabrin Singh" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <img src={profilePic} alt="Sabrin Singh" fetchPriority="high" loading="eager" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                             {/* Cyber Lens Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
                             <motion.div
@@ -236,7 +237,7 @@ export const TerminalHero = () => {
                 className="w-full xl:w-1/2"
             >
                 <div
-                    className="bg-[#0a0a0c] rounded-2xl border border-border/40 shadow-2xl shadow-primary/5 font-mono text-sm overflow-hidden group"
+                    className="bg-[#0a0a0c]/90 backdrop-blur-xl rounded-2xl border border-primary/20 shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-500 font-mono text-sm overflow-hidden group relative"
                     onClick={() => inputRef.current?.focus()}
                 >
                     {/* macOS-style Header */}

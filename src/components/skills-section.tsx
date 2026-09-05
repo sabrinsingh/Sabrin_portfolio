@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { skills, calculateYearsOfExperience } from "@/data/portfolio";
 import { FaDatabase, FaBuilding, FaCode, FaCogs } from "react-icons/fa";
@@ -67,6 +68,37 @@ const getBentoSpan = (idx: number, total: number) => {
     return "";
 };
 
+const SpotlightCard = ({ children, className, idx }: { children: React.ReactNode, className: string, idx: number }) => {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        setMousePosition({ x, y });
+    };
+
+    return (
+        <motion.div
+            ref={cardRef}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1 }}
+            onMouseMove={handleMouseMove}
+            style={{
+                "--mouse-x": `${mousePosition.x}px`,
+                "--mouse-y": `${mousePosition.y}px`,
+            } as any}
+            className={`spotlight-card ${className}`}
+        >
+            {children}
+        </motion.div>
+    );
+};
+
 export const SkillsSection = () => {
     const yearsOfExp = calculateYearsOfExperience();
 
@@ -115,16 +147,13 @@ export const SkillsSection = () => {
                             const bentoSpan = getBentoSpan(idx, skills.length);
 
                             return (
-                                <motion.div
+                                <SpotlightCard
                                     key={idx}
-                                    initial={{ opacity: 0, y: 16 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className={`glass-card holo-shimmer p-5 card-hover-glow group flex flex-col h-full ${bentoSpan}`}
+                                    idx={idx}
+                                    className={`glass-card p-5 card-hover-glow group flex flex-col h-full ${bentoSpan}`}
                                 >
                                     {/* Header with circular progress */}
-                                    <div className="flex items-center gap-4 mb-4">
+                                    <div className="flex items-center gap-4 mb-4 z-10 relative">
                                         <div className="relative">
                                             <ProgressRing percent={pct} delay={idx * 0.1} />
                                             <div className="absolute inset-0 flex items-center justify-center">
@@ -133,12 +162,12 @@ export const SkillsSection = () => {
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-xs sm:text-sm text-foreground uppercase tracking-wider">{skill.category}</h3>
-                                            <span className="text-[11px] font-mono gradient-text font-bold">{pct}% Proficiency</span>
+                                            <span className="text-[11px] font-mono gradient-text-gold font-bold">{pct}% Proficiency</span>
                                         </div>
                                     </div>
 
                                     {/* Skill chips — show all */}
-                                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                                    <div className="flex flex-wrap gap-1.5 mt-auto z-10 relative">
                                         {skill.items.map((item, i) => (
                                             <motion.span
                                                 key={i}
@@ -146,13 +175,13 @@ export const SkillsSection = () => {
                                                 whileInView={{ opacity: 1, scale: 1 }}
                                                 viewport={{ once: true }}
                                                 transition={{ delay: idx * 0.1 + i * 0.05 }}
-                                                className="text-[10px] font-mono px-2 py-1 rounded-md bg-secondary/60 text-muted-foreground border border-border/40 hover:border-primary/30 hover:text-primary transition-colors cursor-default"
+                                                className="text-[10px] font-mono px-2 py-1 rounded-md bg-secondary/60 text-muted-foreground border border-border/40 hover:border-primary/50 hover:text-primary transition-colors cursor-default"
                                             >
                                                 {item}
                                             </motion.span>
                                         ))}
                                     </div>
-                                </motion.div>
+                                </SpotlightCard>
                             );
                         })}
                     </div>

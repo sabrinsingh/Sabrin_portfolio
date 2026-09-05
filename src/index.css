@@ -1,72 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 224 50% 6%;
+    /* Light Mode (Soft Emerald/Teal on crisp white/gray) */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 224 50% 6%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 50% 6%;
-    /* Electric Indigo primary */
-    --primary: 240 80% 62%;
+    --popover-foreground: 222 47% 11%;
+    
+    /* Emerald Primary */
+    --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 224 40% 10%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    /* Vibrant Cyan accent */
-    --accent: 174 72% 50%;
-    --accent-foreground: 224 50% 6%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 240 80% 62%;
+    
+    /* Teal Accent */
+    --accent: 188 94% 43%;
+    --accent-foreground: 222 47% 11%;
+    
+    /* Warning/Highlight Gold */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 160 84% 39%;
     --radius: 1rem;
 
-    /* Extended palette tokens */
-    --gradient-start: 240 80% 62%;
-    --gradient-end: 174 72% 50%;
-    --glow-primary: hsla(240, 80%, 62%, 0.35);
-    --glow-accent: hsla(174, 72%, 50%, 0.25);
-    --glass-bg: rgba(255, 255, 255, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.35);
+    /* Light Theme Extended */
+    --gradient-start: 160 84% 39%;
+    --gradient-end: 188 94% 43%;
+    --glow-primary: hsla(160, 84%, 39%, 0.25);
+    --glow-accent: hsla(188, 94%, 43%, 0.2);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.05);
   }
 
   .dark {
-    --background: 228 25% 5%;
+    /* Aurora Data Node - Deep Obsidian */
+    --background: 226 53% 5%;
     --foreground: 210 40% 98%;
-    --card: 228 25% 7%;
+    --card: 226 45% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 228 25% 5%;
+    --popover: 226 53% 5%;
     --popover-foreground: 210 40% 98%;
-    /* Electric Indigo */
-    --primary: 240 80% 66%;
+    
+    /* Emerald Primary */
+    --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 228 20% 12%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 228 20% 12%;
-    --muted-foreground: 215 20% 65%;
-    /* Vibrant Cyan */
-    --accent: 174 72% 56%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 228 18% 14%;
-    --input: 228 18% 14%;
-    --ring: 240 80% 66%;
+    
+    /* Teal/Cyan Accent */
+    --accent: 188 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Highlight Gold */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    /* Extended palette tokens — dark */
-    --gradient-start: 240 80% 66%;
-    --gradient-end: 174 72% 56%;
-    --glow-primary: hsla(240, 80%, 66%, 0.25);
-    --glow-accent: hsla(174, 72%, 56%, 0.2);
-    --glass-bg: rgba(15, 17, 30, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --secondary: 226 35% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 226 35% 12%;
+    --muted-foreground: 215 20% 65%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 226 30% 15%;
+    --input: 226 30% 15%;
+    --ring: 160 84% 39%;
+
+    /* Aurora Extended Tokens */
+    --gradient-start: 160 84% 39%;
+    --gradient-end: 188 94% 43%;
+    --glow-primary: hsla(160, 84%, 39%, 0.3);
+    --glow-accent: hsla(188, 94%, 43%, 0.25);
+    --glass-bg: rgba(10, 13, 22, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.05);
   }
 }
 
@@ -84,7 +100,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Outfit', sans-serif;
     -webkit-overflow-scrolling: touch;
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
@@ -92,26 +108,56 @@
 }
 
 /* ============================
-   Glassmorphism Utilities
+   Glassmorphism 2.0 (Aurora)
    ============================ */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid var(--glass-border);
 }
 
 .glass-card {
-  @apply bg-card/50 backdrop-blur-2xl border border-border/30 rounded-2xl;
+  @apply bg-card/40 backdrop-blur-3xl border border-border/40 rounded-2xl;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .dark .glass-card {
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* ============================
+   Spotlight Card Hover Effect
+   ============================ */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
 }
 
 /* ============================
@@ -119,6 +165,13 @@
    ============================ */
 .gradient-text {
   background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, hsl(var(--warning)), #FCD34D);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -146,7 +199,7 @@
   background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
 }
 
-/* Holographic shimmer for cards */
+/* Holographic shimmer */
 .holo-shimmer {
   position: relative;
   overflow: hidden;
@@ -162,9 +215,9 @@
   background: linear-gradient(
     to right,
     transparent 0%,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.03) 75%,
+    rgba(255, 255, 255, 0.02) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.02) 75%,
     transparent 100%
   );
   transform: rotate(30deg);
@@ -181,17 +234,17 @@
    ============================ */
 .bg-mesh-gradient {
   background:
-    radial-gradient(at 27% 37%, hsla(240, 80%, 66%, 0.15) 0px, transparent 50%),
-    radial-gradient(at 97% 21%, hsla(174, 72%, 56%, 0.12) 0px, transparent 50%),
-    radial-gradient(at 52% 99%, hsla(240, 80%, 66%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 10% 29%, hsla(174, 72%, 56%, 0.1) 0px, transparent 50%);
+    radial-gradient(at 27% 37%, hsla(160, 84%, 39%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, hsla(188, 94%, 43%, 0.06) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, hsla(160, 84%, 39%, 0.04) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, hsla(188, 94%, 43%, 0.05) 0px, transparent 50%);
 }
 
 .bg-grid-pattern {
   background-size: 40px 40px;
   background-image:
-    linear-gradient(to right, hsl(var(--primary) / 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--primary) / 0.04) 1px, transparent 1px);
+    linear-gradient(to right, hsl(var(--primary) / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.03) 1px, transparent 1px);
   mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
 }
 
@@ -209,11 +262,11 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
+  box-shadow: 0 4px 20px hsla(160, 84%, 39%, 0.2);
 }
 
 .btn-gradient:hover {
-  box-shadow: 0 6px 25px hsl(var(--primary) / 0.4);
+  box-shadow: 0 6px 30px hsla(160, 84%, 39%, 0.4);
   transform: translateY(-2px);
 }
 
@@ -227,7 +280,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.2),
     transparent
   );
   transition: left 0.5s ease;
@@ -246,42 +299,14 @@
 
 .card-hover-glow:hover {
   box-shadow:
-    0 0 0 1px hsl(var(--primary) / 0.2),
-    0 8px 40px hsl(var(--primary) / 0.1),
-    0 0 80px hsl(var(--primary) / 0.05);
-}
-
-.card-minimal {
-  @apply bg-card/60 backdrop-blur-xl text-card-foreground rounded-2xl border border-border/40 p-6 transition-all duration-300;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-}
-
-.card-minimal:hover {
-  @apply border-primary/30 -translate-y-1;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05), 0 0 20px rgba(var(--primary), 0.05);
+    0 0 0 1px hsl(var(--primary) / 0.25),
+    0 8px 40px hsl(var(--primary) / 0.15),
+    0 0 80px hsl(var(--accent) / 0.08);
+  transform: translateY(-2px);
 }
 
 /* ============================
-   Skill Badge
-   ============================ */
-.skill-badge {
-  @apply px-3 py-1 rounded-md bg-secondary/80 text-secondary-foreground text-sm font-medium border border-transparent hover:border-primary/30 transition-colors;
-}
-
-/* ============================
-   Animated Grid
-   ============================ */
-.animate-grid-fade {
-  animation: gridFade 4s ease-in-out infinite alternate;
-}
-
-@keyframes gridFade {
-  0% { opacity: 0.3; }
-  100% { opacity: 0.6; }
-}
-
-/* ============================
-   Scrollbar Utilities
+   Scrollbar & Custom Elements
    ============================ */
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -292,49 +317,28 @@
   display: none;
 }
 
-/* iOS-smooth horizontal scroll for tabs */
-.scroll-touch {
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x mandatory;
-}
-
-/* Minimum touch target size for accessibility (44px) */
-.touch-target {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Prevent content from hiding behind iPhone home indicator */
-.pb-safe {
-  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-}
-
-/* ============================
-   Cursor Glow Effect
-   ============================ */
+/* Cursor Glow Effect */
 .cursor-glow {
   position: fixed;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
   background: radial-gradient(
     circle,
-    hsl(var(--primary) / 0.06) 0%,
-    transparent 70%
+    hsla(160, 84%, 39%, 0.06) 0%,
+    transparent 60%
   );
   transform: translate(-50%, -50%);
   transition: opacity 0.3s ease;
 }
 
-/* ============================
-   Page Load Animation
-   ============================ */
+/* Page Load Animation */
 @keyframes fadeInPage {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -343,19 +347,15 @@
 }
 
 .animate-page-in {
-  animation: fadeInPage 0.6s ease-out forwards;
+  animation: fadeInPage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ============================
-   Gradient Progress Bar
-   ============================ */
+/* Gradient Progress Bar */
 .progress-gradient {
   background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
 }
 
-/* ============================
-   Section Divider
-   ============================ */
+/* Section Divider */
 .section-divider {
   height: 1px;
   background: linear-gradient(
@@ -366,30 +366,6 @@
   );
 }
 
-/* ============================
-   Floating animation
-   ============================ */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(3deg); }
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-/* ============================
-   Typing Mono Style
-   ============================ */
 .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }

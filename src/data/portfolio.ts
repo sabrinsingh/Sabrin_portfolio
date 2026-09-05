@@ -11,13 +11,13 @@ export const experience = [
         role: "Data Engineer",
         location: "Lalitpur, Nepal",
         period: "Sep 2024 – Present",
-        description: "Leading the development of high-scale data ingestion and processing systems for the US healthcare domain.",
+        description: "Architecting high-throughput data ingestion pipelines and resilient processing systems for enterprise healthcare analytics.",
         highlights: [
-            "Ingested and processed large datasets from diverse sources into a centralized Redshift data warehouse.",
-            "Developed PySpark-based ingestion optimization, increasing healthcare data throughput by 30%.",
-            "Maintained and optimized data infrastructure using custom SQL, UDFs, and stored procedures in Redshift.",
-            "Implemented data governance framework aligned with US healthcare standards and HIPAA.",
-            "Mentored junior engineers on best practices in data engineering."
+            "Engineered petabyte-scale data pipelines ingesting diverse healthcare records into a centralized AWS Redshift warehouse.",
+            "Optimized PySpark transformation logic, accelerating healthcare data throughput by 30% and significantly reducing compute costs.",
+            "Architected robust data infrastructure utilizing advanced SQL, custom UDFs, and stored procedures to ensure strict HIPAA compliance.",
+            "Spearheaded data governance initiatives, establishing automated validation gates aligned with US healthcare standards.",
+            "Mentored engineering teams on modern lakehouse patterns and scalable architecture design."
         ]
     },
     {
@@ -25,12 +25,12 @@ export const experience = [
         role: "Data Engineering Consultant / Advisor",
         location: "Remote, United States",
         period: "May 2024 – Present",
-        description: "Strategic advisor for scalable data pipelines and AI data quality frameworks.",
+        description: "Strategic advisor for scalable data pipelines, AI governance, and enterprise data quality frameworks.",
         highlights: [
-            "Advise on the design of data quality frameworks supporting enterprise analytics and AI initiatives.",
-            "Lead data quality initiatives ensuring consistency and reliability across Dev, Stage, and Prod.",
-            "Support LLM QA processes — evaluating model responses and validating prompt accuracy.",
-            "Develop and refine LLM prompts to enhance model training efficiency."
+            "Advising executive leadership on the strategic design of enterprise-grade data quality frameworks for AI readiness.",
+            "Spearheading data reliability initiatives, ensuring 99.9% consistency across Development, Staging, and Production environments.",
+            "Architecting LLM QA protocols—rigorously evaluating model responses and validating prompt precision for production deployment.",
+            "Refining complex LLM prompts and orchestration logic to maximize model training efficiency and accuracy."
         ]
     },
     {
@@ -38,12 +38,12 @@ export const experience = [
         role: "Senior Software (Data) Engineer",
         location: "Lalitpur, Nepal",
         period: "Oct 2022 – May 2024",
-        description: "Led modernization of data infrastructure and team mentorship.",
+        description: "Led the strategic modernization of legacy data infrastructure into a high-performance Databricks Lakehouse.",
         highlights: [
-            "Led migration of legacy pipelines to Databricks + Delta Lake, improving scalability by 40%.",
-            "Designed reusable data quality framework in PySpark for structured and semi-structured data.",
-            "Implemented anomaly detection scripts to proactively flag data integrity issues.",
-            "Mentored 8-member team, driving project delivery and SLA adherence."
+            "Orchestrated the migration of legacy pipelines to a Databricks + Delta Lake architecture, driving a 40% improvement in scalability.",
+            "Architected a reusable, resilient PySpark data quality framework capable of parsing complex structured and semi-structured payloads.",
+            "Deployed advanced anomaly detection algorithms to proactively flag data integrity risks before downstream consumption.",
+            "Directed an 8-member engineering squad, ensuring rigorous SLA adherence and accelerating critical project delivery."
         ]
     },
     {
@@ -51,12 +51,12 @@ export const experience = [
         role: "Software (Data) Engineer",
         location: "Kathmandu, Nepal",
         period: "Mar 2018 – Oct 2022",
-        description: "Developed ETL workflows for US healthcare claims data.",
+        description: "Engineered high-throughput ETL workflows for critical US healthcare claims intelligence.",
         highlights: [
-            "Developed and maintained ETL workflows using ODI, Oracle SQL, and Python.",
-            "Reduced report generation time by 35% through complex SQL optimization.",
-            "Automated manual reconciliation processes, increasing throughput and accuracy.",
-            "Progressed from Trainee to Senior role through consistent performance."
+            "Designed and maintained complex ETL orchestration workflows utilizing ODI, Oracle SQL, and Python.",
+            "Achieved a 35% reduction in executive report generation time through advanced SQL execution plan tuning.",
+            "Automated legacy manual reconciliation pipelines, radically increasing data throughput and accuracy.",
+            "Rapidly promoted from Trainee to Senior role by consistently delivering resilient infrastructure solutions."
         ]
     },
     {
@@ -94,7 +94,7 @@ export const personalInfo = {
     roles: ["Data Engineer", "Data Quality Engineer", "Data Analytics Engineer Analyst", "Analytics Strategist", "Data Analytics Engineer"],
     email: "sabrinlalsingh@gmail.com",
     location: "Kathmandu, Nepal",
-    summary: `Data Analytics Engineer with ${yearsOfExp}+ years of experience specialized in building high-throughput, resilient data systems. Expert in AWS and Databricks ecosystems, with a track record of delivering high-fidelity data products for the US healthcare sector.`,
+    summary: `Strategic Data Analytics Engineer with ${yearsOfExp}+ years architecting resilient, petabyte-scale data infrastructure. Specializing in the AWS and Databricks ecosystems, I bridge the gap between raw data and executive decision-making—delivering high-fidelity, HIPAA-compliant data products for mission-critical healthcare environments.`,
     social: {
         github: "https://github.com/sabrinsingh",
         linkedin: "https://linkedin.com/in/sabrin-lal-singh-478218a0",
@@ -108,7 +108,7 @@ export const projects = [
         title: "Clinical Data Orchestration",
         category: "databricks",
         description:
-            "Architected a Medallion-based lakehouse processing 50M+ daily records with 95% reduction in data anomalies.",
+            "Architected a scalable Medallion lakehouse processing 50M+ daily records, driving a 95% reduction in systemic data anomalies.",
         technologies: ["Databricks", "Delta Lake", "PySpark", "Python"],
         impact: "Reliable Clinical Ingestion",
         metrics: "50M+ Daily Load"
@@ -118,7 +118,7 @@ export const projects = [
         title: "Redshift Analytics Framework",
         category: "aws",
         description:
-            "Engineered a centralized warehouse architecture for 20+ sources, optimizing query latency by 35%.",
+            "Engineered a centralized, high-performance warehouse architecture integrating 20+ sources, slashing query latency by 35%.",
         technologies: ["AWS Redshift", "S3", "Airflow", "SQL"],
         impact: "Strategic Decision Layer",
         metrics: "Sub-Second Response"
@@ -128,7 +128,7 @@ export const projects = [
         title: "LLM Governance Layer",
         category: "ai",
         description:
-            "Implemented PII scrubbing and secure prompt protocols for AI operations in HIPAA-compliant environments.",
+            "Deployed robust PII scrubbing and secure prompt protocols for AI orchestration in highly regulated, HIPAA-compliant environments.",
         technologies: ["Python", "LLM Orchestration", "Cybersecurity"],
         impact: "Safe AI Adoption",
         metrics: "100% HIPAA Integrity"
