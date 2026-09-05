@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Terminal, Cpu, ShieldCheck, Code2, Database } from "lucide-react";
+import { Terminal, Cpu, ShieldCheck, Code2, Database, Download } from "lucide-react";
 import { SiUpwork } from "react-icons/si";
 import profilePic from "../assets/profile.jpg";
 
@@ -32,7 +32,7 @@ const Typewriter = ({ text, speed, deleteSpeed, waitTime }: { text: string[], sp
         return () => clearTimeout(timer);
     }, [currentText, isDeleting, loopNum, text, speed, deleteSpeed, waitTime, typingSpeed]);
 
-    return <span>{currentText}<span className="animate-pulse ml-0.5">|</span></span>;
+    return <span>{currentText}<span className="animate-pulse ml-0.5 text-primary">|</span></span>;
 };
 
 export const TerminalHero = () => {
@@ -121,15 +121,27 @@ export const TerminalHero = () => {
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
                 className="w-full xl:w-1/2 flex flex-col items-center xl:items-start text-center xl:text-left space-y-6 sm:space-y-8"
             >
-                {/* Unified Profile Card */}
+                {/* Glassmorphic Profile Card with animated gradient border */}
                 <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="relative bg-card border border-border p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                    {/* Animated gradient border glow */}
+                    <motion.div
+                        className="absolute -inset-[2px] rounded-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-700 blur-sm"
+                        style={{
+                            background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)))",
+                            backgroundSize: "200% 200%",
+                        }}
+                        animate={{
+                            backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                    />
+                    <div className="relative glass-card p-2 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                         <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-xl overflow-hidden border-2 border-primary/20 group-hover:border-primary/50 transition-colors duration-500">
                             <img src={profilePic} alt="Sabrin Singh" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                            {/* Innovative Cyber Lens Overlay */}
+                            {/* Cyber Lens Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
                             <motion.div
                                 animate={{ top: ["0%", "100%", "0%"] }}
@@ -150,8 +162,8 @@ export const TerminalHero = () => {
                                 />
                             </div>
                             <div className="flex items-center gap-4 pt-2">
-                                <motion.div className="flex items-center gap-2 px-2 py-1 rounded bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                <motion.div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-500">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                     OPERATIONAL
                                 </motion.div>
                                 <div className="text-[10px] font-mono text-muted-foreground">KATHMANDU, NP</div>
@@ -162,7 +174,7 @@ export const TerminalHero = () => {
 
                 <div className="space-y-3 max-w-2xl">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight break-words hyphens-auto">
-                        Engineering <span className="text-primary">Data Integrity</span> at Scale.
+                        Engineering <span className="gradient-text">Data Integrity</span> at Scale.
                     </h2>
                     <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                         I build high-throughput, resilient data systems for healthcare and enterprise environments, specializing in <span className="text-foreground font-semibold">Databricks</span> and <span className="text-foreground font-semibold">AWS Redshift</span>.
@@ -171,8 +183,14 @@ export const TerminalHero = () => {
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center xl:justify-start gap-3 w-full sm:w-auto">
                     <a href="#projects" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto h-12 px-8 rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
+                        <button className="btn-gradient w-full sm:w-auto h-12 px-8 rounded-xl font-bold inline-flex items-center justify-center">
                             View Infrastructure
+                        </button>
+                    </a>
+                    <a href="/Sabrin_Singh_Resume.pdf" download className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full sm:w-auto h-12 px-8 rounded-xl font-bold border-border bg-background hover:bg-muted">
+                            <Download className="w-4 h-4 mr-2" />
+                            Resume
                         </Button>
                     </a>
                     <a href="https://www.upwork.com/freelancers/~019c63b7c8441f7142" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
@@ -190,7 +208,7 @@ export const TerminalHero = () => {
                         { value: "100%", label: "HIPAA Rate" },
                     ].map((stat, i) => (
                         <div key={i} className="text-center">
-                            <div className="text-lg sm:text-xl font-bold text-primary font-mono">{stat.value}</div>
+                            <div className="text-lg sm:text-xl font-bold gradient-text font-mono">{stat.value}</div>
                             <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</div>
                         </div>
                     ))}
@@ -202,7 +220,7 @@ export const TerminalHero = () => {
                         { icon: ShieldCheck, label: "HIPAA SEC" },
                         { icon: Code2, label: "Automation" }
                     ].map((badge, i) => (
-                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary/30 border border-border/50 text-[11px] font-mono text-muted-foreground">
+                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary/30 border border-border/50 text-[11px] font-mono text-muted-foreground hover:border-primary/30 transition-colors">
                             <badge.icon className="w-3.5 h-3.5 text-primary" />
                             {badge.label}
                         </div>
@@ -210,30 +228,34 @@ export const TerminalHero = () => {
                 </div>
             </motion.div>
 
-            {/* Right Column: Interactive Terminal */}
+            {/* Right Column: Interactive Terminal — Enhanced macOS Chrome */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
                 className="w-full xl:w-1/2"
             >
                 <div
-                    className="bg-[#0c0c0e] rounded-2xl border border-border shadow-2xl font-mono text-sm overflow-hidden group"
+                    className="bg-[#0a0a0c] rounded-2xl border border-border/40 shadow-2xl shadow-primary/5 font-mono text-sm overflow-hidden group"
                     onClick={() => inputRef.current?.focus()}
                 >
-                    {/* Header */}
-                    <div className="bg-zinc-900/50 px-4 py-3 border-b border-border flex items-center justify-between">
+                    {/* macOS-style Header */}
+                    <div className="bg-zinc-900/60 px-4 py-3 border-b border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <Terminal className="w-4 h-4 text-emerald-500" />
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-110 transition-all" />
+                                <div className="w-3 h-3 rounded-full bg-[#febc2e] hover:brightness-110 transition-all" />
+                                <div className="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-110 transition-all" />
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Terminal className="w-3.5 h-3.5 text-zinc-500" />
                             <span className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">Systems Dashboard</span>
                         </div>
-                        <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                        </div>
+                        <div className="w-16" /> {/* Spacer for centering */}
                     </div>
 
-                    {/* Window Content */}
+                    {/* Terminal Content */}
                     <div ref={terminalRef} className="p-4 sm:p-6 h-[260px] sm:h-[320px] md:h-[380px] overflow-y-auto space-y-2 text-zinc-300 relative scrollbar-hide">
                         {lines.map((line, i) => (
                             <div key={i} className="flex gap-2">
@@ -243,7 +265,7 @@ export const TerminalHero = () => {
                                         <span className="text-white">{line.replace("> ", "")}</span>
                                     </>
                                 ) : (
-                                    <span className={i === 0 ? "text-zinc-500 text-[11px] italic" : ""}>{line}</span>
+                                    <span className={`${i === 0 ? "text-zinc-600 text-[11px] italic" : ""} ${line.includes("[INFO]") ? "text-primary/70" : ""} ${line.includes("Success") ? "text-emerald-400" : ""}`}>{line}</span>
                                 )}
                             </div>
                         ))}
@@ -269,8 +291,8 @@ export const TerminalHero = () => {
                         )}
                     </div>
 
-                    {/* Footer */}
-                    <div className="bg-zinc-900/30 px-4 py-2 border-t border-border flex items-center justify-between text-[10px] text-zinc-600">
+                    {/* Footer with scanline effect */}
+                    <div className="bg-zinc-900/30 px-4 py-2 border-t border-white/5 flex items-center justify-between text-[10px] text-zinc-600">
                         <div className="flex gap-4">
                             <span>ENV: PRODUCTION</span>
                             <span>NODE: DATA_NODE_01</span>

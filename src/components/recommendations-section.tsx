@@ -6,11 +6,19 @@ import { Badge } from "@/components/ui/badge";
 
 export function RecommendationsSection() {
     return (
-        <section id="recommendations" className="py-20 md:py-32 bg-muted/20 relative overflow-hidden">
+        <section id="recommendations" className="py-20 md:py-32 bg-background relative overflow-hidden">
             {/* Decorative Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-30 pointer-events-none">
-                <div className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+                <motion.div
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"
+                />
+                <motion.div
+                    animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
+                />
             </div>
 
             <div className="container mx-auto px-4 sm:px-6">
@@ -20,33 +28,34 @@ export function RecommendationsSection() {
                     viewport={{ once: true }}
                     className="text-center mb-16 space-y-4"
                 >
-                    <div className="flex items-center justify-center gap-2 text-primary font-semibold text-sm tracking-wider uppercase">
+                    <div className="flex items-center justify-center gap-2 text-primary font-semibold text-sm tracking-wider uppercase font-mono">
                         <Terminal className="w-4 h-4" />
                         <span>Professional Endorsements</span>
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Recommendations</h2>
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+                        What People <span className="gradient-text">Say</span>
+                    </h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
                         Feedback received from colleagues, managers, and clients I've had the privilege to work with.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
                     {recommendations.map((rec, idx) => (
                         <motion.div
                             key={rec.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
+                            transition={{ delay: idx * 0.15 }}
                         >
-                            <Card className="h-full bg-card/50 backdrop-blur-sm border-border/60 hover:border-primary/40 transition-all duration-300 hover:shadow-lg group">
+                            <Card className="h-full glass-card card-hover-glow holo-shimmer group border-border/30">
                                 <CardContent className="p-5 sm:p-8 flex flex-col h-full gap-4 sm:gap-6">
                                     <div className="flex justify-between items-start">
-                                        <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                                        <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                                             <Quote className="w-6 h-6 rotate-180" />
                                         </div>
                                         <Badge variant="secondary" className="font-mono text-xs">
-                                            {/* Simulate a commit hash or ID */}
                                             ref: {rec.id.toString().toUpperCase().substring(0, 6)}
                                         </Badge>
                                     </div>
@@ -56,21 +65,19 @@ export function RecommendationsSection() {
                                         </blockquote>
                                     </div>
 
-                                    <div className="pt-6 border-t border-border/50 mt-auto">
+                                    <div className="pt-6 border-t border-border/30 mt-auto">
                                         <div className="flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white font-bold text-xl shadow-inner">
+                                            {/* Gradient avatar */}
+                                            <div className="h-12 w-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
+                                                style={{
+                                                    background: `linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)))`
+                                                }}
+                                            >
                                                 {rec.author.charAt(0)}
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-foreground flex items-center gap-2">
                                                     {rec.author}
-                                                    <a
-                                                        href="#"
-                                                        className="text-muted-foreground hover:text-[#0077b5] transition-colors"
-                                                        aria-label="LinkedIn Profile"
-                                                    >
-                                                        {/* Placeholder for LinkedIn link if available later */}
-                                                    </a>
                                                 </h4>
                                                 <div className="text-sm text-primary font-medium flex items-center gap-1.5 mt-0.5">
                                                     <Briefcase className="w-3 h-3" />

@@ -10,8 +10,8 @@ export function ScrollProgress() {
 
     return (
         <motion.div
-            className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-teal-400 to-primary origin-left z-[100]"
-            style={{ scaleX }}
+            className="fixed top-0 left-0 right-0 h-[3px] progress-gradient origin-left z-[100]"
+            style={{ scaleX, boxShadow: "0 0 10px hsl(var(--primary) / 0.5), 0 0 20px hsl(var(--accent) / 0.3)" }}
         />
     );
 }

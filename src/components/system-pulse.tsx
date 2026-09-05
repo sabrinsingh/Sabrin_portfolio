@@ -65,12 +65,14 @@ export const SystemPulse = () => {
         <div className="w-full max-w-4xl mx-auto p-3 sm:p-4 md:p-8">
             <div className="relative group">
                 {/* Glow Effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-accent/30 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
+                <div className="absolute -inset-0.5 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"
+                    style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--accent) / 0.4))" }}
+                />
 
-                <div className="relative bg-card/40 backdrop-blur-2xl border border-border/40 rounded-3xl p-4 sm:p-6 shadow-xl overflow-hidden">
+                <div className="relative glass-card rounded-3xl p-4 sm:p-6 shadow-xl overflow-hidden">
                     {/* Data Flow Overlay */}
-                    <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-                    <div className="flex items-center justify-between mb-8 border-b border-border/50 pb-4">
+                    <div className="absolute inset-0 bg-dot-pattern opacity-10 pointer-events-none" />
+                    <div className="flex items-center justify-between mb-8 border-b border-border/30 pb-4">
                         <div className="flex items-center gap-3">
                             <div className="relative">
                                 <Activity className="w-6 h-6 text-primary animate-pulse" />
@@ -82,8 +84,8 @@ export const SystemPulse = () => {
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="flex h-2 w-2 rounded-full bg-primary" />
-                            <span className="text-[10px] font-mono text-primary font-bold uppercase tracking-widest">Operational</span>
+                            <span className="flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                            <span className="text-[10px] font-mono text-emerald-500 font-bold uppercase tracking-widest">Operational</span>
                         </div>
                     </div>
 
@@ -113,7 +115,8 @@ export const SystemPulse = () => {
                                     </AnimatePresence>
                                     <div className="h-[2px] w-full bg-border/20 rounded-full overflow-hidden">
                                         <motion.div
-                                            className={`h-full bg-primary/60 shadow-[0_0_8px_rgba(var(--primary),0.3)]`}
+                                            className="h-full progress-gradient"
+                                            style={{ boxShadow: "0 0 8px hsl(var(--primary) / 0.3)" }}
                                             initial={{ width: "0%" }}
                                             animate={{ width: "100%" }}
                                             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}

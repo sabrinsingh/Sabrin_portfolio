@@ -17,11 +17,64 @@ const iconMap: Record<string, any> = {
     "AI & Data Quality": FaCogs,
 };
 
+// Animated circular progress ring
+const ProgressRing = ({ percent, size = 56, strokeWidth = 4, delay = 0 }: { percent: number; size?: number; strokeWidth?: number; delay?: number }) => {
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+
+    return (
+        <svg width={size} height={size} className="transform -rotate-90">
+            <circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="hsl(var(--border))"
+                strokeWidth={strokeWidth}
+                fill="none"
+                className="opacity-30"
+            />
+            <motion.circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="url(#progressGradient)"
+                strokeWidth={strokeWidth}
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                initial={{ strokeDashoffset: circumference }}
+                whileInView={{ strokeDashoffset: circumference - (percent / 100) * circumference }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: delay + 0.3, ease: "easeOut" }}
+            />
+            <defs>
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" />
+                    <stop offset="100%" stopColor="hsl(var(--accent))" />
+                </linearGradient>
+            </defs>
+        </svg>
+    );
+};
+
+// Bento grid: first & last items span 2 columns
+const getBentoSpan = (idx: number, total: number) => {
+    if (total === 4) {
+        // 2 cols on md: first item spans full, rest normal. On lg: bento layout
+        if (idx === 0) return "md:col-span-2 lg:col-span-2";
+        if (idx === 3) return "md:col-span-2 lg:col-span-2";
+    }
+    return "";
+};
+
 export const SkillsSection = () => {
     const yearsOfExp = calculateYearsOfExperience();
 
     return (
-        <section id="skills" className="py-16 md:py-24 bg-muted/20">
+        <section id="skills" className="py-16 md:py-24 bg-background relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none" />
+
             <div className="container mx-auto px-4 sm:px-6">
                 <div className="max-w-5xl mx-auto">
                     {/* SQL-style header */}
@@ -35,7 +88,7 @@ export const SkillsSection = () => {
                             Technical Arsenal
                         </div>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3">
-                            Skills & <span className="text-primary">Expertise</span>
+                            Skills & <span className="gradient-text">Expertise</span>
                         </h2>
                         <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
                             {yearsOfExp}+ years building production data systems across cloud, distributed compute, and AI infrastructure.
@@ -54,11 +107,12 @@ export const SkillsSection = () => {
                         <span className="text-primary/70">ORDER BY</span> impact <span className="text-primary/70">DESC</span>;
                     </motion.div>
 
-                    {/* Skill Cards Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                    {/* Bento Skill Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {skills.map((skill, idx) => {
                             const Icon = iconMap[skill.category] || FaDatabase;
                             const pct = proficiency[skill.category] ?? 80;
+                            const bentoSpan = getBentoSpan(idx, skills.length);
 
                             return (
                                 <motion.div
@@ -67,52 +121,41 @@ export const SkillsSection = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="bg-card border border-border/60 rounded-xl p-3 sm:p-5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group flex flex-col h-full"
+                                    className={`glass-card holo-shimmer p-5 card-hover-glow group flex flex-col h-full ${bentoSpan}`}
                                 >
-                                    {/* Header */}
-                                    <div className="flex flex-col items-start gap-2 mb-3">
-                                        <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                            <Icon className="w-4 h-4 text-primary" />
+                                    {/* Header with circular progress */}
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="relative">
+                                            <ProgressRing percent={pct} delay={idx * 0.1} />
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <Icon className="w-5 h-5 text-primary" />
+                                            </div>
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-[11px] sm:text-xs text-foreground uppercase tracking-wider">{skill.category}</h3>
-                                            <span className="text-[10px] font-mono text-primary font-bold">{pct}%</span>
+                                            <h3 className="font-bold text-xs sm:text-sm text-foreground uppercase tracking-wider">{skill.category}</h3>
+                                            <span className="text-[11px] font-mono gradient-text font-bold">{pct}% Proficiency</span>
                                         </div>
                                     </div>
 
-                                    {/* Proficiency bar */}
-                                    <div className="mb-3">
-                                        <div className="h-1 bg-secondary rounded-full overflow-hidden">
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                whileInView={{ width: `${pct}%` }}
-                                                viewport={{ once: true }}
-                                                transition={{ duration: 1, delay: idx * 0.1 + 0.3, ease: "easeOut" }}
-                                                className="h-full bg-primary rounded-full"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Skill chips */}
-                                    <div className="flex flex-wrap gap-1 mt-auto">
-                                        {skill.items.slice(0, 3).map((item, i) => (
-                                            <span
+                                    {/* Skill chips — show all */}
+                                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                                        {skill.items.map((item, i) => (
+                                            <motion.span
                                                 key={i}
-                                                className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-secondary/50 text-muted-foreground border border-border/40"
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                whileInView={{ opacity: 1, scale: 1 }}
+                                                viewport={{ once: true }}
+                                                transition={{ delay: idx * 0.1 + i * 0.05 }}
+                                                className="text-[10px] font-mono px-2 py-1 rounded-md bg-secondary/60 text-muted-foreground border border-border/40 hover:border-primary/30 hover:text-primary transition-colors cursor-default"
                                             >
                                                 {item}
-                                            </span>
+                                            </motion.span>
                                         ))}
-                                        {skill.items.length > 3 && (
-                                            <span className="text-[9px] font-mono text-primary/60 font-bold">+{skill.items.length - 3}</span>
-                                        )}
                                     </div>
                                 </motion.div>
                             );
                         })}
                     </div>
-
-
                 </div>
             </div>
         </section>
