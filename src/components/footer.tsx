@@ -1,111 +1,118 @@
-import { Github, Linkedin, Mail, ExternalLink, Heart } from "lucide-react";
-import { motion } from "framer-motion";
-import { SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
+import { useState } from "react";
+import { Github, Linkedin, Mail, Copy, Check } from "lucide-react";
+import { SiUpwork } from "react-icons/si";
 
-const links = [
+const navLinks = [
     { href: "#about", label: "About" },
     { href: "#experience", label: "Experience" },
-    { href: "#projects", label: "Projects" },
-    { href: "#performance", label: "Performance" },
-    { href: "#certifications", label: "Certifications" },
+    { href: "#projects", label: "Work" },
+    { href: "#skills", label: "Toolkit" },
+    { href: "#certifications", label: "Certs" },
     { href: "#contact", label: "Contact" },
 ];
 
-const techStack = [
-    { icon: SiReact, label: "React", color: "#61DAFB" },
-    { icon: SiTypescript, label: "TypeScript", color: "#3178C6" },
-    { icon: SiTailwindcss, label: "Tailwind", color: "#06B6D4" },
-    { icon: SiFramer, label: "Framer", color: "#BB4BFF" },
+const socials = [
+    { href: "https://github.com/sabrinsingh", icon: Github, label: "GitHub" },
+    { href: "https://linkedin.com/in/sabrin-lal-singh-478218a0", icon: Linkedin, label: "LinkedIn" },
+    { href: "https://www.upwork.com/freelancers/~019c63b7c8441f7142", icon: SiUpwork, label: "Upwork" },
 ];
 
 export function Footer() {
+    const [copied, setCopied] = useState(false);
     const currentYear = new Date().getFullYear();
+    const email = "sabrinlalsingh@gmail.com";
+
+    const copyEmail = async () => {
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            // Fallback: open mail client
+            window.location.href = `mailto:${email}`;
+        }
+    };
 
     return (
-        <footer className="bg-background relative overflow-hidden">
-            {/* Gradient top border */}
-            <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-            <div className="container mx-auto px-4 sm:px-6 py-10 sm:py-12">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8">
-                    {/* Brand */}
-                    <div className="col-span-2">
-                        <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
-                            Sabrin<span className="gradient-text">Singh</span>
-                        </h3>
-                        <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-                            Data Analytics Engineer — building resilient, high-throughput data systems for healthcare and enterprise.
+        <footer className="border-t border-border bg-background">
+            <div className="container mx-auto px-4 sm:px-6 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+                    {/* Brand + status */}
+                    <div className="md:col-span-1">
+                        <p className="font-display font-bold text-lg text-foreground mb-1">
+                            Sabrin Lal Singh
                         </p>
-                        {/* Availability badge */}
-                        <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            Open to Remote &amp; Contract Work
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Data QA &amp; Analytics Engineer
+                        </p>
+                        <div className="status-badge">
+                            <span className="status-dot" />
+                            Based in Kathmandu · Available for select projects
                         </div>
                     </div>
 
-                    {/* Quick Links */}
+                    {/* Quick links */}
                     <div>
-                        <h4 className="font-semibold mb-3 sm:mb-4 text-sm">Quick Links</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                            {links.map((link) => (
+                        <p className="section-label mb-4">Navigation</p>
+                        <ul className="space-y-2.5">
+                            {navLinks.map((link) => (
                                 <li key={link.href}>
-                                    <a href={link.href} className="hover:text-primary transition-colors">{link.label}</a>
+                                    <a
+                                        href={link.href}
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-100"
+                                    >
+                                        {link.label}
+                                    </a>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Connect */}
+                    {/* Contact */}
                     <div>
-                        <h4 className="font-semibold mb-3 sm:mb-4 text-sm">Connect</h4>
-                        <div className="flex flex-col gap-3">
-                            {[
-                                { href: "https://github.com/sabrinsingh", icon: Github, label: "GitHub" },
-                                { href: "https://linkedin.com/in/sabrin-lal-singh-478218a0", icon: Linkedin, label: "LinkedIn" },
-                                { href: "https://www.upwork.com/freelancers/~019c63b7c8441f7142", icon: ExternalLink, label: "Upwork" },
-                                { href: "mailto:sabrinlalsingh@gmail.com", icon: Mail, label: "Email" },
-                            ].map((social) => (
+                        <p className="section-label mb-4">Connect</p>
+
+                        {/* Email with copy */}
+                        <button
+                            onClick={copyEmail}
+                            className="copy-tooltip group flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors duration-100 mb-4"
+                            aria-label="Copy email address"
+                        >
+                            <Mail className="w-4 h-4 shrink-0" />
+                            <span className="font-mono text-xs">{email}</span>
+                            {copied ? (
+                                <Check className="w-3.5 h-3.5 text-green-500 ml-1" />
+                            ) : (
+                                <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-1" />
+                            )}
+                            <span className="tooltip-text">
+                                {copied ? "Copied!" : "Copy email"}
+                            </span>
+                        </button>
+
+                        {/* Social links */}
+                        <div className="flex flex-col gap-2.5">
+                            {socials.map((s) => (
                                 <a
-                                    key={social.label}
-                                    href={social.href}
-                                    target={social.href.startsWith("http") ? "_blank" : undefined}
-                                    rel={social.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
+                                    key={s.label}
+                                    href={s.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-100"
                                 >
-                                    <social.icon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                                    {social.label}
+                                    <s.icon className="w-4 h-4 shrink-0" />
+                                    {s.label}
                                 </a>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                {/* Built with tech stack */}
-                <div className="border-t border-border/30 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-xs text-muted-foreground font-mono">
-                        © {currentYear} Sabrin Lal Singh. All rights reserved.
+                {/* Bottom bar */}
+                <div className="border-t border-border pt-6">
+                    <p className="font-mono text-xs text-muted-foreground">
+                        © {currentYear} Sabrin Lal Singh
                     </p>
-
-                    <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground/50 font-mono">Built with</span>
-                        <div className="flex items-center gap-2">
-                            {techStack.map((tech) => (
-                                <motion.div
-                                    key={tech.label}
-                                    whileHover={{ scale: 1.2, y: -2 }}
-                                    className="group relative"
-                                    title={tech.label}
-                                >
-                                    <tech.icon
-                                        className="w-4 h-4 text-muted-foreground/40 group-hover:text-[color:var(--icon-color)] transition-colors duration-300"
-                                        style={{ "--icon-color": tech.color } as any}
-                                    />
-                                </motion.div>
-                            ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground/50">+</span>
-                        <Heart className="w-3.5 h-3.5 text-red-400/50" />
-                    </div>
                 </div>
             </div>
         </footer>

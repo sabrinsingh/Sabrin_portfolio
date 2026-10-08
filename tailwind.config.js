@@ -8,7 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
@@ -52,23 +53,16 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'float-slow': 'float-slow 8s ease-in-out infinite',
-        'shimmer': 'shimmer 2s linear infinite',
+        'pulse-dot': 'pulse-dot 2.5s ease-in-out infinite',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+        'pulse-dot': {
+          '0%, 100%': { opacity: '1' },
+          '50%':       { opacity: '0.4' },
         },
-        'float-slow': {
-          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-          '50%': { transform: 'translateY(-15px) rotate(3deg)' },
-        },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
+      },
+      lineHeight: {
+        relaxed: '1.75',
       },
     },
   },
