@@ -47,6 +47,7 @@ function ThemeToggle() {
     const isDark = theme !== "light";
     return (
         <button
+            id="theme-toggle-btn"
             onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
             className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
