@@ -1,65 +1,86 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
   <link rel="alternate icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Primary Meta Tags -->
   <title>Sabrin Lal Singh — Data QA & Analytics Engineer</title>
   <meta name="title" content="Sabrin Lal Singh — Data QA & Analytics Engineer" />
   <meta name="description"
     content="Data QA & Analytics Engineer with 9+ years building automated validation pipelines, large-scale data warehouses, and observability frameworks across PostgreSQL, Redshift, Snowflake, and Databricks." />
   <meta name="keywords"
-    content="Data QA Engineer, Data Analytics Engineer, Sabrin Lal Singh, PostgreSQL, Redshift, Snowflake, Databricks, Python, SQL, Test Automation, Selenium, JMeter, Nepal, Remote" />
+    content="Data QA Engineer, Data Analytics Engineer, Sabrin Lal Singh, PostgreSQL, Redshift, Snowflake, Databricks, Python, SQL, Test Automation, Nepal, Remote" />
   <meta name="author" content="Sabrin Lal Singh" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://sabrinsingh.com.np" />
+  <link rel="canonical" href="https://sabrinsingh.com.np/" />
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://sabrinsingh.com.np" />
+  <meta property="og:url" content="https://sabrinsingh.com.np/" />
   <meta property="og:title" content="Sabrin Lal Singh — Data QA & Analytics Engineer" />
   <meta property="og:description"
     content="Data QA & Analytics Engineer specializing in automated validation, distributed databases, and analytics pipelines." />
-  <meta property="og:image" content="/images/hero-banner.png" />
+  <meta property="og:image" content="https://sabrinsingh.com.np/images/profile.webp" />
   <meta property="og:locale" content="en_US" />
-  <meta property="og:site_name" content="Sabrin Lal Singh Portfolio" />
+  <meta property="og:site_name" content="Sabrin Lal Singh" />
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://sabrinsingh.com.np" />
+  <meta name="twitter:url" content="https://sabrinsingh.com.np/" />
   <meta name="twitter:title" content="Sabrin Lal Singh — Data QA & Analytics Engineer" />
   <meta name="twitter:description"
     content="Data QA & Analytics Engineer specializing in automated validation, distributed databases, and analytics pipelines." />
-  <meta name="twitter:image" content="/images/hero-banner.png" />
+  <meta name="twitter:image" content="https://sabrinsingh.com.np/images/profile.webp" />
 
-  <!-- Theme Color -->
-  <meta name="theme-color" content="#1d4ed8" />
-  <meta name="msapplication-TileColor" content="#1d4ed8" />
+  <meta name="theme-color" content="#090e1c" />
+  <meta name="msapplication-TileColor" content="#090e1c" />
+  <meta name="color-scheme" content="dark light" />
 
-  <!-- Preconnect to external resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" as="image" href="/images/profile-400.webp" imagesrcset="/images/profile-400.webp 400w, /images/profile.webp 800w" imagesizes="(max-width: 640px) 280px, 400px" fetchpriority="high" />
 
-  <!-- JSON-LD Structured Data -->
+  <style>
+    html, body { background: #090e1c; color: #f5f0e6; }
+    #root { min-height: 100vh; }
+    .skip-link { position: absolute; left: 1rem; top: -3rem; z-index: 100; background: #f5f0e6; color: #090e1c; padding: 0.5rem 0.85rem; font-size: 0.8125rem; }
+    .skip-link:focus { top: 0.75rem; }
+    noscript { display: block; max-width: 40rem; margin: 12vh auto; padding: 1.5rem; font-family: system-ui, sans-serif; }
+  </style>
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem("vite-ui-theme");
+        var useDark = stored === "light" ? false : stored === "dark" ? true : true;
+        document.documentElement.classList.toggle("dark", useDark);
+      } catch (e) {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Sabrin Lal Singh",
-      "jobTitle": "Senior Data Engineer",
+      "jobTitle": "Data QA & Analytics Engineer",
       "url": "https://sabrinsingh.com.np",
-      "image": "https://sabrinsingh.com.np/profile.jpg",
+      "image": "https://sabrinsingh.com.np/images/profile.webp",
+      "email": "mailto:sabrinlalsingh@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kathmandu",
+        "addressCountry": "NP"
+      },
       "sameAs": [
         "https://linkedin.com/in/sabrin-lal-singh-478218a0",
         "https://github.com/sabrinsingh",
         "https://www.upwork.com/freelancers/~019c63b7c8441f7142"
       ],
-      "knowsAbout": ["Data Engineering", "Databricks", "AWS", "PySpark", "Delta Lake", "ETL", "Big Data", "Data Governance"],
+      "knowsAbout": ["Data Engineering", "Data Quality", "Databricks", "AWS", "PySpark", "Delta Lake", "ETL", "SQL"],
       "alumniOf": {
         "@type": "EducationalOrganization",
         "name": "Softwarica College of IT & E-Commerce"
@@ -69,8 +90,13 @@
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <div id="root"></div>
-
+  <noscript>
+    <h1>Sabrin Lal Singh</h1>
+    <p>Data QA &amp; Analytics Engineer based in Kathmandu.</p>
+    <p><a href="mailto:sabrinlalsingh@gmail.com">sabrinlalsingh@gmail.com</a></p>
+  </noscript>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

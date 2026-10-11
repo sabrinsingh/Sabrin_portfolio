@@ -12,8 +12,16 @@ export function RecruiterModal() {
         setMounted(true);
     }, []);
 
-    // Keyboard shortcut for easy closing
     const handleClose = () => setOpen(false);
+
+    useEffect(() => {
+        if (!open) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") handleClose();
+        };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [open]);
 
     const modalContent = (
         <AnimatePresence>
@@ -55,19 +63,19 @@ export function RecruiterModal() {
                             <div className="space-y-4 font-mono text-xs leading-relaxed">
                                 <div className="flex flex-col gap-1">
                                     <span className="text-muted-foreground uppercase">Experience</span>
-                                    <span className="text-foreground/90">8+ Years (Cotiviti, Techkraft, CoWrkr, Cedar Gate)</span>
+                                    <span className="text-foreground/90">Cotiviti, Techkraft, CoWrkr, Cedar Gate</span>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <span className="text-muted-foreground uppercase">Focus</span>
-                                    <span className="text-foreground/90">Data Engineering, Pipeline QA, AI Governance</span>
+                                    <span className="text-foreground/90">Data Engineering, Pipeline QA, SQL Stored Procedures</span>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <span className="text-muted-foreground uppercase">Core Stack</span>
-                                    <span className="text-foreground/90 leading-normal">SQL, Python, PySpark, Databricks, Snowflake, AWS, Great Expectations</span>
+                                    <span className="text-foreground/90 leading-normal">SQL, Stored Procedures, Python, PySpark, Databricks, PostgreSQL, AWS Redshift</span>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <span className="text-muted-foreground uppercase">Select Work</span>
-                                    <span className="text-foreground/90 leading-normal">50M+ row Medallion Lakehouse, 35% Redshift Query Latency Cut, 100% HIPAA AI Compliance</span>
+                                    <span className="text-foreground/90 leading-normal">50M+ row Medallion Lakehouse, 35% Redshift Query Latency Cut, 100% HIPAA Claims Integrity</span>
                                 </div>
                             </div>
 
@@ -90,8 +98,8 @@ export function RecruiterModal() {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 font-mono text-xs uppercase tracking-widest mr-2 shadow-sm shadow-primary/20"
-                aria-label="Open Recruiter Profile"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono tracking-wide text-muted-foreground hover:text-foreground mr-1"
+                aria-label="Open recruiter overview"
             >
                 <Briefcase className="w-3.5 h-3.5" />
                 Recruiter

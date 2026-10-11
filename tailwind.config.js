@@ -8,9 +8,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        display: ['"Instrument Serif"', "Times New Roman", "serif"],
+        sans: ["Outfit", "system-ui", "sans-serif"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -49,20 +49,8 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-      animation: {
-        'pulse-dot': 'pulse-dot 2.5s ease-in-out infinite',
-      },
-      keyframes: {
-        'pulse-dot': {
-          '0%, 100%': { opacity: '1' },
-          '50%':       { opacity: '0.4' },
-        },
-      },
-      lineHeight: {
-        relaxed: '1.75',
+        md: "calc(var(--radius) - 1px)",
+        sm: "0",
       },
     },
   },

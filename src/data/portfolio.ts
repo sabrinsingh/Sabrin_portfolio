@@ -27,10 +27,10 @@ export const experience = [
         period: "May 2024 – Present",
         description: "Strategic advisor for scalable data pipelines, AI governance, and enterprise data quality frameworks.",
         highlights: [
-            "Advising executive leadership on the strategic design of enterprise-grade data quality frameworks for AI readiness.",
+            "Advising executive leadership on the strategic design of enterprise-grade data quality and reconciliation frameworks.",
             "Spearheading data reliability initiatives, ensuring 99.9% consistency across Development, Staging, and Production environments.",
-            "Architecting LLM QA protocols—rigorously evaluating model responses and validating prompt precision for production deployment.",
-            "Refining complex LLM prompts and orchestration logic to maximize model training efficiency and accuracy."
+            "Architecting automated SQL data testing harnesses—rigorously validating schema drift and business rule enforcement.",
+            "Designing data quality assertion gates and operational anomaly detection to prevent downstream data corruption."
         ]
     },
     {
@@ -119,19 +119,19 @@ export const projects = [
         category: "aws",
         description:
             "Engineered a centralized, high-performance warehouse architecture integrating 20+ sources, slashing query latency by 35%.",
-        technologies: ["AWS Redshift", "S3", "Airflow", "SQL"],
+        technologies: ["AWS Redshift", "S3", "AWS Glue", "Advanced SQL"],
         impact: "Strategic Decision Layer",
         metrics: "Sub-Second Response"
     },
     {
-        id: 6,
-        title: "LLM Governance Layer",
-        category: "ai",
+        id: 3,
+        title: "Healthcare Data QA & Claims Reconciliation",
+        category: "healthcare-qa",
         description:
-            "Deployed robust PII scrubbing and secure prompt protocols for AI orchestration in highly regulated, HIPAA-compliant environments.",
-        technologies: ["Python", "LLM Orchestration", "Cybersecurity"],
-        impact: "Safe AI Adoption",
-        metrics: "100% HIPAA Integrity"
+            "Automated claims reconciliation and data quality verification engine using SQL stored procedures, catching discrepancies across 500K+ daily healthcare records.",
+        technologies: ["Advanced SQL", "Stored Procedures", "PostgreSQL", "AWS Redshift", "HIPAA QA"],
+        impact: "Zero Claim Discrepancies",
+        metrics: "100% Claim Integrity"
     },
 ];
 
@@ -152,9 +152,9 @@ export const skills = [
         items: ["Python (PySpark, Pandas)", "SQL (Redshift, PostgreSQL, Oracle)", "Git", "Jira", "CI/CD"]
     },
     {
-        category: "AI & Data Quality",
+        category: "Data Quality & QA Automation",
         icon: FaCogs,
-        items: ["LLM Operations (LLMOps)", "Data Quality Frameworks", "Anomaly Detection", "Automated Validation"]
+        items: ["Stored Procedures", "SQL Test Suites", "Claims Reconciliation", "Data Quality Frameworks", "Anomaly Detection", "Automated Validation Gates"]
     }
 ];
 
@@ -222,7 +222,7 @@ export const certifications = [
         icon: SiPython
     },
     {
-        name: "ETL and Data Pipelines with Shell, Airflow & Kafka",
+        name: "ETL and Data Pipelines with Shell & Kafka",
         issuer: "IBM",
         year: "2024",
         icon: FaBuilding

@@ -171,13 +171,12 @@ export function DataPipelineSandbox() {
     };
 
     return (
-        <section className="py-16 md:py-20 border-t border-border bg-background">
-            <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-                {/* Heading */}
+        <section className="py-16 md:py-24 border-t border-border/60">
+            <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
                 <div className="mb-8">
-                    <p className="section-label mb-2">Live Demo</p>
-                    <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
-                        Data Quality Pipeline Sandbox
+                    <p className="section-label mb-3">Live demo</p>
+                    <h2 className="text-4xl md:text-5xl text-foreground">
+                        Data quality sandbox
                     </h2>
                     <p className="text-sm text-muted-foreground mt-2">
                         A working simulation of the validation logic I implement in production pipelines.
