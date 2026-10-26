@@ -1,45 +1,44 @@
-import { useState, useEffect } from "react";
-import {
-    Linkedin,
-    Github,
-    ArrowUp,
-    Moon,
-    Sun,
-    Copy,
-    Check,
-    ExternalLink,
-    Menu,
-    X,
-    ShieldCheck,
-    Database,
-    Cpu,
-    ArrowRight,
-    Terminal,
-    Layers,
-    FileText,
-    Activity,
-    CheckCircle2
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
+import { Github, Linkedin, Menu, Moon, Sun, X, ArrowUp } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import { useTheme } from "@/components/theme-provider";
-import { AnimatePresence, motion } from "framer-motion";
 
-import { certifications, personalInfo, recommendations, experience } from "@/data/portfolio";
-import { Footer } from "@/components/footer";
-import { DataPipelineVisual } from "@/components/data-pipeline-visual";
+import { useTheme } from "@/components/theme-provider";
 import { BackgroundEffects } from "@/components/background-effects";
-import { HowIThink } from "@/components/how-i-think";
-import { Currently } from "@/components/currently";
+import { Footer } from "@/components/footer";
 import { RecruiterModal } from "@/components/recruiter-modal";
+import { Currently } from "@/components/currently";
+
+import { Hero } from "@/sections/Hero";
+import { About } from "@/sections/About";
+import { Approach } from "@/sections/Approach";
+import { Experience } from "@/sections/Experience";
+import { Projects } from "@/sections/Projects";
+import { Expertise } from "@/sections/Expertise";
+import { Credentials } from "@/sections/Credentials";
+import { Endorsements } from "@/sections/Endorsements";
+import { Contact } from "@/sections/Contact";
+import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 
 const navItems = [
     { label: "About", href: "#about" },
+    { label: "Approach", href: "#approach" },
     { label: "Experience", href: "#experience" },
+    { label: "Work", href: "#projects" },
     { label: "Architecture", href: "#pipeline-visual" },
-    { label: "Selected Work", href: "#projects" },
-    { label: "Toolkit", href: "#skills" },
-    { label: "Credentials", href: "#certifications" },
+    { label: "Expertise", href: "#skills" },
     { label: "Contact", href: "#contact" },
+];
+
+const trackedSections = [
+    "about",
+    "approach",
+    "experience",
+    "pipeline-visual",
+    "projects",
+    "skills",
+    "certifications",
+    "contact",
 ];
 
 function ThemeToggle() {
@@ -47,386 +46,27 @@ function ThemeToggle() {
     const isDark = theme !== "light";
     return (
         <button
+            type="button"
             id="theme-toggle-btn"
             onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="rounded p-2 text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </button>
     );
 }
 
-type ProjectTab = "overview" | "arch" | "code" | "impact";
-
-interface ProjectEntry {
-    id: number;
-    title: string;
-    subtitle: string;
-    category: string;
-    highlightMetric: string;
-    overview: {
-        purpose: string;
-        challenge: string;
-        solution: string;
-        role: string;
-    };
-    arch: string[];
-    codeSnippet?: {
-        title: string;
-        language: string;
-        code: string;
-    };
-    impact: string[];
-    stack: string[];
-}
-
-const projectEntries: ProjectEntry[] = [
-    {
-        id: 1,
-        title: "Clinical Data Orchestration Pipeline",
-        subtitle: "Medallion Lakehouse & Automated Validation Gates",
-        category: "Databricks & Lakehouse",
-        highlightMetric: "50M+ Daily Records · 95% Anomaly Drop",
-        overview: {
-            purpose: "Built to replace brittle ETL scripts ingesting 50M+ daily healthcare records into a high-performance Medallion Lakehouse.",
-            challenge: "Heterogeneous clinical feeds and unvalidated upstream schemas caused silent data corruption at the Bronze → Silver boundary, risking inaccurate clinician reports.",
-            solution: "Architected Delta Lake schema enforcement, PySpark automated assertion wrappers, and automated Great Expectations verification gates. Slashed anomalies by 95%.",
-            role: "Lead Data Engineer — Designed lakehouse architecture, partition strategies, and autonomous quality assertion gates.",
-        },
-        arch: [
-            "Source Systems    → S3 Raw Staging (HL7 / FHIR / Parquet feeds)",
-            "Bronze Layer      → Delta Lake append-only ingestion with schema tracking",
-            "                  → Automated column type coercion & quarantine routing",
-            "Silver Layer      → PySpark transforms, entity normalization, deduplication",
-            "                  → Great Expectations assertion test suite execution",
-            "Autonomous QA     → Hard assertion gates on primary keys, null bounds & SLAs",
-            "Gold Layer        → Dimensional analytical marts in Redshift & Databricks SQL",
-            "Monitoring        → Automated Slack / PagerDuty alerts on constraint violations",
-        ],
-        codeSnippet: {
-            title: "PySpark Medallion QA Gate Assertion",
-            language: "python",
-            code: `# Autonomous QA Gate: Bronze -> Silver Boundary Validation
-def validate_clinical_batch(df_silver):
-    assertion_results = {
-        "null_patient_ids": df_silver.filter(col("patient_id").isNull()).count(),
-        "invalid_timestamps": df_silver.filter(col("event_ts") > current_timestamp()).count(),
-        "duplicate_events": df_silver.groupBy("event_id").count().filter(col("count") > 1).count()
-    }
-    
-    if any(val > 0 for val in assertion_results.values()):
-        quarantine_batch(df_silver, assertion_results)
-        raise DataQualityException(f"QA Assertion Failed: {assertion_results}")
-        
-    return df_silver.write.format("delta").mode("append").saveAsTable("silver_clinical_events")`,
-        },
-        impact: [
-            "95% reduction in systemic data anomalies reaching the Gold consumption layer",
-            "50M+ daily records processed with p99 latency consistently maintained under 4 minutes",
-            "100% automated test coverage across Bronze-to-Silver transitions",
-        ],
-        stack: ["Databricks", "Delta Lake", "PySpark", "Great Expectations", "Python", "AWS S3"],
-    },
-    {
-        id: 2,
-        title: "Enterprise Redshift Analytics & Ingestion Architecture",
-        subtitle: "Distribution Key Optimization & Automated Warehousing",
-        category: "AWS & Data Warehousing",
-        highlightMetric: "35% Query Latency Cut · 20+ Sources",
-        overview: {
-            purpose: "Centralized enterprise analytics warehouse consolidating 20+ healthcare data sources to deliver high-fidelity executive reporting and downstream operational analytics.",
-            challenge: "Unoptimized table distribution styles, vacuum fragmentation, and complex joins were creating severe query execution bottlenecks across large clinical datasets.",
-            solution: "Re-engineered warehouse topology with optimal DISTKEY / SORTKEY distributions, automated VACUUM procedures, and pre-computed materialized view layers. Slashed query execution latency by 35%.",
-            role: "Data Engineer — Query plan optimization, distribution strategy, and AWS Glue ingestion orchestration.",
-        },
-        arch: [
-            "20+ Data Sources  → S3 Ingestion Bucket (daily batch & micro-batch)",
-            "Ingestion Engine  → AWS Glue ETL with PySpark transformations",
-            "Warehouse Layer   → AWS Redshift multi-node cluster with KEY/EVEN distribution",
-            "Query Optimizer   → EXPLAIN plan analysis, join elimination, sort-merge execution",
-            "Automated Maint   → Scheduled automated VACUUM and ANALYZE procedures",
-            "Views Layer       → Pre-aggregated materialized views for instant dashboard loads",
-            "QA Gate           → Automated reconciliation suites: source vs target row counts & checksums",
-        ],
-        codeSnippet: {
-            title: "Redshift Materialized View & Distribution Key Optimization",
-            language: "sql",
-            code: `-- Optimized Materialized View with Key Distribution for Sub-Second Analytics
-CREATE MATERIALIZED VIEW mv_executive_claims_summary
-BACKUP YES
-DISTSTYLE KEY
-DISTKEY(facility_id)
-SORTKEY(report_period, claim_status)
-AS
-SELECT 
-    facility_id,
-    DATE_TRUNC('month', claim_date) AS report_period,
-    claim_status,
-    COUNT(DISTINCT claim_id) AS total_claims,
-    SUM(reimbursed_amount) AS total_reimbursed,
-    AVG(adjudication_latency_hours) AS avg_turnaround_hrs
-FROM silver_adjudicated_claims
-GROUP BY 1, 2, 3;`,
-        },
-        impact: [
-            "35% reduction in executive report generation time across company-wide dashboards",
-            "Sub-second p50 response time for pre-aggregated dimensional BI queries",
-            "Zero data discrepancy validated across 20+ heterogeneous source migrations",
-        ],
-        stack: ["AWS Redshift", "S3", "AWS Glue", "Advanced SQL", "Execution Plan Tuning", "Python"],
-    },
-    {
-        id: 3,
-        title: "Healthcare Data QA & Claims Reconciliation Suite",
-        subtitle: "Automated Stored Procedures & Clinical Claims Verification",
-        category: "Healthcare Data QA & SQL Automation",
-        highlightMetric: "100% Claim Integrity · 500K+ Daily Audits",
-        overview: {
-            purpose: "End-to-end automated healthcare data validation engine executing thousands of medical claims, member eligibility, and clinical record reconciliation checks via deterministic stored procedures and custom SQL assertions before warehouse staging.",
-            challenge: "Legacy claims reconciliation relied on manual spot-checks across heterogeneous hospital feeds; silent rounding errors, missing ICD-10/CPT codes, and orphan foreign keys went undetected, causing multi-million dollar reimbursement delays and compliance risks.",
-            solution: "Designed a modular SQL & Stored Procedure testing harness that executes automated integrity gates: referential checks, medical code lookup validations, duplicate claim detection, and delta balance reconciliations with automated quarantine and audit logging.",
-            role: "Lead Data QA Engineer — Designed automated SQL test suites, reconciliation stored procedures, and audit logging tables.",
-        },
-        arch: [
-            "Healthcare Feeds  → Raw Staging Area (837/835 EDI Claims & EHR feeds)",
-            "Schema Gate       → Column data type assertion & mandatory field verification",
-            "Stored Proc QA    → Automated sp_validate_clinical_claims execution",
-            "Code Reference    → Dynamic validation against ICD-10-CM & CPT reference tables",
-            "Integrity Gate    → Referential integrity: Member ID, Provider NPI, Facility lookup",
-            "Balance Audit     → Billed vs Reimbursed mathematical delta reconciliation",
-            "Quarantine Route  → Automated routing of non-compliant claims to Dead-Letter Audit",
-            "Gold Staging      → 100% verified, HIPAA-compliant claims promoted to production",
-        ],
-        codeSnippet: {
-            title: "Automated Healthcare Claim Reconciliation Stored Procedure",
-            language: "sql",
-            code: `-- Healthcare Data QA: Automated Claims Reconciliation Stored Procedure
-CREATE OR REPLACE PROCEDURE sp_validate_clinical_claims(
-    IN batch_id VARCHAR(64),
-    OUT passed_count INT,
-    OUT quarantined_count INT
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    -- 1. Quarantine claims with invalid or missing provider NPI
-    INSERT INTO claims_quarantine (claim_id, batch_id, failure_reason, created_at)
-    SELECT c.claim_id, batch_id, 'ORPHAN_PROVIDER_NPI', CURRENT_TIMESTAMP
-    FROM staging_claims c
-    LEFT JOIN ref_providers p ON c.billing_npi = p.npi
-    WHERE c.batch_id = batch_id AND p.npi IS NULL;
-
-    -- 2. Quarantine mathematical anomalies: paid amount > billed amount
-    INSERT INTO claims_quarantine (claim_id, batch_id, failure_reason, created_at)
-    SELECT c.claim_id, batch_id, 'FINANCIAL_ANOMALY_OVERPAYMENT', CURRENT_TIMESTAMP
-    FROM staging_claims c
-    WHERE c.batch_id = batch_id AND c.paid_amount > c.billed_amount;
-
-    -- 3. Promote only fully verified claims to the Gold Production Table
-    INSERT INTO gold_adjudicated_claims
-    SELECT c.* FROM staging_claims c
-    WHERE c.batch_id = batch_id 
-      AND NOT EXISTS (
-          SELECT 1 FROM claims_quarantine q 
-          WHERE q.claim_id = c.claim_id AND q.batch_id = batch_id
-      );
-
-    GET DIAGNOSTICS passed_count = ROW_COUNT;
-END;
-$$;`,
-        },
-        impact: [
-            "100% automated daily reconciliation of healthcare claims across 15+ hospital feeds",
-            "99.8% reduction in claim reconciliation errors reaching downstream adjudication",
-            "Sub-2 minute automated execution time for 500,000+ daily claim validations",
-        ],
-        stack: ["Advanced SQL", "Stored Procedures", "PostgreSQL", "AWS Redshift", "Python", "HIPAA Validation"],
-    },
-];
-
-function ProjectModal({
-    project,
-    onClose,
-}: {
-    project: ProjectEntry;
-    onClose: () => void;
-}) {
-    const [tab, setTab] = useState<ProjectTab>("overview");
-
-    useEffect(() => {
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-        };
-        document.addEventListener("keydown", onKey);
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.removeEventListener("keydown", onKey);
-            document.body.style.overflow = "";
-        };
-    }, [onClose]);
-
+/** Designed monogram — a hairline plate with the initials set tight. */
+function Monogram() {
     return (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
-            <button
-                className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
-                aria-label="Close project modal"
-                onClick={onClose}
-            />
-            <div
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="project-dialog-title"
-                className="relative bg-card border border-border w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl rounded-t-lg sm:rounded-lg z-10"
-            >
-                {/* Modal Header */}
-                <div className="p-6 md:p-8 border-b border-border sticky top-0 bg-card z-20 flex items-start justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{project.category}</span>
-                            <span className="font-mono text-[11px] px-2 py-0.5 rounded border border-border text-primary bg-primary/10">
-                                {project.highlightMetric}
-                            </span>
-                        </div>
-                        <h2 id="project-dialog-title" className="text-xl md:text-2xl font-display font-semibold text-foreground">
-                            {project.title}
-                        </h2>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded bg-secondary/50 hover:bg-secondary"
-                        aria-label="Close"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Tab Navigation */}
-                <div className="flex border-b border-border px-6 md:px-8 gap-4 bg-secondary/20">
-                    {(["overview", "arch", "code", "impact"] as ProjectTab[]).map((t) => (
-                        <button
-                            key={t}
-                            onClick={() => setTab(t)}
-                            className={`py-3 font-mono text-xs uppercase tracking-wider border-b-2 transition-colors ${
-                                tab === t
-                                    ? "border-primary text-foreground font-medium"
-                                    : "border-transparent text-muted-foreground hover:text-foreground"
-                            }`}
-                        >
-                            {t === "arch" ? "Architecture" : t === "code" ? "SQL & Procedures" : t}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Tab Content */}
-                <div className="p-6 md:p-8 space-y-6">
-                    {tab === "overview" && (
-                        <div className="space-y-6">
-                            <p className="text-base text-foreground/90 leading-relaxed font-sans">
-                                {project.overview.purpose}
-                            </p>
-                            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-border">
-                                <div className="space-y-2">
-                                    <p className="font-mono text-xs uppercase text-muted-foreground tracking-wider">
-                                        Engineering Challenge
-                                    </p>
-                                    <p className="text-sm text-foreground/85 leading-relaxed bg-destructive/5 p-4 rounded border border-destructive/20">
-                                        {project.overview.challenge}
-                                    </p>
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="font-mono text-xs uppercase text-muted-foreground tracking-wider">
-                                        Architectural Solution
-                                    </p>
-                                    <p className="text-sm text-foreground/85 leading-relaxed bg-primary/5 p-4 rounded border border-primary/20">
-                                        {project.overview.solution}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="p-4 rounded border border-border bg-secondary/30">
-                                <p className="font-mono text-xs uppercase text-muted-foreground tracking-wider mb-1">
-                                    Individual Role &amp; Ownership
-                                </p>
-                                <p className="text-sm text-foreground/90">{project.overview.role}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {tab === "arch" && (
-                        <div className="space-y-4">
-                            <p className="text-sm text-muted-foreground">
-                                High-throughput pipeline topology showing data progression, transformation boundaries, and autonomous quality assertion gates:
-                            </p>
-                            <div className="bg-background p-5 rounded-lg border border-border font-mono text-xs space-y-2.5 overflow-x-auto scrollbar-hide">
-                                {project.arch.map((line, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`flex items-start gap-3 ${
-                                            line.includes("QA") || line.includes("Assertion") || line.includes("Stored Proc")
-                                                ? "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-1.5 rounded -mx-1.5"
-                                                : line.includes("→")
-                                                ? "text-foreground/90"
-                                                : "text-muted-foreground pl-6"
-                                        }`}
-                                    >
-                                        <span className="text-muted-foreground text-[10px] w-4 text-right shrink-0">
-                                            {String(idx + 1).padStart(2, "0")}
-                                        </span>
-                                        <span>{line}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {tab === "code" && project.codeSnippet && (
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                                <p className="font-mono text-xs text-muted-foreground">
-                                    {project.codeSnippet.title}
-                                </p>
-                                <span className="font-mono text-[10px] uppercase text-primary px-2 py-0.5 rounded border border-primary/30">
-                                    {project.codeSnippet.language}
-                                </span>
-                            </div>
-                            <pre className="bg-background p-5 rounded-lg border border-border font-mono text-xs text-foreground/90 overflow-x-auto scrollbar-hide leading-relaxed">
-                                <code>{project.codeSnippet.code}</code>
-                            </pre>
-                        </div>
-                    )}
-
-                    {tab === "impact" && (
-                        <div className="space-y-4">
-                            <p className="text-sm text-muted-foreground">
-                                Documented, measurable business and technical outcomes verified across production environments:
-                            </p>
-                            <div className="grid gap-3">
-                                {project.impact.map((item, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="flex items-start gap-3 p-4 rounded-lg border border-border bg-card"
-                                    >
-                                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                                        <p className="text-sm text-foreground/90 font-medium">
-                                            {item}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Tech Stack Pills */}
-                    <div className="pt-6 border-t border-border flex flex-wrap gap-1.5">
-                        {project.stack.map((tech) => (
-                            <span key={tech} className="skill-pill">
-                                {tech}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <span
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[3px] border font-display text-[13px] font-semibold tracking-[0.02em] transition-colors"
+            style={{ borderColor: "hsl(var(--hairline))" }}
+            aria-hidden="true"
+        >
+            SLS
+        </span>
     );
 }
 
@@ -434,157 +74,191 @@ export default function Home() {
     const [activeSection, setActiveSection] = useState("");
     const [showBackToTop, setShowBackToTop] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [copiedEmail, setCopiedEmail] = useState(false);
-    const [selectedProject, setSelectedProject] = useState<ProjectEntry | null>(null);
-    const contactEmail = "sabrinlalsingh@gmail.com";
+    const { scrollYProgress } = useScroll();
 
     useEffect(() => {
-        const ids = ["about", "experience", "pipeline-visual", "projects", "skills", "certifications", "contact"];
         const handleScroll = () => {
-            setShowBackToTop(window.scrollY > 400);
-            for (const id of ids) {
+            setShowBackToTop(window.scrollY > 500);
+            for (const id of trackedSections) {
                 const el = document.getElementById(id);
                 if (el) {
                     const { top, bottom } = el.getBoundingClientRect();
                     if (top <= 140 && bottom > 140) {
                         setActiveSection(id);
-                        break;
+                        return;
                     }
                 }
             }
+            setActiveSection("");
         };
+        handleScroll();
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const copyEmail = async () => {
-        try {
-            await navigator.clipboard.writeText(contactEmail);
-            setCopiedEmail(true);
-            setTimeout(() => setCopiedEmail(false), 2200);
-        } catch {
-            window.location.href = `mailto:${contactEmail}`;
-        }
-    };
+    // Close the drawer if the viewport grows past the mobile breakpoint.
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 1024px)");
+        const onChange = (e: MediaQueryListEvent) => {
+            if (e.matches) setMobileMenuOpen(false);
+        };
+        mq.addEventListener("change", onChange);
+        return () => mq.removeEventListener("change", onChange);
+    }, []);
+
+    useEffect(() => {
+        document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [mobileMenuOpen]);
 
     return (
-        <div className="min-h-screen bg-transparent text-foreground relative selection:bg-primary/20 selection:text-foreground">
+        <div className="relative min-h-screen bg-transparent text-foreground selection:bg-primary/20 selection:text-foreground">
             <Helmet>
-                <title>Sabrin Lal Singh — Senior Data QA &amp; Analytics Engineer</title>
-                <meta name="description" content={personalInfo.summary} />
+                <title>Sabrin Lal Singh — Data &amp; Quality Engineer</title>
+                <meta
+                    name="description"
+                    content="Sabrin Lal Singh — data and quality engineer building automated validation pipelines, lakehouse architecture and reconciliation systems for healthcare and enterprise platforms."
+                />
                 <link rel="canonical" href="https://sabrinsingh.com.np/" />
             </Helmet>
 
-            {/* Signature Atmospheric Background */}
             <BackgroundEffects />
 
-            {/* Sticky Frosted Header */}
-            <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border" aria-label="Primary navigation">
-                <div className="container mx-auto px-5 sm:px-8 h-16 flex items-center justify-between max-w-6xl">
+            {/* ── Header ─────────────────────────────────────────────── */}
+            <header
+                className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur-md"
+                style={{ borderColor: "hsl(var(--hairline))" }}
+                aria-label="Primary navigation"
+            >
+                <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
                     <a
-                        href="#main"
-                        className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                        href="#hero"
+                        className="group flex items-center gap-3 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
-                        <span className="font-display text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                            SLS
-                        </span>
-                        <span className="hidden sm:inline font-mono text-[11px] text-muted-foreground border-l border-border pl-2 uppercase tracking-wider">
-                            Data QA &amp; Analytics
+                        <Monogram />
+                        <span className="hidden whitespace-nowrap leading-tight sm:block">
+                            <span className="block text-[13px] font-medium text-foreground transition-colors group-hover:text-primary">
+                                Sabrin Lal Singh
+                            </span>
+                            <span className="block font-mono text-[10px] uppercase leading-tight tracking-[0.12em] text-muted-foreground">
+                                Data &amp; Quality Engineer
+                            </span>
                         </span>
                     </a>
 
-                    {/* Desktop Navigation Links */}
-                    <nav className="hidden md:flex items-center gap-1" aria-label="Sections">
+                    <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Sections">
                         {navItems.map((item) => {
                             const isActive = activeSection === item.href.slice(1);
                             return (
                                 <a
                                     key={item.href}
                                     href={item.href}
-                                    className={`px-3 py-1.5 text-xs font-mono tracking-wide rounded transition-colors ${
-                                        isActive
-                                            ? "text-foreground bg-secondary font-medium"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                                    }`}
                                     aria-current={isActive ? "location" : undefined}
+                                    className={`relative rounded px-3 py-1.5 font-mono text-[11px] tracking-wide transition-colors ${
+                                        isActive
+                                            ? "text-foreground"
+                                            : "text-muted-foreground hover:text-foreground"
+                                    }`}
                                 >
                                     {item.label}
+                                    {isActive && (
+                                        <motion.span
+                                            layoutId="nav-indicator"
+                                            className="absolute inset-x-2 -bottom-0.5 h-px bg-primary"
+                                            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                                        />
+                                    )}
                                 </a>
                             );
                         })}
                     </nav>
 
-                    {/* Right Utility Bar */}
-                    <div className="flex items-center gap-2">
-                        <div className="hidden lg:flex items-center gap-2 status-badge mr-1">
-                            <span className="status-dot-pulse" />
-                            <span>Kathmandu · Available</span>
+                    <div className="flex items-center gap-1.5">
+                        <div
+                            className="mr-1 hidden items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground xl:flex"
+                            style={{ borderColor: "hsl(var(--hairline))" }}
+                        >
+                            <span className="status-dot-pulse" aria-hidden="true" />
+                            Open to work
                         </div>
                         <RecruiterModal />
                         <a
                             href="https://github.com/sabrinsingh"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
-                            aria-label="GitHub Profile"
+                            className="hidden rounded p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:flex"
+                            aria-label="GitHub profile"
                         >
-                            <Github className="w-4 h-4" />
+                            <Github className="h-4 w-4" />
                         </a>
                         <a
                             href="https://linkedin.com/in/sabrin-lal-singh-478218a0"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
-                            aria-label="LinkedIn Profile"
+                            className="hidden rounded p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:flex"
+                            aria-label="LinkedIn profile"
                         >
-                            <Linkedin className="w-4 h-4" />
+                            <Linkedin className="h-4 w-4" />
                         </a>
                         <ThemeToggle />
                         <button
-                            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            type="button"
+                            className="rounded p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground lg:hidden"
+                            onClick={() => setMobileMenuOpen((open) => !open)}
                             aria-expanded={mobileMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label="Toggle navigation menu"
                         >
-                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Menu Drawer */}
-                <AnimatePresence>
+                {/* Reading progress */}
+                <motion.div
+                    className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-primary"
+                    style={{ scaleX: scrollYProgress }}
+                    aria-hidden="true"
+                />
+
+                {/* Mobile drawer */}
+                <AnimatePresence initial={false}>
                     {mobileMenuOpen && (
                         <motion.nav
                             id="mobile-menu"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="md:hidden overflow-hidden border-t border-border bg-card"
+                            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden border-t bg-card lg:hidden"
+                            style={{ borderColor: "hsl(var(--hairline))" }}
+                            aria-label="Mobile navigation"
                         >
-                            <div className="px-6 py-4 flex flex-col gap-2">
-                                {navItems.map((item) => (
+                            <div className="px-6 py-4">
+                                {navItems.map((item, i) => (
                                     <a
                                         key={item.href}
                                         href={item.href}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="py-2.5 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors border-b border-border/40 last:border-0"
+                                        className="flex items-baseline gap-3 border-b py-3 text-sm text-foreground/85 transition-colors last:border-b-0 hover:text-primary"
+                                        style={{ borderColor: "hsl(var(--hairline))" }}
                                     >
+                                        <span className="font-mono text-[10px] text-muted-foreground">
+                                            {String(i + 1).padStart(2, "0")}
+                                        </span>
                                         {item.label}
                                     </a>
                                 ))}
-                                <div className="pt-3 flex items-center justify-between text-xs font-mono text-muted-foreground">
+
+                                <div className="flex items-center justify-between pt-4 font-mono text-[11px] text-muted-foreground">
                                     <span className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <span className="status-dot" aria-hidden="true" />
                                         Kathmandu, Nepal
                                     </span>
-                                    <a
-                                        href="/Sabrin_Singh_Resume.pdf"
-                                        download
-                                        className="text-primary hover:underline"
-                                    >
-                                        Download Resume
+                                    <a href="/Sabrin_Singh_Resume.pdf" download className="text-primary hover:underline">
+                                        Download résumé
                                     </a>
                                 </div>
                             </div>
@@ -594,523 +268,35 @@ export default function Home() {
             </header>
 
             <main id="main">
-                {/* ─── HERO SECTION (DISTILLED & CLARIFIED) ────────────────── */}
-                <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                            {/* Left Intent-Driven Anchor */}
-                            <div className="lg:col-span-7 space-y-6">
-                                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-                                    <span className="status-dot" />
-                                    <span>Senior Data QA &amp; Analytics Engineer</span>
-                                    <span>·</span>
-                                    <span>Kathmandu (UTC+5:45)</span>
-                                </div>
-
-                                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight text-foreground leading-[1.04]">
-                                    Sabrin Lal Singh
-                                </h1>
-
-                                <p className="text-base sm:text-lg text-foreground/90 leading-relaxed font-sans max-w-2xl">
-                                    I build automated validation pipelines, SQL reconciliation stored procedures, and petabyte-scale lakehouse infrastructure so healthcare and enterprise platforms can trust every record they run on.
-                                </p>
-
-                                {/* Strict Integrated Ledger */}
-                                <div className="grid grid-cols-3 gap-6 py-5 border-y border-border max-w-xl">
-                                    <div>
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">9+ Years</p>
-                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Production Eng</p>
-                                    </div>
-                                    <div className="border-l border-border pl-6">
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-primary">50M+</p>
-                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Daily Ingestion</p>
-                                    </div>
-                                    <div className="border-l border-border pl-6">
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-emerald-600 dark:text-emerald-400">Zero</p>
-                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Gold Defects</p>
-                                    </div>
-                                </div>
-
-                                {/* Primary Actions */}
-                                <div className="flex flex-wrap gap-3 items-center pt-1">
-                                    <a href="#projects" className="btn-primary">
-                                        Selected Work
-                                        <ArrowRight className="w-4 h-4" />
-                                    </a>
-                                    <a href="/Sabrin_Singh_Resume.pdf" download className="btn-outline">
-                                        <FileText className="w-4 h-4" />
-                                        Resume (PDF)
-                                    </a>
-                                    <button
-                                        onClick={copyEmail}
-                                        className="btn-outline font-mono text-xs"
-                                        aria-label="Copy email address"
-                                    >
-                                        {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
-                                        <span>{copiedEmail ? "Copied to clipboard" : contactEmail}</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Right Editorial Portrait */}
-                            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-                                <figure className="max-w-[20rem] w-full">
-                                    <div className="border border-border rounded-lg overflow-hidden bg-card shadow-md">
-                                        <picture>
-                                            <source srcSet="/images/profile-400.webp" media="(max-width: 640px)" type="image/webp" />
-                                            <source srcSet="/images/profile.webp" type="image/webp" />
-                                            <img
-                                                src="/images/profile.webp"
-                                                alt="Sabrin Lal Singh — Data QA & Analytics Engineer"
-                                                width={400}
-                                                height={500}
-                                                fetchPriority="high"
-                                                decoding="async"
-                                                className="w-full aspect-[4/5] object-cover object-[50%_18%]"
-                                            />
-                                        </picture>
-                                        <figcaption className="p-3.5 border-t border-border bg-card space-y-1">
-                                            <div className="flex items-center justify-between text-[11px] font-mono">
-                                                <span className="text-muted-foreground flex items-center gap-1.5">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                    Kathmandu, Nepal
-                                                </span>
-                                                <span className="text-accent font-medium">
-                                                    Databricks · AWS
-                                                </span>
-                                            </div>
-                                            <p className="text-[10px] font-mono text-muted-foreground truncate">
-                                                HIPAA-Compliant Lakehouse &amp; Redshift Systems
-                                            </p>
-                                        </figcaption>
-                                    </div>
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── ABOUT: QUALITY AS AN ENGINEERING PRACTICE ────────────── */}
-                <section id="about" className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
-                            <div className="lg:col-span-4">
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground leading-[1.08]">
-                                    Engineered for zero silent failure.
-                                </h2>
-                            </div>
-                            <div className="lg:col-span-8 space-y-6 text-muted-foreground leading-relaxed">
-                                <p className="text-base sm:text-lg text-foreground/90 font-sans">
-                                    I specialize in enterprise data infrastructure and healthcare analytics — systems that must process tens of millions of records daily without silently corrupting what clinicians, analysts, and decision-makers depend on.
-                                </p>
-                                <p>
-                                    My day-to-day discipline combines automated SQL validation suites, stored procedure reconciliation engines, Medallion lakehouse engineering in Databricks, and strict data quality gates that ensure complete HIPAA compliance.
-                                </p>
-
-                                <div className="grid sm:grid-cols-3 gap-4 pt-6 border-t border-border">
-                                    <div className="p-4 rounded border border-border bg-card">
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">35%</p>
-                                        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
-                                            Query Latency Cut on Redshift Clusters
-                                        </p>
-                                    </div>
-                                    <div className="p-4 rounded border border-border bg-card">
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-primary">50M+</p>
-                                        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
-                                            Daily Lakehouse Flow Records
-                                        </p>
-                                    </div>
-                                    <div className="p-4 rounded border border-border bg-card">
-                                        <p className="text-2xl sm:text-3xl font-display font-bold text-accent">HIPAA</p>
-                                        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
-                                            Integrity &amp; Zero PII Breaches
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── CAREER PROGRESSION / EXPERIENCE ──────────────────────── */}
-                <section id="experience" className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                            <div>
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
-                                    Production history &amp; ownership
-                                </h2>
-                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-                                    9+ years leading data quality, distributed engineering, and advisory roles across enterprise healthcare environments.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="divide-y divide-border border-y border-border">
-                            {experience.map((job) => (
-                                <article
-                                    key={`${job.company}-${job.period}`}
-                                    className="py-8 transition-colors hover:bg-secondary/20 px-2 sm:px-4 -mx-2 sm:-mx-4 rounded"
-                                >
-                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                                        <div className="md:col-span-3 space-y-1">
-                                            <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-primary bg-primary/10">
-                                                {job.period}
-                                            </span>
-                                            <p className="font-mono text-xs text-muted-foreground mt-2">
-                                                {job.location}
-                                            </p>
-                                        </div>
-
-                                        <div className="md:col-span-9 space-y-3">
-                                            <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                                <h3 className="text-lg md:text-xl font-display font-semibold text-foreground">
-                                                    {job.role}
-                                                </h3>
-                                                <span className="font-mono text-xs text-accent font-semibold">
-                                                    {job.company}
-                                                </span>
-                                            </div>
-
-                                            <p className="text-sm text-foreground/85 leading-relaxed">
-                                                {job.description}
-                                            </p>
-
-                                            <ul className="space-y-1.5 pt-1">
-                                                {job.highlights.map((h, i) => (
-                                                    <li
-                                                        key={i}
-                                                        className="text-xs md:text-sm text-muted-foreground pl-3 border-l border-border leading-relaxed"
-                                                    >
-                                                        {h}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── PHILOSOPHY / HOW I THINK ─────────────────────────────── */}
-                <HowIThink />
-
-                {/* ─── INTERACTIVE TOPOLOGY & ARCHITECTURE ─────────────────── */}
-                <div id="pipeline-visual">
-                    <DataPipelineVisual />
-                </div>
-
-                {/* ─── SELECTED WORK: REAL PROJECTS WITH PAPER TRAIL ─────────── */}
-                <section id="projects" className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                            <div>
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
-                                    Selected production case studies
-                                </h2>
-                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-                                    Problem, architecture, assertion code, and documented outcomes — no invented clients or vanity statistics.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Project Cards Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {projectEntries.map((project, idx) => (
-                                <article
-                                    key={project.id}
-                                    className="craft-card p-6 flex flex-col justify-between group"
-                                >
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between text-xs font-mono">
-                                            <span className="text-muted-foreground">0{idx + 1} // {project.category}</span>
-                                            <span className="text-primary text-[11px] font-medium">Verified</span>
-                                        </div>
-
-                                        <h3 className="text-xl font-display font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                                            {project.title}
-                                        </h3>
-
-                                        <p className="font-mono text-xs text-accent">
-                                            {project.highlightMetric}
-                                        </p>
-
-                                        <p className="text-sm text-muted-foreground leading-relaxed">
-                                            {project.overview.purpose}
-                                        </p>
-
-                                        <div className="pt-3 border-t border-border">
-                                            <p className="font-mono text-[10px] uppercase text-muted-foreground tracking-wider mb-1">
-                                                Key Architecture
-                                            </p>
-                                            <p className="text-xs text-foreground/80 line-clamp-2">
-                                                {project.overview.solution}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-5 mt-5 border-t border-border flex items-center justify-between">
-                                        <div className="flex flex-wrap gap-1 max-w-[65%]">
-                                            {project.stack.slice(0, 3).map((s) => (
-                                                <span key={s} className="skill-pill text-[10px]">
-                                                    {s}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <button
-                                            onClick={() => setSelectedProject(project)}
-                                            className="link-underline text-xs font-mono font-medium text-foreground hover:text-primary inline-flex items-center gap-1"
-                                        >
-                                            Deep Dive
-                                            <ArrowRight className="w-3.5 h-3.5" />
-                                        </button>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-
-                        {/* Additional GitHub Link */}
-                        <div className="mt-8 p-6 rounded-lg border border-border bg-card flex flex-wrap items-center justify-between gap-4">
-                            <div>
-                                <p className="text-sm text-foreground font-medium">Looking for additional code repositories and open-source contributions?</p>
-                                <p className="text-xs text-muted-foreground font-mono mt-0.5">Automated testing suites, PySpark utilities, and SQL optimization scripts.</p>
-                            </div>
-                            <a
-                                href="https://github.com/sabrinsingh"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-outline font-mono text-xs"
-                            >
-                                <Github className="w-4 h-4" />
-                                Visit GitHub (@sabrinsingh)
-                                <ExternalLink className="w-3 h-3 opacity-60" />
-                            </a>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Project Deep Dive Modal */}
-                {selectedProject && (
-                    <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-                )}
-
-                {/* ─── TECHNICAL EXPERTISE / TOOLKIT MATRIX ────────────────── */}
-                <section id="skills" className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                            <div>
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
-                                    Capabilities &amp; toolchain
-                                </h2>
-                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-                                    Authentic proficiencies across data warehousing, quality automation, and cloud platforms. No arbitrary percentage bars.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[
-                                {
-                                    title: "Data Warehousing & Lakehouse",
-                                    icon: Database,
-                                    items: ["Databricks SQL", "Delta Lake (ACID)", "AWS Redshift", "Snowflake", "PostgreSQL", "Oracle DB"],
-                                    desc: "Medallion schemas, partition pruning, distribution keys, and execution plan tuning.",
-                                },
-                                {
-                                    title: "Healthcare Data QA & Testing",
-                                    icon: ShieldCheck,
-                                    items: ["Automated SQL Test Suites", "Stored Procedures (PL/pgSQL)", "Claims Reconciliation", "HIPAA Compliance QA", "Great Expectations", "Anomaly Detection"],
-                                    desc: "Deterministic validation gates, financial delta reconciliation, and medical code set assertions.",
-                                },
-                                {
-                                    title: "Pipeline Orchestration & ETL",
-                                    icon: Layers,
-                                    items: ["Apache Spark", "PySpark", "AWS Glue", "Automated Pipelines", "Oracle Data Integrator (ODI)", "dbt patterns"],
-                                    desc: "High-throughput batch and micro-batch pipelines with idempotent state management.",
-                                },
-                                {
-                                    title: "Languages & Analytics",
-                                    icon: Terminal,
-                                    items: ["Python", "Advanced SQL", "PySpark DataFrames", "Pandas", "Bash / Shell", "Scala basics"],
-                                    desc: "Custom UDFs, stored procedures, window functions, and statistical transformations.",
-                                },
-                                {
-                                    title: "Cloud & Infrastructure",
-                                    icon: Cpu,
-                                    items: ["AWS (S3, Redshift, Glue, Lambda)", "Azure Databricks", "Docker", "CI/CD Gates", "Git / GitHub"],
-                                    desc: "Serverless compute balancing, cost-optimized cluster gravity, and security policies.",
-                                },
-                                {
-                                    title: "Data Quality Observability",
-                                    icon: Activity,
-                                    items: ["Automated Validation Gates", "Source-to-Target Reconciliation", "Quarantine Dead-Letter Routing", "SLA Monitoring", "Data Governance"],
-                                    desc: "Preventing silent upstream corruption before records reach downstream clinicians or models.",
-                                },
-                            ].map((group) => {
-                                const Icon = group.icon;
-                                return (
-                                    <div
-                                        key={group.title}
-                                        className="craft-card p-6 rounded-lg space-y-3"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded border border-border bg-secondary flex items-center justify-center text-primary">
-                                                <Icon className="w-4 h-4" />
-                                            </div>
-                                            <h3 className="text-base font-semibold text-foreground font-display">
-                                                {group.title}
-                                            </h3>
-                                        </div>
-                                        <p className="text-xs text-muted-foreground leading-relaxed">
-                                            {group.desc}
-                                        </p>
-                                        <div className="flex flex-wrap gap-1.5 pt-1">
-                                            {group.items.map((skill) => (
-                                                <span key={skill} className="skill-pill text-[11px]">
-                                                    {skill}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── CREDENTIALS & CERTIFICATIONS ─────────────────────────── */}
-                <section id="certifications" className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                            <div>
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
-                                    Verified industry credentials
-                                </h2>
-                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-                                    12 verified industry accreditations in Databricks, Apache Spark, Cloud, and Data Engineering.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {certifications.map((cert) => {
-                                const Icon = cert.icon;
-                                return (
-                                    <div key={cert.name} className="flex items-start gap-3.5 p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors">
-                                        <div className="w-8 h-8 rounded border border-border bg-secondary flex items-center justify-center text-primary shrink-0 mt-0.5">
-                                            <Icon className="w-4 h-4" />
-                                        </div>
-                                        <div className="min-w-0 space-y-1">
-                                            <p className="text-sm text-foreground font-medium leading-snug">
-                                                {cert.name}
-                                            </p>
-                                            <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
-                                                {cert.issuer} · {cert.year}
-                                            </p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── RECOMMENDATIONS / TESTIMONIALS ───────────────────────── */}
-                <section className="py-16 md:py-24 border-t border-border">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground mb-10">
-                            Colleague endorsements
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {recommendations.map((rec) => (
-                                <blockquote
-                                    key={rec.id}
-                                    className="craft-card p-6 sm:p-8 rounded-lg space-y-6 flex flex-col justify-between"
-                                >
-                                    <p className="text-base sm:text-lg text-foreground/90 font-sans leading-relaxed">
-                                        “{rec.text}”
-                                    </p>
-                                    <footer className="pt-4 border-t border-border flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm text-foreground font-medium font-sans">{rec.author}</p>
-                                            <p className="font-mono text-xs text-muted-foreground mt-0.5">
-                                                {rec.role} · {rec.company}
-                                            </p>
-                                        </div>
-                                        <span className="font-mono text-[11px] text-primary px-2.5 py-1 rounded border border-border bg-secondary">
-                                            {rec.relation}
-                                        </span>
-                                    </footer>
-                                </blockquote>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* ─── CONTACT SECTION ──────────────────────────────────────── */}
-                <section id="contact" className="py-20 md:py-28 border-t border-border relative">
-                    <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="max-w-2xl space-y-6">
-                            <h2 className="text-3xl sm:text-5xl font-display font-semibold text-foreground leading-[1.06]">
-                                If the data has to be right, let's talk.
-                            </h2>
-                            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-sans">
-                                Available for senior data engineering, SQL automated quality suites, and lakehouse validation engagements for teams that cannot afford silent pipeline failures.
-                            </p>
-
-                            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                                <a
-                                    href={`mailto:${contactEmail}?subject=Data%20Engineering%20Inquiry%20%E2%80%94%20Sabrin%20Singh`}
-                                    className="btn-primary py-3.5 px-6 text-sm"
-                                >
-                                    Email Sabrin Directly
-                                    <ArrowRight className="w-4 h-4" />
-                                </a>
-                                <button
-                                    onClick={copyEmail}
-                                    className="btn-outline py-3.5 px-6 font-mono text-xs"
-                                    aria-label="Copy email address"
-                                >
-                                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
-                                    <span>{copiedEmail ? "Copied to clipboard!" : contactEmail}</span>
-                                </button>
-                            </div>
-
-                            <div className="pt-6 flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground">
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                    Typical response: &lt; 24 hours
-                                </span>
-                                <span>·</span>
-                                <span>Kathmandu (UTC+5:45)</span>
-                                <span>·</span>
-                                <span>Remote &amp; Global Availability</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Currently Status */}
+                <Hero />
                 <Currently />
+                <About />
+                <Approach />
+                <Experience />
+                <Projects />
+                <DataPipelineVisual />
+                <Expertise />
+                <Credentials />
+                <Endorsements />
+                <Contact />
             </main>
 
-            {/* Footer */}
             <Footer />
 
-            {/* Back to Top Smooth Scroll */}
             <AnimatePresence>
                 {showBackToTop && (
                     <motion.button
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        type="button"
+                        initial={{ opacity: 0, scale: 0.85 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
+                        exit={{ opacity: 0, scale: 0.85 }}
+                        transition={{ duration: 0.18 }}
                         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                        className="fixed bottom-6 right-6 p-2.5 rounded-full border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary shadow-lg z-50 transition-all"
+                        className="fixed bottom-6 right-6 z-50 rounded-full border bg-card p-2.5 text-muted-foreground shadow-lg transition-colors hover:border-primary hover:text-foreground"
+                        style={{ borderColor: "hsl(var(--hairline))" }}
                         aria-label="Back to top"
                     >
-                        <ArrowUp className="w-4 h-4" />
+                        <ArrowUp className="h-4 w-4" />
                     </motion.button>
                 )}
             </AnimatePresence>

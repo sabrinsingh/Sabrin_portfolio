@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, ShieldCheck, Database, Layers, ArrowRight, Activity, Terminal, Code2 } from "lucide-react";
+import { Reveal } from "@/components/motion";
+import { SectionHeading } from "@/components/section-heading";
 
 interface PipelineNode {
     id: string;
@@ -115,19 +117,21 @@ export function DataPipelineVisual() {
     };
 
     return (
-        <section className="py-16 md:py-24 border-t border-border">
+        <section id="pipeline-visual" className="border-t py-16 md:py-24" style={{ borderColor: "hsl(var(--hairline))" }}>
             <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-                    <div>
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
-                            Data flow &amp; verification topology
-                        </h2>
-                        <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-                            Zero unverified records reach downstream consumers. Select any architectural stage to inspect assertions, boundaries, and runtime gate logic.
-                        </p>
-                    </div>
-                </div>
+                <SectionHeading
+                    index="05"
+                    eyebrow="Architecture"
+                    title={
+                        <>
+                            Where the gates actually&nbsp;
+                            <em className="text-editorial-italic text-primary">sit</em>.
+                        </>
+                    }
+                    description="Zero unverified records reach a downstream consumer. Select any stage to inspect its assertions, boundaries and runtime gate logic."
+                />
 
+                <Reveal amount={0.1}>
                 <div className="border border-border rounded-lg p-6 sm:p-8 bg-card shadow-sm">
                     {/* Nodes Strip */}
                     <div className="relative py-6 overflow-x-auto scrollbar-hide z-10">
@@ -256,6 +260,7 @@ export function DataPipelineVisual() {
                         </span>
                     </div>
                 </div>
+                </Reveal>
             </div>
         </section>
     );

@@ -1,79 +1,76 @@
-import { useState } from "react";
-import { Copy, Check, Github, Linkedin, ExternalLink } from "lucide-react";
+import { Check, Copy, ExternalLink, Github, Linkedin } from "lucide-react";
+
+import { useCopyEmail } from "@/lib/use-copy-email";
+import { personalInfo } from "@/data/portfolio";
 
 const navLinks = [
     { href: "#about", label: "About" },
+    { href: "#approach", label: "Approach" },
     { href: "#experience", label: "Experience" },
-    { href: "#pipeline-visual", label: "Architecture" },
     { href: "#projects", label: "Selected Work" },
-    { href: "#skills", label: "Toolkit" },
+    { href: "#pipeline-visual", label: "Architecture" },
+    { href: "#skills", label: "Expertise" },
     { href: "#certifications", label: "Credentials" },
     { href: "#contact", label: "Contact" },
 ];
 
-export function Footer() {
-    const [copied, setCopied] = useState(false);
-    const currentYear = new Date().getFullYear();
-    const email = "sabrinlalsingh@gmail.com";
+const socials = [
+    { label: "GitHub", href: personalInfo.social.github, Icon: Github },
+    { label: "LinkedIn", href: personalInfo.social.linkedin, Icon: Linkedin },
+];
 
-    const copyEmail = async () => {
-        try {
-            await navigator.clipboard.writeText(email);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2200);
-        } catch {
-            window.location.href = `mailto:${email}`;
-        }
-    };
+export function Footer() {
+    const { copied, copy, email } = useCopyEmail();
+    const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="border-t border-border bg-card">
-            <div className="container mx-auto px-5 sm:px-8 py-14 max-w-6xl">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
-                    <div className="md:col-span-5 space-y-3">
-                        <p className="font-display text-xl text-foreground font-semibold">Sabrin Lal Singh</p>
-                        <p className="text-sm text-muted-foreground font-sans max-w-sm leading-relaxed">
-                            Senior Data QA &amp; Analytics Engineer architecting high-throughput validation pipelines, Medallion lakehouses, and automated SQL reconciliation frameworks.
+        <footer className="border-t bg-card" style={{ borderColor: "hsl(var(--hairline))" }}>
+            <div className="container mx-auto max-w-6xl px-5 py-14 sm:px-8">
+                <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-12">
+                    <div className="space-y-3 md:col-span-5">
+                        <p className="text-editorial text-2xl leading-tight text-foreground">
+                            Sabrin Lal Singh
                         </p>
-                        <div className="pt-2 flex items-center gap-2.5">
+                        <p className="max-w-sm font-sans text-sm leading-relaxed text-muted-foreground">
+                            Data &amp; quality engineer building validation pipelines,
+                            Medallion lakehouses and automated reconciliation frameworks
+                            for systems that cannot afford a silent error.
+                        </p>
+                        <div className="flex items-center gap-2 pt-1">
+                            {socials.map(({ label, href, Icon }) => (
+                                <a
+                                    key={label}
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="rounded border p-2 text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+                                    style={{ borderColor: "hsl(var(--hairline))" }}
+                                    aria-label={label}
+                                >
+                                    <Icon className="h-4 w-4" />
+                                </a>
+                            ))}
                             <a
-                                href="https://github.com/sabrinsingh"
+                                href={personalInfo.social.upwork}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 rounded border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
-                                aria-label="GitHub"
+                                className="flex items-center gap-1 rounded border px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+                                style={{ borderColor: "hsl(var(--hairline))" }}
                             >
-                                <Github className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://linkedin.com/in/sabrin-lal-singh-478218a0"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-2 rounded border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
-                                aria-label="LinkedIn"
-                            >
-                                <Linkedin className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://www.upwork.com/freelancers/~019c63b7c8441f7142"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-2.5 py-1.5 rounded border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:border-primary transition-colors flex items-center gap-1"
-                            >
-                                Upwork <ExternalLink className="w-3 h-3 opacity-60" />
+                                Upwork <ExternalLink className="h-3 w-3 opacity-60" />
                             </a>
                         </div>
                     </div>
 
-                    <div className="md:col-span-4 space-y-3">
-                        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Navigation</p>
-                        <nav aria-label="Footer Navigation">
-                            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-mono">
+                    <div className="md:col-span-4">
+                        <p className="eyebrow">Navigate</p>
+                        <nav aria-label="Footer navigation">
+                            <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-mono">
                                 {navLinks.map((link) => (
                                     <li key={link.href}>
                                         <a
                                             href={link.href}
-                                            className="text-muted-foreground hover:text-foreground link-underline transition-colors py-0.5 inline-block"
+                                            className="link-underline inline-block py-0.5 text-muted-foreground transition-colors hover:text-foreground"
                                         >
                                             {link.label}
                                         </a>
@@ -83,33 +80,38 @@ export function Footer() {
                         </nav>
                     </div>
 
-                    <div className="md:col-span-3 space-y-3">
-                        <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Direct Inquiries</p>
-                        <div className="space-y-2">
+                    <div className="md:col-span-3">
+                        <p className="eyebrow">Direct</p>
+                        <div className="mt-3 space-y-2">
                             <button
-                                onClick={copyEmail}
-                                className="w-full text-left p-2.5 rounded border border-border bg-secondary/30 text-xs font-mono text-foreground hover:border-primary transition-colors flex items-center justify-between group"
-                                aria-label="Copy email address"
+                                type="button"
+                                onClick={copy}
+                                aria-label={`Copy email address ${email}`}
+                                className="group flex w-full items-center justify-between gap-2 rounded border bg-secondary/30 p-2.5 text-left font-mono text-xs text-foreground transition-colors hover:border-primary"
+                                style={{ borderColor: "hsl(var(--hairline))" }}
                             >
                                 <span className="truncate">{email}</span>
                                 {copied ? (
-                                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1" />
+                                    <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                                 ) : (
-                                    <Copy className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground shrink-0 ml-1" />
+                                    <Copy className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
                                 )}
                             </button>
-                            <p className="text-[11px] font-mono text-muted-foreground">
-                                Based in Kathmandu, Nepal (UTC+5:45)
+                            <p className="font-mono text-[11px] text-muted-foreground">
+                                Kathmandu, Nepal · UTC+5:45
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-foreground">
+                <div
+                    className="flex flex-col items-center justify-between gap-3 border-t pt-6 font-mono text-xs text-muted-foreground sm:flex-row"
+                    style={{ borderColor: "hsl(var(--hairline))" }}
+                >
                     <p>© {currentYear} Sabrin Lal Singh. All rights reserved.</p>
                     <p className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Engineered for zero silent pipeline failures
+                        <span className="status-dot" aria-hidden="true" />
+                        No silent pipeline failures
                     </p>
                 </div>
             </div>

@@ -10,7 +10,12 @@ export default {
       fontFamily: {
         display: ["Outfit", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
         sans: ["Outfit", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        serif: ['"Instrument Serif"', "Georgia", "Times New Roman", "serif"],
         mono: ['"IBM Plex Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+      },
+      letterSpacing: {
+        editorial: "-0.025em",
+        eyebrow: "0.18em",
       },
       colors: {
         border: "hsl(var(--border))",

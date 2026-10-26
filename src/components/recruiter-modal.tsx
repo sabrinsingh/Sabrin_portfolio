@@ -5,11 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function RecruiterModal() {
     const [open, setOpen] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const handleClose = () => setOpen(false);
 
@@ -104,7 +99,7 @@ export function RecruiterModal() {
                 <Briefcase className="w-3.5 h-3.5" />
                 <span>Overview</span>
             </button>
-            {mounted ? createPortal(modalContent, document.body) : null}
+            {createPortal(modalContent, document.body)}
         </>
     );
 }

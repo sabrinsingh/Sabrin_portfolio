@@ -14,12 +14,25 @@
   src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
 }
 
+/* NOTE: only the 400 weight of IBM Plex Mono is shipped. The previously
+   bundled 500 file is rejected by Chromium's @font-face parser, which makes
+   any element that resolves to weight 500 collapse to 0x0 and disappear.
+   Rely on the 400 face rather than a synthetic or broken Medium. */
+
 @font-face {
-  font-family: "IBM Plex Mono";
+  font-family: "Instrument Serif";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   font-display: swap;
-  src: url("/fonts/ibm-plex-mono-500.woff2") format("woff2");
+  src: url("/fonts/instrument-serif.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
 }
 
 @tailwind base;
@@ -52,6 +65,12 @@
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --dur-fast: 150ms;
     --dur-mid: 280ms;
+    --dur-slow: 520ms;
+    /* Editorial surfaces: a faint tonal ladder used to vary section backgrounds */
+    --surface-1: 40 20% 97%;
+    --surface-2: 40 14% 95%;
+    --hairline: 220 14% 88%;
+    --grid-line: 222 30% 40%;
   }
 
   .dark {
@@ -75,6 +94,10 @@
     --border: 224 16% 17%;
     --input: 224 16% 17%;
     --ring: 217 92% 64%;
+    --surface-1: 224 24% 7.5%;
+    --surface-2: 224 20% 11%;
+    --hairline: 224 16% 18%;
+    --grid-line: 217 60% 60%;
   }
 }
 
@@ -142,6 +165,118 @@
 
 .font-mono {
   font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ─── EDITORIAL TYPE SYSTEM ─────────────────────────────────────── */
+/* Instrument Serif carries the display voice; Outfit stays on UI/body duty.
+   Mixing the two is what keeps this from reading like a template. */
+.text-editorial {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Inline accent only — no line-height here, or it would squash the line box
+   of the paragraph it sits inside. Pair with a `leading-*` utility. */
+.text-editorial-italic {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Small caps mono label used to open every section */
+.eyebrow {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ─── STRUCTURED VISUAL MOTIF (TECHNICAL GRID) ──────────────────── */
+.grid-motif {
+  background-image:
+    linear-gradient(to right, hsl(var(--grid-line) / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--grid-line) / 0.055) 1px, transparent 1px);
+  background-size: 76px 76px;
+  background-position: center top;
+}
+
+.grid-motif-fade {
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 20%, transparent 78%);
+}
+
+/* Faint vertical column rules — an editorial measure behind key sections */
+
+/* ─── SECTION SURFACES (tonal ladder for visual variation) ──────── */
+.surface-tint {
+  background-color: hsl(var(--surface-1));
+}
+
+.surface-deep {
+  background-color: hsl(var(--surface-2));
+}
+
+/* ─── DATA-FLOW LANES (hero backdrop) ──────────────────────────── */
+/* Lanes are static hairlines; only the packet moves, and it moves with
+   `transform`, so nothing here triggers layout or continuous repaint. */
+.flow-lane {
+  position: absolute;
+  overflow: hidden;
+  border-top: 1px solid hsl(var(--hairline) / 0.9);
+  pointer-events: none;
+}
+
+.flow-packet {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 7%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--primary) / 0.85) 45%,
+    hsl(var(--accent) / 0.9) 75%,
+    transparent
+  );
+  animation-name: packet-travel;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.flow-node {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid hsl(var(--primary) / 0.55);
+  background: hsl(var(--background));
+  transform: rotate(45deg);
+  animation: node-breathe 4.2s var(--ease-out) infinite;
+}
+
+@keyframes packet-travel {
+  0% { transform: translateX(-120%); opacity: 0; }
+  10% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateX(1330%); opacity: 0; }
+}
+
+@keyframes node-breathe {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Entrance primitives: content is never hidden without JS-driven reveal */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── BUTTONS & INTERACTIVE ELEMENTS ────────────────────────────── */
@@ -365,7 +500,9 @@
     transition-duration: 0.01ms !important;
   }
 
-  .status-dot-pulse::before {
+  .status-dot-pulse::before,
+  .flow-packet,
+  .flow-node {
     display: none;
   }
 }

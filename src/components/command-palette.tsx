@@ -60,6 +60,12 @@ export function CommandPalette() {
             action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
         },
         {
+            id: "approach",
+            title: "Engineering Approach — Five Non-Negotiables",
+            category: "Navigation",
+            action: () => document.getElementById("approach")?.scrollIntoView({ behavior: "smooth" })
+        },
+        {
             id: "experience",
             title: "Professional Experience (9+ Years)",
             category: "Navigation",
