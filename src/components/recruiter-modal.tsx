@@ -8,7 +8,6 @@ export function RecruiterModal() {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 
@@ -41,50 +40,51 @@ export function RecruiterModal() {
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
                         className="fixed inset-y-0 right-0 z-[101] w-full max-w-sm bg-card border-l border-border shadow-2xl flex flex-col overflow-y-auto"
                     >
-                        <div className="p-4 border-b border-border flex items-center justify-between bg-secondary/30 sticky top-0 z-10">
+                        <div className="p-4 border-b border-border flex items-center justify-between bg-secondary/40 sticky top-0 z-10">
                             <h2 className="font-mono text-xs uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                Recruiter Overview
+                                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                                Quick Overview
                             </h2>
                             <button
                                 onClick={handleClose}
-                                className="p-1.5 rounded-md bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                                className="p-1.5 rounded bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                                aria-label="Close modal"
                             >
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
 
-                        <div className="p-6 space-y-8 flex-1">
+                        <div className="p-6 space-y-6 flex-1">
                             <div>
-                                <h3 className="font-display font-bold text-2xl text-foreground mb-1">Sabrin Lal Singh</h3>
-                                <p className="text-primary font-medium">Data QA &amp; Analytics Engineer</p>
+                                <h3 className="font-display font-bold text-2xl text-foreground">Sabrin Lal Singh</h3>
+                                <p className="text-primary text-sm font-medium mt-0.5">Senior Data QA &amp; Analytics Engineer</p>
                             </div>
 
-                            <div className="space-y-4 font-mono text-xs leading-relaxed">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground uppercase">Experience</span>
-                                    <span className="text-foreground/90">Cotiviti, Techkraft, CoWrkr, Cedar Gate</span>
+                            <div className="space-y-4 font-mono text-xs leading-relaxed divide-y divide-border/60">
+                                <div className="flex flex-col gap-1 pt-3 first:pt-0">
+                                    <span className="text-muted-foreground uppercase text-[10px]">Track Record</span>
+                                    <span className="text-foreground">Cotiviti, Cedar Gate, Techkraft, CoWrkr (9+ Years)</span>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground uppercase">Focus</span>
-                                    <span className="text-foreground/90">Data Engineering, Pipeline QA, SQL Stored Procedures</span>
+                                <div className="flex flex-col gap-1 pt-3">
+                                    <span className="text-muted-foreground uppercase text-[10px]">Core Competency</span>
+                                    <span className="text-foreground">Automated Lakehouse Gates, SQL Stored Procedures, Claims Reconciliation</span>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground uppercase">Core Stack</span>
-                                    <span className="text-foreground/90 leading-normal">SQL, Stored Procedures, Python, PySpark, Databricks, PostgreSQL, AWS Redshift</span>
+                                <div className="flex flex-col gap-1 pt-3">
+                                    <span className="text-muted-foreground uppercase text-[10px]">Core Stack</span>
+                                    <span className="text-foreground">PySpark, Delta Lake, AWS Redshift, Databricks, PostgreSQL, Python</span>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-muted-foreground uppercase">Select Work</span>
-                                    <span className="text-foreground/90 leading-normal">50M+ row Medallion Lakehouse, 35% Redshift Query Latency Cut, 100% HIPAA Claims Integrity</span>
+                                <div className="flex flex-col gap-1 pt-3">
+                                    <span className="text-muted-foreground uppercase text-[10px]">Production Impact</span>
+                                    <span className="text-foreground">50M+ row Medallion Lakehouse, 35% Redshift Query Latency Cut, 100% HIPAA Claims Integrity</span>
                                 </div>
                             </div>
 
                             <div className="pt-6 border-t border-border flex flex-col gap-3">
-                                <a href="mailto:sabrinlalsingh@gmail.com?subject=Portfolio Inquiry — Sabrin Singh" className="btn-primary py-3 justify-center text-sm">
-                                    <Mail className="w-4 h-4 mr-2" /> Email Sabrin
+                                <a href="mailto:sabrinlalsingh@gmail.com?subject=Portfolio Inquiry — Sabrin Singh" className="btn-primary py-2.5 justify-center text-xs">
+                                    <Mail className="w-4 h-4 mr-2" /> Direct Email
                                 </a>
-                                <a href="/Sabrin_Singh_Resume.pdf" download className="btn-outline py-3 justify-center text-sm">
-                                    <FileText className="w-4 h-4 mr-2" /> Download Resume
+                                <a href="/Sabrin_Singh_Resume.pdf" download className="btn-outline py-2.5 justify-center text-xs">
+                                    <FileText className="w-4 h-4 mr-2" /> Resume (PDF)
                                 </a>
                             </div>
                         </div>
@@ -98,11 +98,11 @@ export function RecruiterModal() {
         <>
             <button
                 onClick={() => setOpen(true)}
-                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono tracking-wide text-muted-foreground hover:text-foreground mr-1"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono tracking-wide text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Open recruiter overview"
             >
                 <Briefcase className="w-3.5 h-3.5" />
-                Recruiter
+                <span>Overview</span>
             </button>
             {mounted ? createPortal(modalContent, document.body) : null}
         </>

@@ -50,7 +50,7 @@ function ThemeToggle() {
             id="theme-toggle-btn"
             onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
@@ -89,7 +89,7 @@ const projectEntries: ProjectEntry[] = [
         category: "Databricks & Lakehouse",
         highlightMetric: "50M+ Daily Records · 95% Anomaly Drop",
         overview: {
-            purpose: "Built to replace fragile, brittle ETL scripts ingesting 50M+ daily healthcare records into a high-performance Medallion Lakehouse.",
+            purpose: "Built to replace brittle ETL scripts ingesting 50M+ daily healthcare records into a high-performance Medallion Lakehouse.",
             challenge: "Heterogeneous clinical feeds and unvalidated upstream schemas caused silent data corruption at the Bronze → Silver boundary, risking inaccurate clinician reports.",
             solution: "Architected Delta Lake schema enforcement, PySpark automated assertion wrappers, and automated Great Expectations verification gates. Slashed anomalies by 95%.",
             role: "Lead Data Engineer — Designed lakehouse architecture, partition strategies, and autonomous quality assertion gates.",
@@ -178,7 +178,7 @@ GROUP BY 1, 2, 3;`,
     },
     {
         id: 3,
-        title: "Healthcare Data QA Automation & Reconciliation Suite",
+        title: "Healthcare Data QA & Claims Reconciliation Suite",
         subtitle: "Automated Stored Procedures & Clinical Claims Verification",
         category: "Healthcare Data QA & SQL Automation",
         highlightMetric: "100% Claim Integrity · 500K+ Daily Audits",
@@ -269,32 +269,32 @@ function ProjectModal({
     return (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
             <button
-                className="absolute inset-0 bg-background/85 backdrop-blur-md transition-opacity"
-                aria-label="Close project details"
+                className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+                aria-label="Close project modal"
                 onClick={onClose}
             />
             <div
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="project-dialog-title"
-                className="relative bg-card/95 border border-border/80 w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl rounded-t-xl sm:rounded-xl z-10"
+                className="relative bg-card border border-border w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl rounded-t-lg sm:rounded-lg z-10"
             >
                 {/* Modal Header */}
-                <div className="p-6 md:p-8 border-b border-border/60 sticky top-0 bg-card/95 backdrop-blur-md z-20 flex items-start justify-between gap-4">
+                <div className="p-6 md:p-8 border-b border-border sticky top-0 bg-card z-20 flex items-start justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2 mb-2">
-                            <span className="section-label">{project.category}</span>
-                            <span className="font-mono text-xs px-2 py-0.5 rounded border border-border text-primary bg-primary/10">
+                            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{project.category}</span>
+                            <span className="font-mono text-[11px] px-2 py-0.5 rounded border border-border text-primary bg-primary/10">
                                 {project.highlightMetric}
                             </span>
                         </div>
-                        <h2 id="project-dialog-title" className="text-2xl md:text-3xl text-foreground font-display">
+                        <h2 id="project-dialog-title" className="text-xl md:text-2xl font-display font-semibold text-foreground">
                             {project.title}
                         </h2>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md bg-secondary/50 hover:bg-secondary"
+                        className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded bg-secondary/50 hover:bg-secondary"
                         aria-label="Close"
                     >
                         <X className="w-5 h-5" />
@@ -302,7 +302,7 @@ function ProjectModal({
                 </div>
 
                 {/* Tab Navigation */}
-                <div className="flex border-b border-border/60 px-6 md:px-8 gap-4 bg-secondary/20">
+                <div className="flex border-b border-border px-6 md:px-8 gap-4 bg-secondary/20">
                     {(["overview", "arch", "code", "impact"] as ProjectTab[]).map((t) => (
                         <button
                             key={t}
@@ -322,10 +322,10 @@ function ProjectModal({
                 <div className="p-6 md:p-8 space-y-6">
                     {tab === "overview" && (
                         <div className="space-y-6">
-                            <p className="text-base text-foreground/90 leading-relaxed">
+                            <p className="text-base text-foreground/90 leading-relaxed font-sans">
                                 {project.overview.purpose}
                             </p>
-                            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-border/60">
+                            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-border">
                                 <div className="space-y-2">
                                     <p className="font-mono text-xs uppercase text-muted-foreground tracking-wider">
                                         Engineering Challenge
@@ -343,7 +343,7 @@ function ProjectModal({
                                     </p>
                                 </div>
                             </div>
-                            <div className="p-4 rounded border border-border/60 bg-secondary/30">
+                            <div className="p-4 rounded border border-border bg-secondary/30">
                                 <p className="font-mono text-xs uppercase text-muted-foreground tracking-wider mb-1">
                                     Individual Role &amp; Ownership
                                 </p>
@@ -357,13 +357,13 @@ function ProjectModal({
                             <p className="text-sm text-muted-foreground">
                                 High-throughput pipeline topology showing data progression, transformation boundaries, and autonomous quality assertion gates:
                             </p>
-                            <div className="bg-background/80 p-5 rounded-lg border border-border font-mono text-xs space-y-2.5 overflow-x-auto scrollbar-hide">
+                            <div className="bg-background p-5 rounded-lg border border-border font-mono text-xs space-y-2.5 overflow-x-auto scrollbar-hide">
                                 {project.arch.map((line, idx) => (
                                     <div
                                         key={idx}
                                         className={`flex items-start gap-3 ${
                                             line.includes("QA") || line.includes("Assertion") || line.includes("Stored Proc")
-                                                ? "text-emerald-400 bg-emerald-500/10 p-1.5 rounded -mx-1.5"
+                                                ? "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-1.5 rounded -mx-1.5"
                                                 : line.includes("→")
                                                 ? "text-foreground/90"
                                                 : "text-muted-foreground pl-6"
@@ -389,7 +389,7 @@ function ProjectModal({
                                     {project.codeSnippet.language}
                                 </span>
                             </div>
-                            <pre className="bg-background/90 p-5 rounded-lg border border-border font-mono text-xs text-foreground/90 overflow-x-auto scrollbar-hide leading-relaxed">
+                            <pre className="bg-background p-5 rounded-lg border border-border font-mono text-xs text-foreground/90 overflow-x-auto scrollbar-hide leading-relaxed">
                                 <code>{project.codeSnippet.code}</code>
                             </pre>
                         </div>
@@ -400,14 +400,14 @@ function ProjectModal({
                             <p className="text-sm text-muted-foreground">
                                 Documented, measurable business and technical outcomes verified across production environments:
                             </p>
-                            <div className="grid gap-4">
+                            <div className="grid gap-3">
                                 {project.impact.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex items-start gap-3 p-4 rounded-lg border border-border/70 bg-card/60"
+                                        className="flex items-start gap-3 p-4 rounded-lg border border-border bg-card"
                                     >
-                                        <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                                        <p className="text-sm md:text-base text-foreground/90 font-medium">
+                                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                        <p className="text-sm text-foreground/90 font-medium">
                                             {item}
                                         </p>
                                     </div>
@@ -417,7 +417,7 @@ function ProjectModal({
                     )}
 
                     {/* Tech Stack Pills */}
-                    <div className="pt-6 border-t border-border/60 flex flex-wrap gap-1.5">
+                    <div className="pt-6 border-t border-border flex flex-wrap gap-1.5">
                         {project.stack.map((tech) => (
                             <span key={tech} className="skill-pill">
                                 {tech}
@@ -468,7 +468,7 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-transparent text-foreground relative selection:bg-primary/25 selection:text-foreground">
+        <div className="min-h-screen bg-transparent text-foreground relative selection:bg-primary/20 selection:text-foreground">
             <Helmet>
                 <title>Sabrin Lal Singh — Senior Data QA &amp; Analytics Engineer</title>
                 <meta name="description" content={personalInfo.summary} />
@@ -479,13 +479,13 @@ export default function Home() {
             <BackgroundEffects />
 
             {/* Sticky Frosted Header */}
-            <header className="site-nav" aria-label="Primary navigation">
+            <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border" aria-label="Primary navigation">
                 <div className="container mx-auto px-5 sm:px-8 h-16 flex items-center justify-between max-w-6xl">
                     <a
                         href="#main"
                         className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                     >
-                        <span className="font-display text-xl tracking-tight text-foreground group-hover:text-primary transition-colors">
+                        <span className="font-display text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
                             SLS
                         </span>
                         <span className="hidden sm:inline font-mono text-[11px] text-muted-foreground border-l border-border pl-2 uppercase tracking-wider">
@@ -503,8 +503,8 @@ export default function Home() {
                                     href={item.href}
                                     className={`px-3 py-1.5 text-xs font-mono tracking-wide rounded transition-colors ${
                                         isActive
-                                            ? "text-foreground bg-secondary/80 font-medium"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                                            ? "text-foreground bg-secondary font-medium"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                                     }`}
                                     aria-current={isActive ? "location" : undefined}
                                 >
@@ -516,16 +516,16 @@ export default function Home() {
 
                     {/* Right Utility Bar */}
                     <div className="flex items-center gap-2">
-                        <div className="hidden lg:flex items-center gap-2 status-badge mr-2">
+                        <div className="hidden lg:flex items-center gap-2 status-badge mr-1">
                             <span className="status-dot-pulse" />
-                            <span>Kathmandu · Open to select work</span>
+                            <span>Kathmandu · Available</span>
                         </div>
                         <RecruiterModal />
                         <a
                             href="https://github.com/sabrinsingh"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary/40"
+                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
                             aria-label="GitHub Profile"
                         >
                             <Github className="w-4 h-4" />
@@ -534,14 +534,14 @@ export default function Home() {
                             href="https://linkedin.com/in/sabrin-lal-singh-478218a0"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary/40"
+                            className="hidden sm:flex p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
                             aria-label="LinkedIn Profile"
                         >
                             <Linkedin className="w-4 h-4" />
                         </a>
                         <ThemeToggle />
                         <button
-                            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary/40"
+                            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             aria-expanded={mobileMenuOpen}
                             aria-controls="mobile-menu"
@@ -561,7 +561,7 @@ export default function Home() {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="md:hidden overflow-hidden border-t border-border bg-card/95 backdrop-blur-lg"
+                            className="md:hidden overflow-hidden border-t border-border bg-card"
                         >
                             <div className="px-6 py-4 flex flex-col gap-2">
                                 {navItems.map((item) => (
@@ -594,57 +594,45 @@ export default function Home() {
             </header>
 
             <main id="main">
-                {/* ─── HERO SECTION ─────────────────────────────────────────── */}
-                <section className="relative pt-14 pb-20 md:pt-24 md:pb-32 overflow-hidden">
+                {/* ─── HERO SECTION (DISTILLED & CLARIFIED) ────────────────── */}
+                <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-                            {/* Left Editorial Headline & Value Prop */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                            {/* Left Intent-Driven Anchor */}
                             <div className="lg:col-span-7 space-y-6">
-                                <div className="enter enter-1 flex flex-wrap items-center gap-3">
-                                    <span className="section-label">
-                                        Data Systems Architecture · Quality Gates
-                                    </span>
-                                    <span className="hidden sm:inline text-border">|</span>
-                                    <span className="font-mono text-xs text-accent/90">
-                                        Kathmandu, Nepal (UTC+5:45)
-                                    </span>
+                                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                                    <span className="status-dot" />
+                                    <span>Senior Data QA &amp; Analytics Engineer</span>
+                                    <span>·</span>
+                                    <span>Kathmandu (UTC+5:45)</span>
                                 </div>
 
-                                <h1 className="enter enter-2 font-display text-[clamp(2.9rem,8.2vw,6.2rem)] leading-[0.92] tracking-[-0.035em] text-foreground">
-                                    Sabrin<br />Lal Singh
+                                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight text-foreground leading-[1.04]">
+                                    Sabrin Lal Singh
                                 </h1>
 
-                                <p className="enter enter-3 text-xl md:text-2xl font-display italic text-foreground/85">
-                                    Senior Data QA &amp; Analytics Engineer
+                                <p className="text-base sm:text-lg text-foreground/90 leading-relaxed font-sans max-w-2xl">
+                                    I build automated validation pipelines, SQL reconciliation stored procedures, and petabyte-scale lakehouse infrastructure so healthcare and enterprise platforms can trust every record they run on.
                                 </p>
 
-                                <div className="enter enter-3 max-w-xl space-y-4">
-                                    <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-sans">
-                                        I build automated validation pipelines, SQL reconciliation stored procedures, and petabyte-scale data infrastructure so healthcare and enterprise platforms can trust every record they run on.
-                                    </p>
-                                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                                        {personalInfo.summary}
-                                    </p>
-                                </div>
-
-                                {/* Core Metrics Strip */}
-                                <div className="enter enter-3 grid grid-cols-3 gap-4 py-4 px-5 rounded-lg border border-border/80 bg-card/45 backdrop-blur-sm max-w-xl">
+                                {/* Strict Integrated Ledger */}
+                                <div className="grid grid-cols-3 gap-6 py-5 border-y border-border max-w-xl">
                                     <div>
-                                        <p className="font-display text-2xl md:text-3xl text-foreground font-semibold">9+ Years</p>
-                                        <p className="font-mono text-[10px] md:text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Production Data Eng</p>
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">9+ Years</p>
+                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Production Eng</p>
                                     </div>
-                                    <div className="border-l border-border/70 pl-4">
-                                        <p className="font-display text-2xl md:text-3xl text-primary font-semibold">50M+</p>
-                                        <p className="font-mono text-[10px] md:text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Daily Ingestion Load</p>
+                                    <div className="border-l border-border pl-6">
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-primary">50M+</p>
+                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Daily Ingestion</p>
                                     </div>
-                                    <div className="border-l border-border/70 pl-4">
-                                        <p className="font-display text-2xl md:text-3xl text-emerald-400 font-semibold">Zero</p>
-                                        <p className="font-mono text-[10px] md:text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Gold Layer Defects</p>
+                                    <div className="border-l border-border pl-6">
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-emerald-600 dark:text-emerald-400">Zero</p>
+                                        <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">Gold Defects</p>
                                     </div>
                                 </div>
 
                                 {/* Primary Actions */}
-                                <div className="enter enter-4 flex flex-wrap gap-3.5 items-center pt-2">
+                                <div className="flex flex-wrap gap-3 items-center pt-1">
                                     <a href="#projects" className="btn-primary">
                                         Selected Work
                                         <ArrowRight className="w-4 h-4" />
@@ -658,45 +646,44 @@ export default function Home() {
                                         className="btn-outline font-mono text-xs"
                                         aria-label="Copy email address"
                                     >
-                                        {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
-                                        {copiedEmail ? "Email Copied!" : "sabrinlalsingh@gmail.com"}
+                                        {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
+                                        <span>{copiedEmail ? "Copied to clipboard" : contactEmail}</span>
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Right Editorial Portrait Composition */}
+                            {/* Right Editorial Portrait */}
                             <div className="lg:col-span-5 flex justify-center lg:justify-end">
-                                <figure className="portrait-frame max-w-[21.5rem] w-full">
-                                    <div className="portrait-light" />
-                                    <picture>
-                                        <source srcSet="/images/profile-400.webp" media="(max-width: 640px)" type="image/webp" />
-                                        <source srcSet="/images/profile.webp" type="image/webp" />
-                                        <img
-                                            src="/images/profile.webp"
-                                            alt="Sabrin Lal Singh — Data QA & Analytics Engineer"
-                                            width={400}
-                                            height={500}
-                                            fetchPriority="high"
-                                            decoding="async"
-                                            className="portrait-img portrait-reveal"
-                                        />
-                                    </picture>
-
-                                    {/* Architectural Frame Overlays */}
-                                    <figcaption className="mt-3.5 p-3 rounded border border-border/70 bg-card/60 backdrop-blur-md space-y-1">
-                                        <div className="flex items-center justify-between text-[11px] font-mono">
-                                            <span className="text-muted-foreground flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                                Kathmandu, Nepal
-                                            </span>
-                                            <span className="text-accent font-medium">
-                                                Databricks · AWS
-                                            </span>
-                                        </div>
-                                        <p className="text-[10px] font-mono text-muted-foreground/80 truncate">
-                                            HIPAA-Compliant Lakehouse &amp; Redshift Systems
-                                        </p>
-                                    </figcaption>
+                                <figure className="max-w-[20rem] w-full">
+                                    <div className="border border-border rounded-lg overflow-hidden bg-card shadow-md">
+                                        <picture>
+                                            <source srcSet="/images/profile-400.webp" media="(max-width: 640px)" type="image/webp" />
+                                            <source srcSet="/images/profile.webp" type="image/webp" />
+                                            <img
+                                                src="/images/profile.webp"
+                                                alt="Sabrin Lal Singh — Data QA & Analytics Engineer"
+                                                width={400}
+                                                height={500}
+                                                fetchPriority="high"
+                                                decoding="async"
+                                                className="w-full aspect-[4/5] object-cover object-[50%_18%]"
+                                            />
+                                        </picture>
+                                        <figcaption className="p-3.5 border-t border-border bg-card space-y-1">
+                                            <div className="flex items-center justify-between text-[11px] font-mono">
+                                                <span className="text-muted-foreground flex items-center gap-1.5">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                    Kathmandu, Nepal
+                                                </span>
+                                                <span className="text-accent font-medium">
+                                                    Databricks · AWS
+                                                </span>
+                                            </div>
+                                            <p className="text-[10px] font-mono text-muted-foreground truncate">
+                                                HIPAA-Compliant Lakehouse &amp; Redshift Systems
+                                            </p>
+                                        </figcaption>
+                                    </div>
                                 </figure>
                             </div>
                         </div>
@@ -704,38 +691,37 @@ export default function Home() {
                 </section>
 
                 {/* ─── ABOUT: QUALITY AS AN ENGINEERING PRACTICE ────────────── */}
-                <section id="about" className="py-20 md:py-28 border-t border-border/70">
+                <section id="about" className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
                         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14">
                             <div className="lg:col-span-4">
-                                <p className="section-label mb-3">About</p>
-                                <h2 className="text-4xl md:text-5xl text-foreground font-display leading-[1.05]">
-                                    Quality as an engineering practice.
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground leading-[1.08]">
+                                    Engineered for zero silent failure.
                                 </h2>
                             </div>
                             <div className="lg:col-span-8 space-y-6 text-muted-foreground leading-relaxed">
-                                <p className="text-base md:text-lg text-foreground/90 font-sans">
+                                <p className="text-base sm:text-lg text-foreground/90 font-sans">
                                     I specialize in enterprise data infrastructure and healthcare analytics — systems that must process tens of millions of records daily without silently corrupting what clinicians, analysts, and decision-makers depend on.
                                 </p>
                                 <p>
                                     My day-to-day discipline combines automated SQL validation suites, stored procedure reconciliation engines, Medallion lakehouse engineering in Databricks, and strict data quality gates that ensure complete HIPAA compliance.
                                 </p>
 
-                                <div className="grid sm:grid-cols-3 gap-5 pt-6 border-t border-border/70">
-                                    <div className="p-4 rounded-lg border border-border/60 bg-card/40">
-                                        <p className="font-display text-3xl md:text-4xl text-foreground font-semibold">35%</p>
+                                <div className="grid sm:grid-cols-3 gap-4 pt-6 border-t border-border">
+                                    <div className="p-4 rounded border border-border bg-card">
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">35%</p>
                                         <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
                                             Query Latency Cut on Redshift Clusters
                                         </p>
                                     </div>
-                                    <div className="p-4 rounded-lg border border-border/60 bg-card/40">
-                                        <p className="font-display text-3xl md:text-4xl text-primary font-semibold">50M+</p>
+                                    <div className="p-4 rounded border border-border bg-card">
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-primary">50M+</p>
                                         <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
                                             Daily Lakehouse Flow Records
                                         </p>
                                     </div>
-                                    <div className="p-4 rounded-lg border border-border/60 bg-card/40">
-                                        <p className="font-display text-3xl md:text-4xl text-accent font-semibold">HIPAA</p>
+                                    <div className="p-4 rounded border border-border bg-card">
+                                        <p className="text-2xl sm:text-3xl font-display font-bold text-accent">HIPAA</p>
                                         <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
                                             Integrity &amp; Zero PII Breaches
                                         </p>
@@ -747,25 +733,24 @@ export default function Home() {
                 </section>
 
                 {/* ─── CAREER PROGRESSION / EXPERIENCE ──────────────────────── */}
-                <section id="experience" className="py-20 md:py-28 border-t border-border/70">
+                <section id="experience" className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
                             <div>
-                                <p className="section-label mb-3">Career History</p>
-                                <h2 className="text-4xl md:text-5xl text-foreground font-display">
-                                    Professional experience
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
+                                    Production history &amp; ownership
                                 </h2>
+                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                                    9+ years leading data quality, distributed engineering, and advisory roles across enterprise healthcare environments.
+                                </p>
                             </div>
-                            <p className="text-sm text-muted-foreground max-w-sm font-mono">
-                                9+ years leading data quality, distributed engineering, and advisory roles.
-                            </p>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="divide-y divide-border border-y border-border">
                             {experience.map((job) => (
                                 <article
                                     key={`${job.company}-${job.period}`}
-                                    className="timeline-entry p-6 rounded-lg hover:bg-card/30 transition-colors"
+                                    className="py-8 transition-colors hover:bg-secondary/20 px-2 sm:px-4 -mx-2 sm:-mx-4 rounded"
                                 >
                                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                                         <div className="md:col-span-3 space-y-1">
@@ -779,7 +764,7 @@ export default function Home() {
 
                                         <div className="md:col-span-9 space-y-3">
                                             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                                <h3 className="text-xl md:text-2xl text-foreground font-display font-medium">
+                                                <h3 className="text-lg md:text-xl font-display font-semibold text-foreground">
                                                     {job.role}
                                                 </h3>
                                                 <span className="font-mono text-xs text-accent font-semibold">
@@ -791,11 +776,11 @@ export default function Home() {
                                                 {job.description}
                                             </p>
 
-                                            <ul className="space-y-2 pt-2">
+                                            <ul className="space-y-1.5 pt-1">
                                                 {job.highlights.map((h, i) => (
                                                     <li
                                                         key={i}
-                                                        className="text-xs md:text-sm text-muted-foreground pl-3 border-l border-border/80 leading-relaxed"
+                                                        className="text-xs md:text-sm text-muted-foreground pl-3 border-l border-border leading-relaxed"
                                                     >
                                                         {h}
                                                     </li>
@@ -818,26 +803,25 @@ export default function Home() {
                 </div>
 
                 {/* ─── SELECTED WORK: REAL PROJECTS WITH PAPER TRAIL ─────────── */}
-                <section id="projects" className="py-20 md:py-28 border-t border-border/70">
+                <section id="projects" className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
                             <div>
-                                <p className="section-label mb-3">Case Studies</p>
-                                <h2 className="text-4xl md:text-5xl text-foreground font-display">
-                                    Selected projects with a paper trail.
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
+                                    Selected production case studies
                                 </h2>
+                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                                    Problem, architecture, assertion code, and documented outcomes — no invented clients or vanity statistics.
+                                </p>
                             </div>
-                            <p className="text-sm text-muted-foreground max-w-sm">
-                                Problem, architecture, assertion code, and documented outcomes — no invented clients or vanity statistics.
-                            </p>
                         </div>
 
                         {/* Project Cards Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             {projectEntries.map((project, idx) => (
                                 <article
                                     key={project.id}
-                                    className="luxury-card p-6 sm:p-7 flex flex-col justify-between group"
+                                    className="craft-card p-6 flex flex-col justify-between group"
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between text-xs font-mono">
@@ -845,7 +829,7 @@ export default function Home() {
                                             <span className="text-primary text-[11px] font-medium">Verified</span>
                                         </div>
 
-                                        <h3 className="text-2xl text-foreground font-display leading-snug group-hover:text-primary transition-colors">
+                                        <h3 className="text-xl font-display font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
                                             {project.title}
                                         </h3>
 
@@ -857,8 +841,8 @@ export default function Home() {
                                             {project.overview.purpose}
                                         </p>
 
-                                        <div className="pt-3 border-t border-border/60">
-                                            <p className="font-mono text-[10px] uppercase text-muted-foreground tracking-wider mb-1.5">
+                                        <div className="pt-3 border-t border-border">
+                                            <p className="font-mono text-[10px] uppercase text-muted-foreground tracking-wider mb-1">
                                                 Key Architecture
                                             </p>
                                             <p className="text-xs text-foreground/80 line-clamp-2">
@@ -867,7 +851,7 @@ export default function Home() {
                                         </div>
                                     </div>
 
-                                    <div className="pt-6 mt-6 border-t border-border/60 flex items-center justify-between">
+                                    <div className="pt-5 mt-5 border-t border-border flex items-center justify-between">
                                         <div className="flex flex-wrap gap-1 max-w-[65%]">
                                             {project.stack.slice(0, 3).map((s) => (
                                                 <span key={s} className="skill-pill text-[10px]">
@@ -888,7 +872,7 @@ export default function Home() {
                         </div>
 
                         {/* Additional GitHub Link */}
-                        <div className="mt-12 p-6 rounded-lg border border-border/70 bg-card/30 flex flex-wrap items-center justify-between gap-4">
+                        <div className="mt-8 p-6 rounded-lg border border-border bg-card flex flex-wrap items-center justify-between gap-4">
                             <div>
                                 <p className="text-sm text-foreground font-medium">Looking for additional code repositories and open-source contributions?</p>
                                 <p className="text-xs text-muted-foreground font-mono mt-0.5">Automated testing suites, PySpark utilities, and SQL optimization scripts.</p>
@@ -913,18 +897,17 @@ export default function Home() {
                 )}
 
                 {/* ─── TECHNICAL EXPERTISE / TOOLKIT MATRIX ────────────────── */}
-                <section id="skills" className="py-20 md:py-28 border-t border-border/70">
+                <section id="skills" className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
                             <div>
-                                <p className="section-label mb-3">Toolkit &amp; Stack</p>
-                                <h2 className="text-4xl md:text-5xl text-foreground font-display">
-                                    Technical expertise
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
+                                    Capabilities &amp; toolchain
                                 </h2>
+                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                                    Authentic proficiencies across data warehousing, quality automation, and cloud platforms. No arbitrary percentage bars.
+                                </p>
                             </div>
-                            <p className="text-sm text-muted-foreground max-w-sm font-mono">
-                                Authentic proficiencies across data warehousing, quality automation, and cloud platforms. No arbitrary percentage bars.
-                            </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -970,10 +953,10 @@ export default function Home() {
                                 return (
                                     <div
                                         key={group.title}
-                                        className="luxury-card p-6 rounded-lg space-y-4"
+                                        className="craft-card p-6 rounded-lg space-y-3"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-md border border-border/80 bg-secondary/50 flex items-center justify-center text-primary">
+                                            <div className="w-8 h-8 rounded border border-border bg-secondary flex items-center justify-center text-primary">
                                                 <Icon className="w-4 h-4" />
                                             </div>
                                             <h3 className="text-base font-semibold text-foreground font-display">
@@ -983,7 +966,7 @@ export default function Home() {
                                         <p className="text-xs text-muted-foreground leading-relaxed">
                                             {group.desc}
                                         </p>
-                                        <div className="flex flex-wrap gap-1.5 pt-2">
+                                        <div className="flex flex-wrap gap-1.5 pt-1">
                                             {group.items.map((skill) => (
                                                 <span key={skill} className="skill-pill text-[11px]">
                                                     {skill}
@@ -998,26 +981,25 @@ export default function Home() {
                 </section>
 
                 {/* ─── CREDENTIALS & CERTIFICATIONS ─────────────────────────── */}
-                <section id="certifications" className="py-20 md:py-28 border-t border-border/70">
+                <section id="certifications" className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
                             <div>
-                                <p className="section-label mb-3">Credentials</p>
-                                <h2 className="text-4xl md:text-5xl text-foreground font-display">
-                                    Certifications &amp; Accreditations
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
+                                    Verified industry credentials
                                 </h2>
+                                <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                                    12 verified industry accreditations in Databricks, Apache Spark, Cloud, and Data Engineering.
+                                </p>
                             </div>
-                            <p className="text-sm text-muted-foreground font-mono">
-                                12 verified industry certifications in Databricks, Spark, Cloud, and Data Engineering.
-                            </p>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {certifications.map((cert) => {
                                 const Icon = cert.icon;
                                 return (
-                                    <div key={cert.name} className="cert-card">
-                                        <div className="w-9 h-9 rounded-md border border-border bg-secondary/60 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                                    <div key={cert.name} className="flex items-start gap-3.5 p-4 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors">
+                                        <div className="w-8 h-8 rounded border border-border bg-secondary flex items-center justify-center text-primary shrink-0 mt-0.5">
                                             <Icon className="w-4 h-4" />
                                         </div>
                                         <div className="min-w-0 space-y-1">
@@ -1036,29 +1018,28 @@ export default function Home() {
                 </section>
 
                 {/* ─── RECOMMENDATIONS / TESTIMONIALS ───────────────────────── */}
-                <section className="py-20 md:py-28 border-t border-border/70">
+                <section className="py-16 md:py-24 border-t border-border">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <p className="section-label mb-3">Colleague Endorsements</p>
-                        <h2 className="text-4xl md:text-5xl text-foreground font-display mb-12">
-                            What colleagues say
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground mb-10">
+                            Colleague endorsements
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {recommendations.map((rec) => (
                                 <blockquote
                                     key={rec.id}
-                                    className="luxury-card p-8 rounded-lg space-y-6 flex flex-col justify-between"
+                                    className="craft-card p-6 sm:p-8 rounded-lg space-y-6 flex flex-col justify-between"
                                 >
-                                    <p className="font-display text-xl md:text-2xl italic text-foreground/90 leading-relaxed">
+                                    <p className="text-base sm:text-lg text-foreground/90 font-sans leading-relaxed">
                                         “{rec.text}”
                                     </p>
-                                    <footer className="pt-4 border-t border-border/60 flex items-center justify-between">
+                                    <footer className="pt-4 border-t border-border flex items-center justify-between">
                                         <div>
                                             <p className="text-sm text-foreground font-medium font-sans">{rec.author}</p>
                                             <p className="font-mono text-xs text-muted-foreground mt-0.5">
                                                 {rec.role} · {rec.company}
                                             </p>
                                         </div>
-                                        <span className="font-mono text-[11px] text-primary px-2.5 py-1 rounded border border-primary/20 bg-primary/10">
+                                        <span className="font-mono text-[11px] text-primary px-2.5 py-1 rounded border border-border bg-secondary">
                                             {rec.relation}
                                         </span>
                                     </footer>
@@ -1069,42 +1050,41 @@ export default function Home() {
                 </section>
 
                 {/* ─── CONTACT SECTION ──────────────────────────────────────── */}
-                <section id="contact" className="py-24 md:py-32 border-t border-border/70 relative">
+                <section id="contact" className="py-20 md:py-28 border-t border-border relative">
                     <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                        <div className="max-w-3xl space-y-6">
-                            <p className="section-label">Initiate Contact</p>
-                            <h2 className="text-4xl md:text-6xl text-foreground font-display leading-[1.04]">
-                                If the data has to be right, write.
+                        <div className="max-w-2xl space-y-6">
+                            <h2 className="text-3xl sm:text-5xl font-display font-semibold text-foreground leading-[1.06]">
+                                If the data has to be right, let's talk.
                             </h2>
-                            <p className="text-base md:text-lg text-muted-foreground leading-relaxed font-sans max-w-2xl">
+                            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-sans">
                                 Available for senior data engineering, SQL automated quality suites, and lakehouse validation engagements for teams that cannot afford silent pipeline failures.
                             </p>
 
-                            <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                 <a
                                     href={`mailto:${contactEmail}?subject=Data%20Engineering%20Inquiry%20%E2%80%94%20Sabrin%20Singh`}
-                                    className="btn-primary py-4 px-8 text-sm"
+                                    className="btn-primary py-3.5 px-6 text-sm"
                                 >
                                     Email Sabrin Directly
                                     <ArrowRight className="w-4 h-4" />
                                 </a>
                                 <button
                                     onClick={copyEmail}
-                                    className="btn-outline py-4 px-8 font-mono text-xs"
+                                    className="btn-outline py-3.5 px-6 font-mono text-xs"
                                     aria-label="Copy email address"
                                 >
-                                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
+                                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
                                     <span>{copiedEmail ? "Copied to clipboard!" : contactEmail}</span>
                                 </button>
                             </div>
 
-                            <div className="pt-8 flex flex-wrap items-center gap-6 text-xs font-mono text-muted-foreground">
-                                <span className="flex items-center gap-2">
+                            <div className="pt-6 flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground">
+                                <span className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                    Average response time: &lt; 24 hours
+                                    Typical response: &lt; 24 hours
                                 </span>
                                 <span>·</span>
-                                <span>Based in Kathmandu (UTC+5:45)</span>
+                                <span>Kathmandu (UTC+5:45)</span>
                                 <span>·</span>
                                 <span>Remote &amp; Global Availability</span>
                             </div>
@@ -1127,7 +1107,7 @@ export default function Home() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                        className="fixed bottom-6 right-6 p-3 rounded-full border border-border bg-card/90 text-muted-foreground hover:text-foreground hover:border-primary shadow-xl z-50 backdrop-blur-md transition-all"
+                        className="fixed bottom-6 right-6 p-2.5 rounded-full border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary shadow-lg z-50 transition-all"
                         aria-label="Back to top"
                     >
                         <ArrowUp className="w-4 h-4" />

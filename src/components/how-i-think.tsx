@@ -33,33 +33,33 @@ const principles = [
 
 export function HowIThink() {
     return (
-        <section className="py-20 md:py-28 border-t border-border/70">
+        <section className="py-16 md:py-24 border-t border-border">
             <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
                     <div>
-                        <p className="section-label mb-3">Core Philosophy</p>
-                        <h2 className="text-4xl md:text-5xl text-foreground font-display max-w-xl">
-                            How I think about data.
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display text-foreground">
+                            Architectural principles
                         </h2>
+                        <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+                            Five non-negotiable disciplines honed across 9+ years building high-throughput production data systems.
+                        </p>
                     </div>
-                    <p className="text-sm text-muted-foreground max-w-sm font-mono">
-                        Five non-negotiable architectural principles honed across 9+ years of production systems.
-                    </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="divide-y divide-border border-y border-border">
                     {principles.map((p) => (
                         <div
                             key={p.id}
-                            className="luxury-card p-6 sm:p-7 rounded-lg grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start group"
+                            className="py-6 sm:py-8 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start group hover:bg-secondary/25 transition-colors px-2 sm:px-4 -mx-2 sm:-mx-4 rounded"
                         >
-                            <div className="md:col-span-2 flex items-center gap-3">
-                                <span className="font-mono text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors">
-                                    {p.id} //
+                            <div className="md:col-span-2 flex items-center gap-2">
+                                <span className="font-mono text-sm font-semibold text-primary">
+                                    {p.id}
                                 </span>
+                                <span className="font-mono text-xs text-muted-foreground">/ 05</span>
                             </div>
                             <div className="md:col-span-4 space-y-1">
-                                <h3 className="text-xl md:text-2xl text-foreground font-display group-hover:text-primary transition-colors">
+                                <h3 className="text-lg md:text-xl font-display font-semibold text-foreground group-hover:text-primary transition-colors">
                                     {p.title}
                                 </h3>
                                 <p className="font-mono text-xs text-accent">
@@ -67,7 +67,7 @@ export function HowIThink() {
                                 </p>
                             </div>
                             <div className="md:col-span-6">
-                                <p className="text-sm text-muted-foreground leading-relaxed font-sans">
+                                <p className="text-sm text-muted-foreground leading-relaxed">
                                     {p.description}
                                 </p>
                             </div>
