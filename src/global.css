@@ -1,0 +1,245 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Design System Tokens (3-Layer Architecture)
+   Layer 1: Primitives (Strict Slate, Cyan-400, Emerald-400)
+   Layer 2: Semantics (Canvas, Surface, Line, Status)
+   Layer 3: Components (Glass Panels, Badges, Telemetry Grids)
+   ========================================================================== */
+
+@layer base {
+  :root {
+    /* Strict Slate Dark Architecture Tokens */
+    --canvas-bg: #020617; /* slate-950 */
+    --canvas-bg-subtle: #080f1e;
+    --surface-bg: #0f172a; /* slate-900 */
+    --surface-elevated: #151f32; /* slate-850 */
+    --surface-highlight: #1e293b; /* slate-800 */
+
+    --line-subtle: #1e293b; /* slate-800 */
+    --line-strong: #334155; /* slate-700 */
+
+    --text-primary: #f8fafc; /* slate-50 (contrast > 16:1 against slate-950) */
+    --text-secondary: #cbd5e1; /* slate-300 (contrast > 11:1 against slate-950) */
+    --text-muted: #94a3b8; /* slate-400 (contrast > 7.3:1 against slate-950) */
+
+    --accent-cyan: #22d3ee; /* cyan-400 (contrast > 9.5:1 against slate-950) */
+    --accent-emerald: #34d399; /* emerald-400 (contrast > 10.2:1 against slate-950) */
+    --accent-amber: #fbbf24;
+    --accent-rose: #fb7185;
+
+    /* Transition & Micro-Interaction Tokens */
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --dur-instant: 100ms;
+    --dur-fast: 150ms;
+    --dur-normal: 250ms;
+    --dur-slow: 400ms;
+
+    /* Compatibility variables */
+    --background: 222 47% 3%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 187 92% 54%;
+    --primary-foreground: 222 47% 3%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 13%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 158 64% 52%;
+    --accent-foreground: 222 47% 3%;
+    --destructive: 350 89% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 187 92% 54%;
+    --radius: 0.5rem;
+  }
+
+  /* Global Scroll-Behavior & Viewport Resiliency */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    overscroll-behavior-y: none;
+    text-size-adjust: 100%;
+    background-color: var(--canvas-bg);
+    color: var(--text-primary);
+  }
+
+  body {
+    background-color: var(--canvas-bg);
+    color: var(--text-primary);
+    font-family: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Accessible Selection Highlighting */
+  ::selection {
+    background: rgba(34, 211, 238, 0.28);
+    color: #ffffff;
+  }
+
+  /* Custom Sleek Dark Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #020617;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+    border: 2px solid #020617;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+
+  /* Universal Box-Sizing & Border Reset */
+  *,
+  *::before,
+  *::after {
+    border-color: var(--line-subtle);
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Numerical Data Tabular Numbers (Prevents Metric Jitter) */
+  .tabular-nums,
+  code,
+  pre,
+  .metric-value {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ==========================================================================
+   Modern Design Patterns & Component Utilities
+   ========================================================================== */
+
+@layer utilities {
+  /* Subtle Repeating Glassmorphism Grid Overlay (bg-grid-white/[0.02]) */
+  .bg-grid-white\/\[0\.02\] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgba(255, 255, 255, 0.025)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+  }
+
+  .bg-grid-technical {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Masking utility to softly fade background grids into canvas edges */
+  .mask-radial-faded {
+    mask-image: radial-gradient(ellipse 65% 50% at 50% 0%, #000 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 65% 50% at 50% 0%, #000 70%, transparent 100%);
+  }
+
+  /* Glassmorphism Surface Backdrops */
+  .glass-nav {
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+  }
+
+  .glass-panel {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 0.9);
+  }
+
+  .glass-card {
+    background: rgba(21, 31, 50, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+  }
+
+  /* Micro-Hover Scaling & Glow Transitions */
+  .hover-lift {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                border-color var(--dur-fast) ease,
+                box-shadow var(--dur-fast) ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .hover-glow-cyan:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.7),
+                0 0 20px -2px rgba(34, 211, 238, 0.2);
+  }
+
+  .hover-glow-emerald:hover {
+    border-color: rgba(52, 211, 153, 0.5);
+    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.7),
+                0 0 20px -2px rgba(52, 211, 153, 0.2);
+  }
+
+  /* Pulse beacon for live telemetry status */
+  .status-beacon-live {
+    position: relative;
+    display: inline-flex;
+    height: 0.625rem;
+    width: 0.625rem;
+  }
+
+  .status-beacon-live::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: var(--accent-emerald);
+    opacity: 0.75;
+    animation: beacon 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .status-beacon-live::after {
+    content: "";
+    position: relative;
+    display: inline-flex;
+    height: 0.625rem;
+    width: 0.625rem;
+    border-radius: 9999px;
+    background-color: var(--accent-emerald);
+  }
+}
+
+/* ==========================================================================
+   Accessibility & Motion Preferences
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
