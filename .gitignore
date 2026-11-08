@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Agent skills & configuration (not part of portfolio source)
+.agents/
+.claude/
+skills-lock.json
+.gemini/

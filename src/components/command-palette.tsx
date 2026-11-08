@@ -107,6 +107,12 @@ export function CommandPalette() {
             action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
         },
         {
+            id: "traffic-telemetry",
+            title: "Live Visitor Traffic & Pageview Counter",
+            category: "Telemetry",
+            action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+        },
+        {
             id: "copy-email",
             title: "Copy Email: sabrinlalsingh@gmail.com",
             category: "Actions",

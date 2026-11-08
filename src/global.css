@@ -63,6 +63,79 @@
     --radius: 0.5rem;
   }
 
+  /* OLED Pitch Black Theme (Ultra-High Contrast Hacker/Terminal) */
+  .theme-oled {
+    --canvas-bg: #000000;
+    --canvas-bg-subtle: #09090b;
+    --surface-bg: #0c0c0e;
+    --surface-elevated: #141417;
+    --surface-highlight: #27272a;
+    --line-subtle: #27272a;
+    --line-strong: #3f3f46;
+    --text-primary: #ffffff;
+    --text-secondary: #d4d4d8;
+    --text-muted: #a1a1aa;
+    --accent-cyan: #38bdf8;
+    --accent-emerald: #10b981;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 240 6% 5%;
+    --card-foreground: 0 0% 100%;
+    --border: 240 6% 15%;
+    --primary: 199 89% 48%;
+    --accent: 160 84% 39%;
+  }
+
+  /* Tokyo Midnight Theme (Cyber Indigo & Radiant Violet Glow) */
+  .theme-tokyo {
+    --canvas-bg: #070913;
+    --canvas-bg-subtle: #0d1124;
+    --surface-bg: #11162e;
+    --surface-elevated: #181f3f;
+    --surface-highlight: #232d59;
+    --line-subtle: #202952;
+    --line-strong: #32407d;
+    --text-primary: #f1f3fd;
+    --text-secondary: #c2c9ee;
+    --text-muted: #8b97d1;
+    --accent-cyan: #38bdf8;
+    --accent-emerald: #a78bfa;
+    --background: 231 46% 5%;
+    --foreground: 230 50% 98%;
+    --card: 230 45% 12%;
+    --card-foreground: 230 50% 98%;
+    --border: 230 35% 22%;
+    --primary: 258 90% 66%;
+    --accent: 199 89% 48%;
+  }
+
+  /* Studio Light Theme (Clean Architectural Alabaster) */
+  .light {
+    --canvas-bg: #f8fafc;
+    --canvas-bg-subtle: #f1f5f9;
+    --surface-bg: #ffffff;
+    --surface-elevated: #f8fafc;
+    --surface-highlight: #f1f5f9;
+    --line-subtle: #e2e8f0;
+    --line-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --accent-cyan: #0284c7;
+    --accent-emerald: #059669;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 199 89% 48%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+  }
+
   /* Global Scroll-Behavior & Viewport Resiliency */
   html {
     scroll-behavior: smooth;

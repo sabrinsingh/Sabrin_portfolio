@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Copy, Check, Github, Linkedin, ExternalLink } from "lucide-react";
+import { ViewCounter } from "@/components/view-counter";
 
 const navLinks = [
     { href: "#about", label: "About" },
@@ -107,10 +108,13 @@ export function Footer() {
 
                 <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-foreground">
                     <p>© {currentYear} Sabrin Lal Singh. All rights reserved.</p>
-                    <p className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Engineered for zero silent pipeline failures
-                    </p>
+                    <div className="flex items-center gap-4">
+                        <ViewCounter variant="badge" />
+                        <p className="hidden md:flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            Engineered for zero silent pipeline failures
+                        </p>
+                    </div>
                 </div>
             </div>
         </footer>
