@@ -251,7 +251,7 @@ export const education = [
         degree: "Master of Business Administration (MBA)",
         institution: "KFA Business School (Lincoln University)",
         location: "Kathmandu, Nepal",
-        period: "Completed",
+        period: "2024 – 2026",
         gpa: "3.78 GPA",
         highlights: "Strategic Management, Leadership, Operations, and Business Analytics."
     },

@@ -516,8 +516,8 @@ export function LayoutShell() {
               </div>
 
               <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-                Lead Data Engineer &amp; Data Lead / Manager based in Kathmandu, Nepal (available globally). 
-                9+ years directing high-throughput data delivery, hardening petabyte-scale Medallion lakehouses, 
+                Lead Data Engineer &amp; Data Lead / Manager based in Kathmandu, Nepal (available globally).
+                9+ years directing high-throughput data delivery, hardening petabyte-scale Medallion lakehouses,
                 and establishing autonomous QA assertion gates across{" "}
                 <strong className="text-slate-100 font-semibold">Databricks</strong>,{" "}
                 <strong className="text-slate-100 font-semibold">Snowflake</strong>,{" "}
@@ -860,11 +860,10 @@ export function LayoutShell() {
                           key={tab}
                           type="button"
                           onClick={() => setProjectTab(project.id, tab)}
-                          className={`flex-1 py-1 rounded transition-colors text-center capitalize ${
-                            currentTab === tab
+                          className={`flex-1 py-1 rounded transition-colors text-center capitalize ${currentTab === tab
                               ? "bg-slate-800 text-cyan-400 font-bold"
                               : "text-slate-400 hover:text-slate-200"
-                          }`}
+                            }`}
                         >
                           {tab}
                         </button>

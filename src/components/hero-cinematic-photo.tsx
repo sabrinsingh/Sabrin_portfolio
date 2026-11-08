@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { 
-  MapPin, 
-  Sparkles, 
-  Award, 
-  Users, 
-  ShieldCheck, 
-  Database, 
-  RotateCw, 
-  ExternalLink 
+import {
+  MapPin,
+  Sparkles,
+  Award,
+  Users,
+  ShieldCheck,
+  Database,
+  RotateCw,
+  ExternalLink
 } from "lucide-react";
 
 export function HeroCinematicPhoto() {
@@ -146,7 +146,7 @@ export function HeroCinematicPhoto() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-slate-100 tracking-tight truncate">
-                    Sabrin Lal Singh
+                    Sabrin Lal Singh (MBA)
                   </p>
                   <p className="text-[11px] font-mono text-slate-400 truncate flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-cyan-400 shrink-0 inline" />
