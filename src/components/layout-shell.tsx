@@ -7,13 +7,10 @@ import {
   Layers,
   ArrowUpRight,
   CheckCircle2,
-  AlertTriangle,
-  RefreshCw,
   Copy,
   Check,
   Menu,
   X,
-  Filter,
   FileText,
   Mail,
   Github,
@@ -36,6 +33,10 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { HeroCinematicPhoto } from "@/components/hero-cinematic-photo";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 import { Currently } from "@/components/currently";
+import { AudioToggle } from "@/components/audio-toggle";
+import { VelocityRibbon } from "@/components/velocity-ribbon";
+import { PipelineSimulator } from "@/components/pipeline-simulator";
+import { soundFx } from "@/lib/sound-fx";
 import { certifications, recommendations, experience } from "@/data/portfolio";
 
 // ─── NAV ANCHORS ─────────────────────────────────────────────────────────────
@@ -57,61 +58,6 @@ const ALL_NAV_LINKS = [
   { label: "Engineering Principles", href: "#principles" },
   { label: "Credentials & Certs", href: "#certifications" },
   { label: "Direct Inquiries", href: "#contact" },
-];
-
-// ─── TELEMETRY MOCK RECORDS ──────────────────────────────────────────────────
-interface TelemetryRecord {
-  id: string;
-  pipeline: string;
-  domain: "Healthcare" | "Claims" | "Telemetry" | "Lakehouse";
-  batchSize: number;
-  gateStatus: "PASS" | "QUARANTINED" | "INSPECTING";
-  anomalyIndex: string;
-  latencyMs: number;
-  timestamp: string;
-}
-
-const INITIAL_TELEMETRY: TelemetryRecord[] = [
-  {
-    id: "PL-8041",
-    pipeline: "Clinical Feeds (HL7 / FHIR Ingestion)",
-    domain: "Healthcare",
-    batchSize: 1420500,
-    gateStatus: "PASS",
-    anomalyIndex: "0.001%",
-    latencyMs: 14.2,
-    timestamp: "Just now",
-  },
-  {
-    id: "PL-8042",
-    pipeline: "Delta Lake Medallion Silver Sanitizer",
-    domain: "Lakehouse",
-    batchSize: 980200,
-    gateStatus: "PASS",
-    anomalyIndex: "0.000%",
-    latencyMs: 18.6,
-    timestamp: "12s ago",
-  },
-  {
-    id: "PL-8043",
-    pipeline: "Enterprise Claims Reconciliation Gate",
-    domain: "Claims",
-    batchSize: 2450000,
-    gateStatus: "PASS",
-    anomalyIndex: "0.004%",
-    latencyMs: 22.1,
-    timestamp: "24s ago",
-  },
-  {
-    id: "PL-8044",
-    pipeline: "Redshift Partition Metric Aggregator",
-    domain: "Telemetry",
-    batchSize: 640000,
-    gateStatus: "PASS",
-    anomalyIndex: "0.002%",
-    latencyMs: 9.8,
-    timestamp: "38s ago",
-  },
 ];
 
 // ─── PROJECT CASE STUDIES WITH TABBED PAPER TRAIL ───────────────────────────
@@ -289,10 +235,6 @@ $$ LANGUAGE plpgsql;`,
 export function LayoutShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [telemetryData, setTelemetryData] = useState<TelemetryRecord[]>(INITIAL_TELEMETRY);
-  const [activeFilter, setActiveFilter] = useState<string>("ALL");
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [anomalyInjected, setAnomalyInjected] = useState(false);
   const [activeProjectTabs, setActiveProjectTabs] = useState<Record<number, ProjectTab>>({
     1: "overview",
     2: "overview",
@@ -320,64 +262,22 @@ export function LayoutShell() {
   }, []);
 
   const handleCopyEmail = () => {
+    soundFx.playClick();
     navigator.clipboard.writeText("sabrinlalsingh@gmail.com");
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2500);
   };
 
-  const handleRunGate = () => {
-    setIsSimulating(true);
-    setTimeout(() => {
-      const newRecord: TelemetryRecord = {
-        id: `PL-${Math.floor(8050 + Math.random() * 50)}`,
-        pipeline: "Great Expectations Automated Test Suite",
-        domain: "Healthcare",
-        batchSize: Math.floor(500000 + Math.random() * 800000),
-        gateStatus: "PASS",
-        anomalyIndex: "0.000%",
-        latencyMs: Number((11 + Math.random() * 8).toFixed(1)),
-        timestamp: "Just now",
-      };
-      setTelemetryData((prev) => [newRecord, ...prev.slice(0, 4)]);
-      setIsSimulating(false);
-    }, 600);
-  };
-
-  const handleInjectAnomaly = () => {
-    setIsSimulating(true);
-    setTimeout(() => {
-      const anomalyRecord: TelemetryRecord = {
-        id: `PL-${Math.floor(9000 + Math.random() * 100)}`,
-        pipeline: "Dirty Upstream Feed (Schema Mismatch / Null Violation)",
-        domain: "Claims",
-        batchSize: 74200,
-        gateStatus: "QUARANTINED",
-        anomalyIndex: "14.82%",
-        latencyMs: 6.4,
-        timestamp: "Just now",
-      };
-      setTelemetryData((prev) => [anomalyRecord, ...prev.slice(0, 4)]);
-      setAnomalyInjected(true);
-      setIsSimulating(false);
-    }, 500);
-  };
-
-  const handleResetFeed = () => {
-    setTelemetryData(INITIAL_TELEMETRY);
-    setAnomalyInjected(false);
-  };
-
   const setProjectTab = (projectId: number, tab: ProjectTab) => {
+    soundFx.playClick();
     setActiveProjectTabs((prev) => ({ ...prev, [projectId]: tab }));
   };
 
-  const filteredTelemetry =
-    activeFilter === "ALL"
-      ? telemetryData
-      : telemetryData.filter((r) => r.domain.toUpperCase() === activeFilter);
-
   return (
     <div className="relative min-h-screen bg-canvas text-slate-100 selection:bg-cyan-500/30 selection:text-white overflow-x-hidden font-sans">
+      {/* ─── ANALOG DEPTH: FILM GRAIN OVERLAY ──────────────────────────────── */}
+      <div className="film-grain" aria-hidden="true" />
+
       {/* ─── SMOOTH SCROLL (LENIS) & CUSTOM INTERACTIVE CURSOR ─────────────── */}
       <SmoothScroll />
       <CustomCursor />
@@ -446,6 +346,9 @@ export function LayoutShell() {
 
             {/* Right Action Bar */}
             <div className="flex items-center gap-2">
+              {/* Micro-Sound Acoustic Feedback Toggle */}
+              <AudioToggle />
+
               {/* View Counter Telemetry Pill */}
               <ViewCounter variant="nav" />
 
@@ -677,6 +580,9 @@ export function LayoutShell() {
           </div>
         </section>
 
+        {/* ─── KINETIC VELOCITY RIBBON (HIGH-IMPACT TICKER) ────────────────── */}
+        <VelocityRibbon />
+
         {/* ─── ACTIVE FOCUS AREAS ───────────────────────────────────────────── */}
         <Currently />
 
@@ -858,167 +764,9 @@ export function LayoutShell() {
           <DataPipelineVisual />
         </section>
 
-        {/* ─── 5. INTERACTIVE DATA LAYOUT BLOCK: PIPELINE TELEMETRY SIMULATOR ─ */}
+        {/* ─── 5. INTERACTIVE MISSION CONTROL: PIPELINE TELEMETRY SIMULATOR ── */}
         <section id="telemetry" className="space-y-6" aria-label="Interactive Telemetry Simulator">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 font-mono text-xs text-emerald-400">
-                <Activity className="w-3.5 h-3.5" />
-                <TextScramble text="// INTERACTIVE TELEMETRY ENGINE" />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-50">
-                Live Data Pipeline &amp; Anomaly Quarantine Block
-              </h2>
-              <p className="text-slate-400 text-sm max-w-2xl">
-                Experience real-time pipeline monitoring with autonomous Great Expectations validation.
-                Trigger tests or simulate dirty data injection to see the quarantine router activate.
-              </p>
-            </div>
-
-            {/* Interactive Control Buttons */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleRunGate}
-                disabled={isSimulating}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-400 text-slate-950 font-mono text-xs font-semibold hover:bg-emerald-300 transition-all hover:shadow-glow-emerald disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSimulating ? "animate-spin" : ""}`} />
-                <span>Run Validation Gate</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleInjectAnomaly}
-                disabled={isSimulating}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 font-mono text-xs hover:bg-rose-500/20 transition-all disabled:opacity-50"
-              >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span>Inject Anomaly</span>
-              </button>
-
-              {anomalyInjected && (
-                <button
-                  type="button"
-                  onClick={handleResetFeed}
-                  className="px-3 py-2 rounded-lg bg-slate-800 text-slate-300 font-mono text-xs hover:bg-slate-700"
-                >
-                  Reset Feed
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Telemetry Filter & Table Shell */}
-          <div className="glass-panel rounded-2xl overflow-hidden border border-slate-800">
-            {/* Filter Toolbar */}
-            <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-slate-400 flex items-center gap-1">
-                  <Filter className="w-3 h-3 text-cyan-400" /> Filter:
-                </span>
-                {["ALL", "HEALTHCARE", "CLAIMS", "LAKEHOUSE", "TELEMETRY"].map((domain) => (
-                  <button
-                    key={domain}
-                    type="button"
-                    onClick={() => setActiveFilter(domain)}
-                    className={`px-2.5 py-1 rounded font-mono text-xs transition-colors ${
-                      activeFilter === domain
-                        ? "bg-cyan-400 text-slate-950 font-bold"
-                        : "text-slate-400 hover:text-slate-100 hover:bg-slate-800"
-                    }`}
-                  >
-                    {domain}
-                  </button>
-                ))}
-              </div>
-
-              <div className="font-mono text-xs text-slate-400">
-                <span className="text-slate-500">Live Status:</span>{" "}
-                {anomalyInjected ? (
-                  <span className="text-rose-400 font-medium">Anomaly Isolated &amp; Routed to Quarantine</span>
-                ) : (
-                  <span className="text-emerald-400 font-medium">All Assertion Gates Passing (100% Integrity)</span>
-                )}
-              </div>
-            </div>
-
-            {/* Responsive Data Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left font-mono text-xs">
-                <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400">
-                    <th className="py-3 px-4 font-medium">PIPELINE_ID</th>
-                    <th className="py-3 px-4 font-medium">FEED_DESCRIPTOR</th>
-                    <th className="py-3 px-4 font-medium">BATCH_ROWS</th>
-                    <th className="py-3 px-4 font-medium">QA_GATE_STATUS</th>
-                    <th className="py-3 px-4 font-medium">ANOMALY_INDEX</th>
-                    <th className="py-3 px-4 font-medium text-right">SLA_LATENCY</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {filteredTelemetry.map((rec) => (
-                    <tr
-                      key={rec.id}
-                      className={`hover:bg-slate-900/50 transition-colors ${
-                        rec.gateStatus === "QUARANTINED" ? "bg-rose-950/20" : ""
-                      }`}
-                    >
-                      <td className="py-3.5 px-4 font-bold text-slate-200">{rec.id}</td>
-                      <td className="py-3.5 px-4 text-slate-300">
-                        <div className="flex items-center gap-2">
-                          <span>{rec.pipeline}</span>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
-                            {rec.domain}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-200 tabular-nums">
-                        {rec.batchSize.toLocaleString()}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {rec.gateStatus === "PASS" ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800 text-[11px] font-medium">
-                            <CheckCircle2 className="w-3 h-3" /> PASS
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-rose-950/80 text-rose-400 border border-rose-800 text-[11px] font-medium animate-pulse">
-                            <AlertTriangle className="w-3 h-3" /> QUARANTINED
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 tabular-nums">
-                        <span
-                          className={
-                            rec.gateStatus === "QUARANTINED"
-                              ? "text-rose-400 font-bold"
-                              : "text-emerald-400"
-                          }
-                        >
-                          {rec.anomalyIndex}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right text-slate-300 tabular-nums">
-                        {rec.latencyMs} ms
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Table Footer Summary */}
-            <div className="p-4 bg-slate-900/50 border-t border-slate-800 flex flex-wrap items-center justify-between text-xs font-mono text-slate-400 gap-2">
-              <div className="flex items-center gap-4">
-                <span>Active Feeds: {telemetryData.length}</span>
-                <span>•</span>
-                <span>Total Processed: 5,567,700 records</span>
-              </div>
-              <div className="text-cyan-400">
-                Engine: Great Expectations + PySpark Delta Enforcer
-              </div>
-            </div>
-          </div>
+          <PipelineSimulator />
         </section>
 
         {/* ─── 6. PRODUCTION CASE STUDIES (PROJECTS WITH INTERACTIVE TABS) ───── */}
