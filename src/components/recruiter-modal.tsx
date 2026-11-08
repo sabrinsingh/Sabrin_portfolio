@@ -102,7 +102,7 @@ export function RecruiterModal() {
                 <Briefcase className="w-3.5 h-3.5" />
                 <span>Overview</span>
             </button>
-            {mounted ? createPortal(modalContent, document.body) : null}
+            {createPortal(modalContent, document.body)}
         </>
     );
 }
