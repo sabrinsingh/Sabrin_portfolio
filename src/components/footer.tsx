@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { Copy, Check, Github, Linkedin, ExternalLink } from "lucide-react";
 import { ViewCounter } from "@/components/view-counter";
+import { personalInfo } from "@/data/portfolio";
+import { useCopyEmail } from "@/lib/use-copy-email";
 
 const navLinks = [
     { href: "#about", label: "About" },

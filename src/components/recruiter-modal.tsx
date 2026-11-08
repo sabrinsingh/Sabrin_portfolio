@@ -7,7 +7,7 @@ const emptySubscribe = () => () => {};
 
 export function RecruiterModal() {
     const [open, setOpen] = useState(false);
-    const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+    const isBrowser = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
     const handleClose = () => setOpen(false);
 
@@ -102,7 +102,7 @@ export function RecruiterModal() {
                 <Briefcase className="w-3.5 h-3.5" />
                 <span>Overview</span>
             </button>
-            {createPortal(modalContent, document.body)}
+            {isBrowser && createPortal(modalContent, document.body)}
         </>
     );
 }

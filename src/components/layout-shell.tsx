@@ -35,7 +35,6 @@ import { CustomCursor } from "@/components/custom-cursor";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { HeroCinematicPhoto } from "@/components/hero-cinematic-photo";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
-import { HowIThink } from "@/components/how-i-think";
 import { Currently } from "@/components/currently";
 import { certifications, recommendations, experience } from "@/data/portfolio";
 
@@ -1191,10 +1190,7 @@ export function LayoutShell() {
           </div>
         </section>
 
-        {/* ─── 8. ARCHITECTURAL PRINCIPLES ("HOW I THINK") ──────────────────── */}
-        <section id="principles" aria-label="Architectural Philosophy">
-          <HowIThink />
-        </section>
+        {/* ─── 8. ARCHITECTURAL PRINCIPLES ──────────────────── */}
 
         {/* ─── 9. VERIFIED CREDENTIALS & CERTIFICATIONS ─────────────────────── */}
         <section id="certifications" className="space-y-8" aria-label="Credentials and Certifications">
