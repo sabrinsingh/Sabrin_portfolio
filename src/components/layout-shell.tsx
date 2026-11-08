@@ -21,7 +21,6 @@ import {
   Quote,
   Clock,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ViewCounter } from "@/components/view-counter";
@@ -32,7 +31,6 @@ import { Magnetic } from "@/components/magnetic";
 import { CustomCursor } from "@/components/custom-cursor";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { HeroCinematicPhoto } from "@/components/hero-cinematic-photo";
-import { RecruiterDrawer } from "@/components/recruiter-drawer";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 import { Currently } from "@/components/currently";
 import { VelocityRibbon } from "@/components/velocity-ribbon";
@@ -235,7 +233,6 @@ $$ LANGUAGE plpgsql;`,
 
 export function LayoutShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [recruiterDrawerOpen, setRecruiterDrawerOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [activeProjectTabs, setActiveProjectTabs] = useState<Record<number, ProjectTab>>({
     1: "overview",
@@ -261,13 +258,6 @@ export function LayoutShell() {
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  // Listen for recruiter drawer trigger from Command Palette or external buttons
-  useEffect(() => {
-    const handleOpenDrawer = () => setRecruiterDrawerOpen(true);
-    window.addEventListener("open-recruiter-drawer", handleOpenDrawer);
-    return () => window.removeEventListener("open-recruiter-drawer", handleOpenDrawer);
   }, []);
 
   const handleCopyEmail = () => {
@@ -353,17 +343,6 @@ export function LayoutShell() {
 
             {/* Right Action Bar */}
             <div className="flex items-center gap-2">
-              {/* 60-Second Executive Summary Pill */}
-              <button
-                type="button"
-                onClick={() => setRecruiterDrawerOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/70 hover:bg-cyan-900/90 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                title="Open 60-Second Executive Summary for Recruiters & Hiring Managers"
-              >
-                <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                <span>60s Lead Summary</span>
-              </button>
-
               {/* Resume Download Pill */}
               <a
                 href="/Sabrin_Singh_Resume.pdf"
@@ -421,19 +400,6 @@ export function LayoutShell() {
                   Available for Manager and Lead Roles
                 </span>
               </div>
-
-              {/* Mobile 60-Second Recruiter Summary Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setRecruiterDrawerOpen(true);
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold shadow-md active:scale-98 transition-transform"
-              >
-                <Zap className="w-4 h-4 text-amber-400" />
-                <span>Open 60-Second Recruiter Summary</span>
-              </button>
 
               <div className="space-y-1">
                 <p className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-1 mb-2">Navigation</p>
@@ -1238,14 +1204,6 @@ export function LayoutShell() {
           </footer>
         </section>
       </main>
-
-      {/* ─── 60-SECOND RECRUITER DOSSIER DRAWER ────────────────────────────── */}
-      <RecruiterDrawer
-        isOpen={recruiterDrawerOpen}
-        onClose={() => setRecruiterDrawerOpen(false)}
-        onCopyEmail={handleCopyEmail}
-        copiedEmail={copiedEmail}
-      />
     </div>
   );
 }

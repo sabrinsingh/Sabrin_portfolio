@@ -119,14 +119,6 @@ export function CommandPalette() {
             action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
         },
         {
-            id: "recruiter-summary",
-            title: "Open 60-Second Recruiter & Executive Summary",
-            category: "Actions",
-            action: () => {
-                window.dispatchEvent(new CustomEvent("open-recruiter-drawer"));
-            }
-        },
-        {
             id: "copy-email",
             title: "Copy Email: sabrinlalsingh@gmail.com",
             category: "Actions",
