@@ -21,6 +21,7 @@ import {
   Quote,
   Clock,
   Sparkles,
+  Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ViewCounter } from "@/components/view-counter";
@@ -31,13 +32,13 @@ import { Magnetic } from "@/components/magnetic";
 import { CustomCursor } from "@/components/custom-cursor";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { HeroCinematicPhoto } from "@/components/hero-cinematic-photo";
+import { RecruiterDrawer } from "@/components/recruiter-drawer";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 import { Currently } from "@/components/currently";
-import { AudioToggle } from "@/components/audio-toggle";
 import { VelocityRibbon } from "@/components/velocity-ribbon";
 import { PipelineSimulator } from "@/components/pipeline-simulator";
-import { soundFx } from "@/lib/sound-fx";
-import { certifications, recommendations, experience } from "@/data/portfolio";
+import { ArchitecturalPrinciples } from "@/components/principles";
+import { certifications, recommendations, experience, education, awards } from "@/data/portfolio";
 
 // ─── NAV ANCHORS ─────────────────────────────────────────────────────────────
 const PRIMARY_NAV_LINKS = [
@@ -196,7 +197,7 @@ $$ LANGUAGE plpgsql;`,
       purpose: "Built an automated continuous-integration data testing harness to prevent breaking upstream schema changes from corrupting production analytics.",
       challenge: "Frequent upstream application releases introduced breaking column type changes and missing nullable invariants, breaking downstream pipelines without warning.",
       solution: "Engineered a declarative Python & SQL test harness that runs pre-merge regression tests against ephemeral test containers, asserting contract invariants before code deployment.",
-      role: "Lead QA Architect — Designed test assertion DSL, CI/CD GitHub Actions hooks, and automated schema drift reporting.",
+      role: "Lead Data / QA Engineer — Designed test assertion DSL, CI/CD automated test gates, and schema drift sentinels.",
     },
     arch: [
       "PR Trigger       → GitHub Actions initiates ephemeral PostgreSQL/DuckDB container",
@@ -234,6 +235,7 @@ $$ LANGUAGE plpgsql;`,
 
 export function LayoutShell() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [recruiterDrawerOpen, setRecruiterDrawerOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [activeProjectTabs, setActiveProjectTabs] = useState<Record<number, ProjectTab>>({
     1: "overview",
@@ -261,15 +263,20 @@ export function LayoutShell() {
     return () => clearInterval(timer);
   }, []);
 
+  // Listen for recruiter drawer trigger from Command Palette or external buttons
+  useEffect(() => {
+    const handleOpenDrawer = () => setRecruiterDrawerOpen(true);
+    window.addEventListener("open-recruiter-drawer", handleOpenDrawer);
+    return () => window.removeEventListener("open-recruiter-drawer", handleOpenDrawer);
+  }, []);
+
   const handleCopyEmail = () => {
-    soundFx.playClick();
     navigator.clipboard.writeText("sabrinlalsingh@gmail.com");
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2500);
   };
 
   const setProjectTab = (projectId: number, tab: ProjectTab) => {
-    soundFx.playClick();
     setActiveProjectTabs((prev) => ({ ...prev, [projectId]: tab }));
   };
 
@@ -314,8 +321,8 @@ export function LayoutShell() {
                   <span className="font-semibold text-sm tracking-tight text-slate-100 group-hover:text-cyan-400 transition-colors">
                     Sabrin Lal Singh
                   </span>
-                  <span className="font-mono text-[10px] text-slate-400">
-                    Data &amp; Quality Engineer
+                  <span className="font-mono text-[10px] text-cyan-400">
+                    Lead Data / QA Engineer · Data Lead
                   </span>
                 </div>
               </a>
@@ -327,7 +334,7 @@ export function LayoutShell() {
                   {kathmanduTime ? `${kathmanduTime} NPT` : "Kathmandu (UTC+5:45)"}
                 </span>
                 <span className="text-slate-500">•</span>
-                <span className="text-emerald-400 font-medium">Available for Roles</span>
+                <span className="text-emerald-400 font-medium">Available for Manager and Lead Roles</span>
               </div>
             </div>
 
@@ -346,15 +353,36 @@ export function LayoutShell() {
 
             {/* Right Action Bar */}
             <div className="flex items-center gap-2">
-              {/* Micro-Sound Acoustic Feedback Toggle */}
-              <AudioToggle />
+              {/* 60-Second Executive Summary Pill */}
+              <button
+                type="button"
+                onClick={() => setRecruiterDrawerOpen(true)}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/70 hover:bg-cyan-900/90 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                title="Open 60-Second Executive Summary for Recruiters & Hiring Managers"
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <span>60s Lead Summary</span>
+              </button>
+
+              {/* Resume Download Pill */}
+              <a
+                href="/Sabrin_Singh_Resume.pdf"
+                download="Sabrin_Lal_Singh_CV.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-slate-700 font-mono text-xs transition-all"
+                title="Download Sabrin's Resume (PDF)"
+              >
+                <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Resume</span>
+              </a>
 
               {/* View Counter Telemetry Pill */}
               <ViewCounter variant="nav" />
 
               <a
                 href="#contact"
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-400 text-slate-950 hover:bg-cyan-300 font-mono text-xs font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-cyan-400 text-slate-950 hover:bg-cyan-300 font-mono text-xs font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
                 <Terminal className="w-3.5 h-3.5" />
                 <span>Contact</span>
@@ -390,9 +418,22 @@ export function LayoutShell() {
                   <span>{kathmanduTime ? `${kathmanduTime} NPT` : "Kathmandu, Nepal"}</span>
                 </div>
                 <span className="text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800/80 text-[11px]">
-                  Available for Roles
+                  Available for Manager and Lead Roles
                 </span>
               </div>
+
+              {/* Mobile 60-Second Recruiter Summary Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setRecruiterDrawerOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-gradient-to-r from-cyan-950/80 to-emerald-950/80 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold shadow-md active:scale-98 transition-transform"
+              >
+                <Zap className="w-4 h-4 text-amber-400" />
+                <span>Open 60-Second Recruiter Summary</span>
+              </button>
 
               <div className="space-y-1">
                 <p className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-1 mb-2">Navigation</p>
@@ -464,10 +505,10 @@ export function LayoutShell() {
             <div className="lg:col-span-7 space-y-6">
               <div className="space-y-2">
                 <p className="font-mono text-xs uppercase tracking-widest text-cyan-400">
-                  <TextScramble text="// SENIOR DATA & QUALITY ENGINEERING" />
+                  <TextScramble text="// LEAD DATA & QA ENGINEER · DATA LEAD & MANAGER" />
                 </p>
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-50 leading-[1.1]">
-                  Architecting High-Throughput Data Ingestion &amp;{" "}
+                  Leading Data Teams, Resilient Lakehouses &amp;{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-emerald-300 to-emerald-400">
                     Automated Quality Gates
                   </span>
@@ -475,9 +516,10 @@ export function LayoutShell() {
               </div>
 
               <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-                Senior Data Engineer &amp; QA Architect based in Kathmandu, Nepal. 9+ years hardening
-                enterprise lakehouses, automated validation assertion gates, and distributed data systems
-                across <strong className="text-slate-100 font-semibold">Databricks</strong>,{" "}
+                Lead Data Engineer &amp; Data Lead / Manager based in Kathmandu, Nepal (available globally). 
+                9+ years directing high-throughput data delivery, hardening petabyte-scale Medallion lakehouses, 
+                and establishing autonomous QA assertion gates across{" "}
+                <strong className="text-slate-100 font-semibold">Databricks</strong>,{" "}
                 <strong className="text-slate-100 font-semibold">Snowflake</strong>,{" "}
                 <strong className="text-slate-100 font-semibold">AWS Redshift</strong>, and{" "}
                 <strong className="text-slate-100 font-semibold">PostgreSQL</strong>.
@@ -490,18 +532,21 @@ export function LayoutShell() {
                     href="#engineering-focus"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-cyan-400 text-slate-950 font-semibold text-sm hover:bg-cyan-300 transition-all hover:shadow-glow-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                   >
-                    <span>Inspect Architecture</span>
+                    <span>Inspect Focus &amp; Delivery</span>
                     <ArrowUpRight className="w-4 h-4" />
                   </a>
                 </Magnetic>
 
                 <Magnetic strength={0.25}>
                   <a
-                    href="#pipeline-visual"
+                    href="/Sabrin_Singh_Resume.pdf"
+                    download="Sabrin_Lal_Singh_CV.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 hover:text-cyan-400 hover:border-slate-700 font-mono text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                   >
-                    <Layers className="w-4 h-4 text-cyan-400" />
-                    <span>Pipeline Topology</span>
+                    <FileText className="w-4 h-4 text-cyan-400" />
+                    <span>Download Resume (PDF)</span>
                   </a>
                 </Magnetic>
 
@@ -842,10 +887,24 @@ export function LayoutShell() {
                       )}
 
                       {currentTab === "arch" && (
-                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-[10px] text-slate-300 space-y-1 overflow-x-auto border border-slate-900">
-                          {project.arch.map((line, i) => (
-                            <div key={i} className="whitespace-pre">{line}</div>
-                          ))}
+                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-[11px] border border-slate-900 space-y-2 overflow-x-auto">
+                          {project.arch.map((line, i) => {
+                            const parts = line.split("→");
+                            if (parts.length === 2) {
+                              return (
+                                <div key={i} className="flex items-center gap-2">
+                                  <span className="shrink-0 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-cyan-400 font-semibold text-[10px]">
+                                    {parts[0].trim()}
+                                  </span>
+                                  <span className="text-emerald-400 text-[10px]">→</span>
+                                  <span className="text-slate-300 text-[11px] leading-tight">
+                                    {parts[1].trim()}
+                                  </span>
+                                </div>
+                              );
+                            }
+                            return <div key={i} className="text-slate-300 text-[11px] whitespace-pre">{line}</div>;
+                          })}
                         </div>
                       )}
 
@@ -938,7 +997,10 @@ export function LayoutShell() {
           </div>
         </section>
 
-        {/* ─── 8. ARCHITECTURAL PRINCIPLES ──────────────────── */}
+        {/* ─── 8. ARCHITECTURAL PHILOSOPHY & PRINCIPLES ───────────────────── */}
+        <section id="principles" aria-label="Architectural Philosophy">
+          <ArchitecturalPrinciples />
+        </section>
 
         {/* ─── 9. VERIFIED CREDENTIALS & CERTIFICATIONS ─────────────────────── */}
         <section id="certifications" className="space-y-8" aria-label="Credentials and Certifications">
@@ -956,6 +1018,7 @@ export function LayoutShell() {
             </p>
           </div>
 
+          {/* Industry Certifications Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {certifications.map((cert) => {
               const IconComp = cert.icon;
@@ -985,18 +1048,84 @@ export function LayoutShell() {
               );
             })}
           </div>
+
+          {/* Education & Leadership Honors Strip */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
+            {/* Leadership Award */}
+            <div className="lg:col-span-5 p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-900/60 to-slate-950 border border-amber-500/30 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 font-semibold flex items-center gap-1.5">
+                    <Award className="w-3.5 h-3.5" />
+                    <span>LEADERSHIP HONOR</span>
+                  </span>
+                  <span className="font-mono text-xs text-amber-300/80">2023</span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-50 pt-1">
+                  {awards[0].title}
+                </h3>
+                <p className="font-mono text-xs text-cyan-400">
+                  {awards[0].organization}
+                </p>
+                <p className="text-xs text-slate-300 leading-relaxed pt-1">
+                  {awards[0].description}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-amber-500/20 font-mono text-[11px] text-slate-400 flex items-center justify-between">
+                <span>Recognized by Executive Leadership</span>
+                <span className="text-amber-300">★ High Distinction</span>
+              </div>
+            </div>
+
+            {/* Formal Engineering & Leadership Education */}
+            <div className="lg:col-span-7 p-6 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                  ACADEMIC &amp; MANAGEMENT PEDIGREE
+                </span>
+                <div className="space-y-3 pt-1">
+                  {education.map((edu, i) => (
+                    <div key={i} className="space-y-1">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold text-slate-100">{edu.degree}</h4>
+                          {"gpa" in edu && (
+                            <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 font-mono text-[10px] font-bold">
+                              {edu.gpa}
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-mono text-xs text-cyan-400">{edu.period}</span>
+                      </div>
+                      <p className="text-xs text-slate-300">{edu.institution} · {edu.location}</p>
+                      <p className="text-[11px] text-slate-400 font-mono">{edu.highlights}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-800 font-mono text-[11px] text-emerald-400 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Verified Dual Pedigree: MBA (Lincoln Univ, 3.78 GPA) · B.E. Computer Engineering (Tribhuvan Univ)</span>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* ─── 10. PEER RECOMMENDATIONS ─────────────────────────────────────── */}
+        {/* ─── 10. PEER RECOMMENDATIONS & EXECUTIVE REFERENCES ─────────────── */}
         <section className="space-y-8" aria-label="Peer Recommendations">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 font-mono text-xs text-emerald-400">
               <Quote className="w-3.5 h-3.5" />
-              <span>// PEER RECOGNITION</span>
+              <span>// LEADERSHIP ENDORSEMENTS &amp; REFERENCES</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Endorsements from Engineering Leadership
+              Recommendations from Engineering Leadership
             </h2>
+            <p className="text-slate-400 text-sm max-w-2xl">
+              Feedback from senior colleagues and direct contact references available for verification.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1029,17 +1158,17 @@ export function LayoutShell() {
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50 max-w-xl mx-auto">
-              Ready to Solidify Your Data Quality &amp; Pipeline Architecture?
+              Ready to Solidify Your Data Quality &amp; Pipeline Delivery?
             </h2>
 
             <p className="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
-              Available for senior data engineering roles, lakehouse modernization contracts, and
-              automated testing architecture advisory.
+              Available for Lead Data Engineer, Lead QA Engineer, and Data Lead / Manager roles,
+              lakehouse modernization initiatives, and enterprise automated QA advisory.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <a
-                href="mailto:sabrinlalsingh@gmail.com?subject=Technical Collaboration — Sabrin Singh"
+                href="mailto:sabrinlalsingh@gmail.com?subject=Leadership / Technical Inquiries — Sabrin Singh"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-400 text-slate-950 font-semibold text-sm hover:bg-cyan-300 transition-all hover:shadow-glow-cyan"
               >
                 <Mail className="w-4 h-4" />
@@ -1057,11 +1186,13 @@ export function LayoutShell() {
 
               <a
                 href="/Sabrin_Singh_Resume.pdf"
-                download
+                download="Sabrin_Lal_Singh_CV.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-100 font-mono text-sm transition-colors"
               >
                 <FileText className="w-4 h-4 text-emerald-400" />
-                <span>Resume (PDF)</span>
+                <span>Download Resume (PDF)</span>
               </a>
             </div>
 
@@ -1069,7 +1200,7 @@ export function LayoutShell() {
             <div className="pt-8 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-xs font-mono text-slate-400 gap-4">
               <div className="flex items-center gap-4">
                 <a
-                  href="https://github.com/sabrin2052"
+                  href="https://github.com/sabrinsingh"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
@@ -1108,6 +1239,14 @@ export function LayoutShell() {
           </footer>
         </section>
       </main>
+
+      {/* ─── 60-SECOND RECRUITER DOSSIER DRAWER ────────────────────────────── */}
+      <RecruiterDrawer
+        isOpen={recruiterDrawerOpen}
+        onClose={() => setRecruiterDrawerOpen(false)}
+        onCopyEmail={handleCopyEmail}
+        copiedEmail={copiedEmail}
+      />
     </div>
   );
 }

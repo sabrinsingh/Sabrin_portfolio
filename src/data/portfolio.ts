@@ -8,42 +8,30 @@ import { FaBuilding, FaCode, FaDatabase, FaCogs } from "react-icons/fa";
 export const experience = [
     {
         company: "Cedar Gate Services Pvt. Ltd.",
-        role: "Data Engineer",
+        role: "Principal Data Engineer",
         location: "Lalitpur, Nepal",
         period: "Sep 2024 – Present",
-        description: "Architecting high-throughput data ingestion pipelines and resilient processing systems for enterprise healthcare analytics.",
+        description: "Directing high-throughput data ingestion, warehouse modeling, and governance frameworks for mission-critical enterprise US healthcare analytics.",
         highlights: [
-            "Engineered petabyte-scale data pipelines ingesting diverse healthcare records into a centralized AWS Redshift warehouse.",
-            "Optimized PySpark transformation logic, accelerating healthcare data throughput by 30% and significantly reducing compute costs.",
-            "Architected robust data infrastructure utilizing advanced SQL, custom UDFs, and stored procedures to ensure strict HIPAA compliance.",
-            "Spearheaded data governance initiatives, establishing automated validation gates aligned with US healthcare standards.",
-            "Mentored engineering teams on modern lakehouse patterns and scalable architecture design."
-        ]
-    },
-    {
-        company: "CoWrkr",
-        role: "Data Engineering Consultant / Advisor",
-        location: "Remote, United States",
-        period: "May 2024 – Present",
-        description: "Strategic advisor for scalable data pipelines, AI governance, and enterprise data quality frameworks.",
-        highlights: [
-            "Advising executive leadership on the strategic design of enterprise-grade data quality and reconciliation frameworks.",
-            "Spearheading data reliability initiatives, ensuring 99.9% consistency across Development, Staging, and Production environments.",
-            "Architecting automated SQL data testing harnesses—rigorously validating schema drift and business rule enforcement.",
-            "Designing data quality assertion gates and operational anomaly detection to prevent downstream data corruption."
+            "Ingested and processed large-scale clinical datasets from diverse healthcare providers into a centralized AWS Redshift warehouse for executive analytics.",
+            "Developed PySpark-based ingestion optimizations, increasing healthcare data throughput by 30% and significantly cutting compute costs.",
+            "Architected data infrastructure using advanced SQL, stored procedures, and custom UDFs to enable rapid exploration and sub-second analytics.",
+            "Implemented enterprise data governance and automated validation benchmarks aligned with strict US healthcare standards (HIPAA).",
+            "Mentored engineering squads on modern lakehouse design patterns, schema contracts, and scalable data models."
         ]
     },
     {
         company: "Techkraft Inc. Pvt. Ltd.",
-        role: "Senior Software (Data) Engineer",
+        role: "Senior Software (Data) Engineer | Lead",
         location: "Lalitpur, Nepal",
         period: "Oct 2022 – May 2024",
-        description: "Led the strategic modernization of legacy data infrastructure into a high-performance Databricks Lakehouse.",
+        description: "Led the migration of legacy data infrastructure to Databricks + Delta Lake while managing engineering delivery and SLA compliance.",
         highlights: [
-            "Orchestrated the migration of legacy pipelines to a Databricks + Delta Lake architecture, driving a 40% improvement in scalability.",
-            "Architected a reusable, resilient PySpark data quality framework capable of parsing complex structured and semi-structured payloads.",
-            "Deployed advanced anomaly detection algorithms to proactively flag data integrity risks before downstream consumption.",
-            "Directed an 8-member engineering squad, ensuring rigorous SLA adherence and accelerating critical project delivery."
+            "Awarded 'Best Employee Award 2023' in recognition of outstanding technical leadership and on-time project delivery.",
+            "Managed and mentored an 8-member engineering squad, driving agile sprint execution, code quality, and 99.9% SLA adherence.",
+            "Led the migration of legacy ETL workflows to Databricks + Delta Lake, improving overall processing scalability by 40%.",
+            "Designed a reusable PySpark data quality framework capable of parsing complex structured and semi-structured payloads with automated anomaly detection.",
+            "Conducted data quality assessments to ensure rigorous accuracy and completeness across enterprise data assets."
         ]
     },
     {
@@ -51,50 +39,51 @@ export const experience = [
         role: "Software (Data) Engineer",
         location: "Kathmandu, Nepal",
         period: "Mar 2018 – Oct 2022",
-        description: "Engineered high-throughput ETL workflows for critical US healthcare claims intelligence.",
+        description: "Engineered and maintained high-throughput ETL workflows for US healthcare claims lifecycle and payment integrity.",
         highlights: [
-            "Designed and maintained complex ETL orchestration workflows utilizing ODI, Oracle SQL, and Python.",
-            "Achieved a 35% reduction in executive report generation time through advanced SQL execution plan tuning.",
-            "Automated legacy manual reconciliation pipelines, radically increasing data throughput and accuracy.",
-            "Rapidly promoted from Trainee to Senior role by consistently delivering resilient infrastructure solutions."
+            "Developed and maintained mission-critical ETL workflows (ODI, Oracle SQL, Python) processing millions of healthcare claims.",
+            "Optimized complex SQL execution plans, slashing executive report generation time by 35% and improving operational efficiency.",
+            "Automated manual reconciliation processes, dramatically increasing data delivery throughput and eliminating human errors.",
+            "Collaborated with business analysts to translate clinical business requirements into scalable, fault-tolerant pipelines."
         ]
     },
     {
-        company: "IMS Investment Management Service",
+        company: "I.M.S. Investment Management Service",
         role: "Software Engineer (PHP Developer)",
         location: "Kathmandu, Nepal",
-        period: "Oct 2017 – Mar 2018",
-        description: "Backend development for investment tracking systems.",
+        period: "Dec 2017 – Mar 2018",
+        description: "Backend data integration and database optimization for financial investment tracking systems.",
         highlights: [
-            "Built backend integration modules in PHP/MySQL for investment tracking.",
-            "Optimized database performance via query tuning and caching."
+            "Built backend integration modules in PHP (Laravel) and MySQL for investment tracking systems.",
+            "Optimized database performance via query tuning, indexing, and cached retrieval strategies."
+        ]
+    },
+    {
+        company: "Cotiviti Nepal Ltd.",
+        role: "Trainee Data Engineer",
+        location: "Kathmandu, Nepal",
+        period: "Dec 2016 – May 2017",
+        description: "Foundational ETL workflows, healthcare data profiling, and validation for analytics readiness.",
+        highlights: [
+            "Gained foundational knowledge in ETL workflows and Oracle SQL for healthcare data pipelines.",
+            "Executed data profiling and schema validation tasks to ensure clinical data readiness for analytics."
         ]
     }
 ];
 
-// Helper to extract year from period string like "Sep 2024 – Present" or "Oct 2017 – Mar 2018"
-const getStartYear = (period: string) => {
-    const match = period.match(/\d{4}/);
-    return match ? parseInt(match[0]) : new Date().getFullYear();
-};
-
-export const calculateYearsOfExperience = () => {
-    if (!experience || experience.length === 0) return 7; // Fallback
-    const startYears = experience.map(exp => getStartYear(exp.period));
-    const earliestYear = Math.min(...startYears);
-    const currentYear = new Date().getFullYear();
-    return currentYear - earliestYear;
-};
-
-const yearsOfExp = calculateYearsOfExperience();
-
 export const personalInfo = {
     name: "Sabrin Lal Singh",
-    title: "Data Analytics Engineer",
-    roles: ["Data Engineer", "Data Quality Engineer", "Data Analytics Engineer Analyst", "Analytics Strategist", "Data Analytics Engineer"],
+    title: "Lead Data Engineer & QA Engineer · Data Lead / Manager",
+    roles: [
+        "Data Manager",
+        "Data Lead",
+        "Lead Data Engineer",
+        "Lead Data QA Engineer",
+        "Analytics Delivery Manager"
+    ],
     email: "sabrinlalsingh@gmail.com",
     location: "Kathmandu, Nepal",
-    summary: `Strategic Data Analytics Engineer with ${yearsOfExp}+ years architecting resilient, petabyte-scale data infrastructure. Specializing in the AWS and Databricks ecosystems, I bridge the gap between raw data and executive decision-making—delivering high-fidelity, HIPAA-compliant data products for mission-critical healthcare environments.`,
+    summary: `Strategic Lead Data & QA Engineer and Data Delivery Manager with 9+ years directing petabyte-scale data infrastructure and high-performing engineering squads. Specializing in Databricks, Delta Lake, Snowflake, and AWS ecosystems, I bridge technical execution with business strategy—delivering high-fidelity, HIPAA-compliant data products and automated zero-defect validation gates.`,
     social: {
         github: "https://github.com/sabrinsingh",
         linkedin: "https://linkedin.com/in/sabrin-lal-singh-478218a0",
@@ -137,28 +126,31 @@ export const projects = [
 
 export const skills = [
     {
-        category: "Data Engineering",
+        category: "Data Engineering & Lakehouses",
         icon: FaDatabase,
-        items: ["ETL/ELT Design", "Data Modeling", "Databricks Workflows", "Delta Lake", "Snowflake", "Apache Spark"]
+        items: ["ETL/ELT Design", "Data Modeling", "Databricks Workflows", "Delta Lake", "Snowflake", "Apache Spark (PySpark)"]
     },
     {
-        category: "Cloud & Infrastructure",
+        category: "Cloud Platforms & Warehousing",
         icon: FaBuilding,
-        items: ["AWS (S3, Redshift, Glue)", "Azure Databricks", "Cloud Architecture", "Performance Tuning"]
+        items: ["AWS (S3, Redshift, Glue)", "Azure Databricks", "Data Warehousing", "Performance & Cost Tuning"]
     },
     {
-        category: "Languages & Tools",
+        category: "Languages & Frameworks",
         icon: FaCode,
-        items: ["Python (PySpark, Pandas)", "SQL (Redshift, PostgreSQL, Oracle)", "Git", "Jira", "CI/CD"]
+        items: ["Python (PySpark, Pandas)", "SQL (Redshift, PostgreSQL, Oracle)", "Stored Procedures & UDFs", "Git", "CI/CD Data Gates"]
     },
     {
-        category: "Data Quality & QA Automation",
+        category: "Data Quality & Automated QA",
         icon: FaCogs,
-        items: ["Stored Procedures", "SQL Test Suites", "Claims Reconciliation", "Data Quality Frameworks", "Anomaly Detection", "Automated Validation Gates"]
+        items: ["Automated Validation Gates", "SQL Test Suites", "Claims Reconciliation", "Anomaly Detection Scripts", "Data Profiling", "Zero-Drift Sentinels"]
+    },
+    {
+        category: "Healthcare Domain & Governance",
+        icon: FaBuilding,
+        items: ["HIPAA Compliance", "Claims Lifecycle", "Encounter Data", "Data Governance Benchmarks", "HL7 / FHIR Feeds"]
     }
 ];
-
-// End of file
 
 export const certifications = [
     {
@@ -254,20 +246,36 @@ export const recommendations = [
     }
 ];
 
-export const engineeringPrinciples = [
+export const education = [
     {
-        title: "Validation as Code",
-        description: "Data quality is not an afterthought; it is a primary unit of code. Every pipeline must include autonomous verification gates.",
-        icon: "ShieldCheck"
+        degree: "Master of Business Administration (MBA)",
+        institution: "KFA Business School (Lincoln University)",
+        location: "Kathmandu, Nepal",
+        period: "Completed",
+        gpa: "3.78 GPA",
+        highlights: "Strategic Management, Leadership, Operations, and Business Analytics."
     },
     {
-        title: "Failure-First Design",
-        description: "Architecting for inevitable failure through idempotent retries, decoupled components, and atomic state management (ACID).",
-        icon: "Zap"
+        degree: "Bachelor’s in Computer Engineering",
+        institution: "Kathford International College of Engineering and Management (Tribhuvan University)",
+        location: "Lalitpur, Nepal",
+        period: "2012 – 2016",
+        highlights: "Core engineering foundation in algorithms, database design, distributed systems, and computer networks."
     },
     {
-        title: "Cost-Optimized Compute",
-        description: "Balancing performance with business economics by choosing the right compute gravity for the workload (Serverless vs. Clusters).",
-        icon: "Activity"
+        degree: "+2 Science (Higher Secondary)",
+        institution: "Xavier International College",
+        location: "Kathmandu, Nepal",
+        period: "2010 – 2012",
+        highlights: "Mathematics and Physics focus."
+    }
+];
+
+export const awards = [
+    {
+        title: "Best Employee Award 2023",
+        organization: "Techkraft Inc. Pvt. Ltd.",
+        year: "2023",
+        description: "Awarded for exceptional engineering leadership, mentorship, and on-time migration of enterprise data infrastructure to Databricks Lakehouse."
     }
 ];

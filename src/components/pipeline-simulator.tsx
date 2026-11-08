@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Activity, AlertTriangle, ShieldCheck, Zap, RefreshCw, Terminal } from "lucide-react";
-import { soundFx } from "@/lib/sound-fx";
 
 interface StreamLog {
   id: string;
@@ -56,7 +55,6 @@ export function PipelineSimulator() {
   };
 
   const handleSimulateSpike = () => {
-    soundFx.playBlip(780, 0.08);
     setGateStatus("SPIKE");
     setThroughput(185400);
     addLog("WARN", "SURGE DETECTED: Ingestion velocity exceeded 180,000 rec/sec. Autoscaling 4 Spark worker nodes.");
@@ -68,7 +66,6 @@ export function PipelineSimulator() {
   };
 
   const handleInjectAnomaly = () => {
-    soundFx.playAlert();
     setGateStatus("QUARANTINE");
     setAnomalyRate(1.84);
     setQuarantinedCount((c) => c + 1);
@@ -81,7 +78,6 @@ export function PipelineSimulator() {
   };
 
   const handleReset = () => {
-    soundFx.playClick();
     setGateStatus("HEALTHY");
     setThroughput(52400);
     setAnomalyRate(0.001);
@@ -272,3 +268,4 @@ export function PipelineSimulator() {
     </div>
   );
 }
+
