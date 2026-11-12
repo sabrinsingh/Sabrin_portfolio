@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ShieldCheck, Database, Layers, ArrowRight, Activity, Terminal, Code2 } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Database, Layers, Activity, Terminal, Code2 } from "lucide-react";
 import { Reveal } from "@/components/motion";
-import { SectionHeading } from "@/components/section-heading";
 
 interface PipelineNode {
     id: string;
@@ -19,228 +18,170 @@ const pipelineNodes: PipelineNode[] = [
     {
         id: "SRC",
         label: "Clinical Feeds",
-        sublabel: "HL7 / FHIR / Parquet",
+        sublabel: "Extracts and payloads",
         type: "source",
-        metrics: "50M+ rec/day",
-        details: "Heterogeneous clinical records, lab telemetry, and patient encounter payloads landing into encrypted S3 raw buckets.",
-        validation: "Format validation, schema registry lookup, and file MD5 hash verification.",
-        codeRule: "s3_watcher.verify_checksum(file_stream, expected_md5)",
+        metrics: "multiple sources",
+        details: "Clinical and claims extracts from several source systems, arriving as files and tables on different schedules.",
+        validation: "File presence and row count compared to the expected batch size.",
+        codeRule: "batch_manifest.expected_rows(batch_id)",
     },
     {
         id: "ING",
-        label: "Ingestion Engine",
-        sublabel: "PySpark & AWS Glue",
+        label: "Ingestion",
+        sublabel: "PySpark and Redshift COPY",
         type: "process",
-        metrics: "p99 < 3.2s",
-        details: "Parallel partition ingestion with strict batch idempotency, retry backoffs, and corrupt record routing.",
-        validation: "Zero payload truncation check; quarantine malformed JSON/Parquet batches.",
-        codeRule: "spark.read.option('mode', 'PERMISSIVE').option('columnNameOfCorruptRecord', '_corrupt')",
+        metrics: "hourly batches",
+        details: "Batch loads with idempotent reruns, so a failed batch can be replayed without duplicating rows.",
+        validation: "Corrupt and truncated payloads are counted and held, not silently dropped.",
+        codeRule: "spark.read.option('mode', 'PERMISSIVE')",
     },
     {
-        id: "BRZ",
-        label: "Bronze Delta",
-        sublabel: "Append-only Lakehouse",
+        id: "LND",
+        label: "Raw landing",
+        sublabel: "Append-only history",
         type: "storage",
-        metrics: "99.999% SLA",
-        details: "Immutable raw history in Delta Lake with schema enforcement, time-travel auditing, and ACID isolation.",
-        validation: "Delta schema constraint assertions and partition key non-null enforcement.",
-        codeRule: "ALTER TABLE bronze_records ADD CONSTRAINT valid_date CHECK (event_date IS NOT NULL)",
+        metrics: "one row per source record",
+        details: "Raw records kept as received, so a bad batch can be traced back to the payload that produced it.",
+        validation: "Batch id and load timestamp required on every row.",
+        codeRule: "df.filter(F.col('loaded_at').isNull()).count() == 0",
     },
     {
-        id: "SLV",
-        label: "Silver Curated",
-        sublabel: "Enriched & Deduplicated",
+        id: "CUR",
+        label: "Curated",
+        sublabel: "Typed and deduplicated",
         type: "storage",
-        metrics: "Dedupe: 100%",
-        details: "Business keys normalized, null handling, type coercion, patient entity deduplication across clinical providers.",
-        validation: "Great Expectations assertion suite covering null primary keys and data ranges.",
-        codeRule: "expect_column_values_to_not_be_null(column='patient_id')",
+        metrics: "keys enforced",
+        details: "Business keys normalised, types coerced, duplicate patient and claim records resolved across providers.",
+        validation: "Null primary keys, duplicate claim ids and out-of-range dates are rejected.",
+        codeRule: "df.filter(F.col('claim_id').isNull()).count() == 0",
     },
     {
         id: "QA",
-        label: "Autonomous QA Gate",
-        sublabel: "Blocking Verification",
+        label: "Check gate",
+        sublabel: "Blocking",
         type: "gate",
-        metrics: "0 Gold Defects",
-        details: "Automated row count reconciliation vs source, statistical anomaly detection, and CI/CD blocking halts.",
-        validation: "Hard fail threshold on null primary keys and reconciliation variances > 0.001%.",
-        codeRule: "if variance_pct > 0.001: halt_pipeline_and_alert_pagerduty()",
+        metrics: "batch held on failure",
+        details: "Row counts compared against the source, duplicates and null rates checked, and failing batches held with the failing rule named.",
+        validation: "A batch does not move on until every check passes.",
+        codeRule: "if failures: quarantine(df, failures)",
     },
     {
-        id: "GLD",
-        label: "Gold Analytics",
-        sublabel: "HIPAA BI Models",
+        id: "WH",
+        label: "Warehouse marts",
+        sublabel: "Reporting tables",
         type: "storage",
-        metrics: "Sub-sec queries",
-        details: "Star schema data marts in AWS Redshift and Databricks SQL for executive clinical reporting and ML features.",
-        validation: "Referential integrity between fact & dimension tables; 100% PII scrubber validation.",
-        codeRule: "ASSERT NOT EXISTS (SELECT 1 FROM gold_facts WHERE dim_patient_sk IS NULL)",
+        metrics: "reports read checked data",
+        details: "Modelled tables in Redshift and Databricks for clinical and operational reporting.",
+        validation: "Every fact row must resolve to a dimension row.",
+        codeRule: "select count(*) from facts f left join dim d using (patient_sk) where d.patient_sk is null",
     },
     {
         id: "BI",
-        label: "Consumer Layer",
-        sublabel: "Clinical Analytics",
+        label: "Reporting",
+        sublabel: "Clinical analytics",
         type: "sink",
-        metrics: "30+ Analysts",
-        details: "Downstream Tableau, PowerBI executive dashboards, and HIPAA-compliant clinical analytics consumption layers.",
-        validation: "Query performance optimization, sub-second p50 response SLAs, and cache hit rate tracking.",
-        codeRule: "analytics_sla_monitor.assert_p95_latency(threshold_ms=800)",
+        metrics: "dashboards and exports",
+        details: "Reports and dashboards for clinical and operational teams.",
+        validation: "Report queries reviewed for cost and runtime before release.",
+        codeRule: "explain <report query>",
     },
 ];
 
 export function DataPipelineVisual() {
     const [selectedNode, setSelectedNode] = useState<PipelineNode>(pipelineNodes[3]);
 
-    const getNodeColor = (type: PipelineNode["type"]) => {
-        switch (type) {
-            case "source":
-                return "text-sky-600 dark:text-sky-400 border-sky-300 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/40";
-            case "process":
-                return "text-indigo-600 dark:text-indigo-400 border-indigo-300 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40";
-            case "storage":
-                return "text-blue-600 dark:text-blue-400 border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40";
-            case "gate":
-                return "text-emerald-600 dark:text-emerald-400 border-emerald-400 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 ring-1 ring-emerald-500/30";
-            case "sink":
-                return "text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40";
-        }
-    };
-
     const getNodeIcon = (type: PipelineNode["type"]) => {
         switch (type) {
             case "source": return <Activity className="w-4 h-4" />;
             case "process": return <Terminal className="w-4 h-4" />;
             case "storage": return <Database className="w-4 h-4" />;
-            case "gate": return <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />;
+            case "gate": return <ShieldCheck className="w-4 h-4" />;
             case "sink": return <Layers className="w-4 h-4" />;
         }
     };
 
     return (
-        <section id="pipeline-visual" className="border-t py-16 md:py-24" style={{ borderColor: "hsl(var(--hairline))" }}>
-            <div className="container mx-auto px-5 sm:px-8 max-w-6xl">
-                <SectionHeading
-                    index="05"
-                    eyebrow="Architecture"
-                    title={
-                        <>
-                            Where the gates actually&nbsp;
-                            <em className="text-editorial-italic text-primary">sit</em>.
-                        </>
-                    }
-                    description="Zero unverified records reach a downstream consumer. Select any stage to inspect its assertions, boundaries and runtime gate logic."
-                />
+        <>
+            <div className="space-y-2">
+                <p className="eyebrow">Architecture</p>
+                <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+                    Where the gates actually sit
+                </h2>
+                <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+                    A record does not move on until its checks pass. Select a stage to see what is checked and where it stops.
+                </p>
+            </div>
 
-                <Reveal amount={0.1}>
-                <div className="border border-border rounded-lg p-6 sm:p-8 bg-card shadow-sm">
-                    {/* Nodes Strip */}
-                    <div className="relative py-6 overflow-x-auto scrollbar-hide z-10">
-                        <div className="min-w-[840px] flex items-center justify-between relative px-6">
-                            {/* Bus Line */}
-                            <div className="absolute top-1/2 left-8 right-8 h-px bg-border -translate-y-1/2 z-0">
-                                {/* Streaming Pulse */}
-                                <motion.div
-                                    animate={{ left: ["0%", "95%"] }}
-                                    transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
-                                    className="absolute top-1/2 -translate-y-1/2 w-20 h-[2px] bg-primary/70"
-                                />
-                            </div>
-
-                            {/* Stage Nodes */}
-                            {pipelineNodes.map((node) => {
-                                const isSelected = selectedNode.id === node.id;
-                                return (
-                                    <button
-                                        key={node.id}
-                                        type="button"
-                                        onClick={() => setSelectedNode(node)}
-                                        className={`relative z-10 flex flex-col items-center group cursor-pointer focus:outline-none transition-all ${
-                                            isSelected ? "scale-105" : "hover:scale-105 opacity-80 hover:opacity-100"
+            <Reveal amount={0.1}>
+                <div className="panel rounded-[14px] p-6 sm:p-8">
+                    {/* Stage strip: wraps on small screens instead of scrolling sideways */}
+                    <div className="flex flex-wrap sm:flex-nowrap items-start justify-center sm:justify-between gap-x-4 gap-y-7">
+                        {pipelineNodes.map((node) => {
+                            const isSelected = selectedNode.id === node.id;
+                            return (
+                                <button
+                                    key={node.id}
+                                    type="button"
+                                    onClick={() => setSelectedNode(node)}
+                                    aria-pressed={isSelected}
+                                    className="flex flex-col items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-slate-900/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+                                >
+                                    <span
+                                        className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
+                                            isSelected
+                                                ? "border-slate-600 text-slate-100"
+                                                : "border-slate-800 text-slate-400"
                                         }`}
                                     >
-                                        <div
-                                            className={`w-12 h-12 rounded-lg border flex items-center justify-center transition-all ${
-                                                getNodeColor(node.type)
-                                            } ${
-                                                isSelected
-                                                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                                                    : ""
-                                            }`}
-                                        >
-                                            {getNodeIcon(node.type)}
-                                        </div>
-
-                                        <span className="font-mono text-xs font-semibold text-foreground mt-2.5 tracking-wide">
-                                            {node.id}
-                                        </span>
-                                        <span className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                                            {node.label}
-                                        </span>
-
-                                        {isSelected && (
-                                            <motion.div
-                                                layoutId="node-arrow"
-                                                className="absolute -bottom-3.5 w-2 h-2 rotate-45 bg-primary"
-                                                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                            />
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                                        {getNodeIcon(node.type)}
+                                    </span>
+                                    <span className={`text-xs ${isSelected ? "text-slate-100" : "text-slate-400"}`}>
+                                        {node.id}
+                                    </span>
+                                    <span className="font-mono text-[11px] text-slate-500">{node.label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
 
-                    {/* Inspected Node Detail Box */}
+                    {/* Selected stage detail */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={selectedNode.id}
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.18 }}
-                            className="mt-6 pt-6 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-6 bg-secondary/40 rounded-lg p-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.18, ease: "easeOut" }}
+                            className="mt-8 grid grid-cols-1 gap-6 border-t border-slate-800 pt-6 md:grid-cols-3"
                         >
-                            <div className="md:col-span-1 space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-mono text-xs px-2 py-0.5 rounded border border-border bg-card uppercase font-medium">
-                                        STAGE // {selectedNode.id}
-                                    </span>
-                                    <span className="font-mono text-xs text-primary font-medium">
-                                        {selectedNode.metrics}
-                                    </span>
-                                </div>
-                                <h3 className="font-display font-semibold text-xl text-foreground">
-                                    {selectedNode.label}
-                                </h3>
-                                <p className="font-mono text-xs text-muted-foreground">
-                                    {selectedNode.sublabel}
+                            <div className="space-y-2">
+                                <p className="text-xs text-slate-400">
+                                    Stage {selectedNode.id} · {selectedNode.metrics}
                                 </p>
+                                <h3 className="text-xl font-medium text-slate-50">{selectedNode.label}</h3>
+                                <p className="text-xs text-slate-400">{selectedNode.sublabel}</p>
                             </div>
 
-                            <div className="md:col-span-1 space-y-1.5">
-                                <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                                    Architecture &amp; Data Flow
-                                </p>
-                                <p className="text-sm text-foreground/90 leading-relaxed">
-                                    {selectedNode.details}
-                                </p>
+                            <div className="space-y-1.5">
+                                <p className="text-xs text-slate-400">What happens</p>
+                                <p className="text-sm text-slate-300 leading-relaxed">{selectedNode.details}</p>
                             </div>
 
-                            <div className="md:col-span-1 space-y-2 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6">
-                                <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
-                                    Automated Quality Assertion Gate
+                            <div className="space-y-2 border-t border-slate-800 pt-4 md:border-t-0 md:border-l md:pl-6 md:pt-0">
+                                <p className="flex items-center gap-1.5 text-xs text-slate-400">
+                                    <CheckCircle2 className="w-3.5 h-3.5" />
+                                    Checked here
                                 </p>
-                                <p className="text-xs font-mono text-emerald-700 dark:text-emerald-300 leading-relaxed bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded border border-emerald-200 dark:border-emerald-800">
+                                <p className="border-l border-slate-800 pl-3 text-sm text-slate-300 leading-relaxed">
                                     {selectedNode.validation}
                                 </p>
                                 {selectedNode.codeRule && (
                                     <div className="pt-1">
-                                        <p className="font-mono text-[10px] uppercase text-muted-foreground flex items-center gap-1 mb-1">
-                                            <Code2 className="w-3 h-3 text-primary" />
-                                            Runtime Rule Logic
+                                        <p className="mb-1 flex items-center gap-1 font-mono text-[11px] text-slate-500">
+                                            <Code2 className="w-3 h-3" />
+                                            Rule
                                         </p>
-                                        <code className="text-[11px] font-mono text-foreground/90 bg-card px-2.5 py-1.5 rounded border border-border block overflow-x-auto scrollbar-hide">
+                                        <code className="block overflow-x-auto scrollbar-hide rounded border border-slate-800 bg-slate-950/60 px-2.5 py-1.5 font-mono text-[11px] text-slate-300">
                                             {selectedNode.codeRule}
                                         </code>
                                     </div>
@@ -249,19 +190,15 @@ export function DataPipelineVisual() {
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Pipeline Status Footer */}
-                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-muted-foreground pt-4 border-t border-border">
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-4 text-xs text-slate-400">
                         <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                            TELEMETRY: Zero unvalidated flow to Gold consumption
+                            <span className="status-dot" aria-hidden="true" />
+                            No unvalidated rows reached reporting
                         </span>
-                        <span className="flex items-center gap-1 text-accent font-medium">
-                            Delta Lake time-travel auditing enabled <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
+                        <span>Batch id and load timestamp kept for replay</span>
                     </div>
                 </div>
-                </Reveal>
-            </div>
-        </section>
+            </Reveal>
+        </>
     );
 }
