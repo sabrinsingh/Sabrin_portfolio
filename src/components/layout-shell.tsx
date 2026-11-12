@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  Database,
-  ShieldCheck,
-  Activity,
   Terminal,
-  Layers,
   ArrowUpRight,
   CheckCircle2,
   Copy,
@@ -18,22 +14,11 @@ import {
   MapPin,
   Search,
   Award,
-  Quote,
-  Clock,
-  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ViewCounter } from "@/components/view-counter";
-import { HeroDataMesh } from "@/components/hero-data-mesh";
 import { SpotlightCard } from "@/components/spotlight-card";
-import { TextScramble } from "@/components/text-scramble";
-import { Magnetic } from "@/components/magnetic";
-import { CustomCursor } from "@/components/custom-cursor";
-import { SmoothScroll } from "@/components/smooth-scroll";
-import { HeroCinematicPhoto } from "@/components/hero-cinematic-photo";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 import { Currently } from "@/components/currently";
-import { VelocityRibbon } from "@/components/velocity-ribbon";
 import { PipelineSimulator } from "@/components/pipeline-simulator";
 import { ArchitecturalPrinciples } from "@/components/principles";
 import { certifications, recommendations, experience, education, awards } from "@/data/portfolio";
@@ -87,147 +72,138 @@ interface CaseStudy {
 const CASE_STUDIES: CaseStudy[] = [
   {
     id: 1,
-    title: "Clinical Data Orchestration Pipeline",
-    subtitle: "Medallion Lakehouse & Automated Validation Gates",
-    category: "Databricks & Lakehouse",
-    highlightMetric: "50M+ Daily Records · 95% Anomaly Drop",
+    title: "Clinical data warehouse and quality gates",
+    subtitle: "Redshift, custom SQL, HIPAA-regulated clinical data",
+    category: "Redshift & Healthcare",
+    highlightMetric: "Checks before reporting, not after",
     overview: {
-      purpose: "Built to replace brittle ETL scripts ingesting 50M+ daily healthcare records into a high-performance Medallion Lakehouse.",
-      challenge: "Heterogeneous clinical feeds and unvalidated upstream schemas caused silent data corruption at the Bronze → Silver boundary, risking inaccurate clinician reports.",
-      solution: "Architected Delta Lake schema enforcement, PySpark automated assertion wrappers, and automated Great Expectations verification gates. Slashed anomalies by 95%.",
-      role: "Lead Data Engineer — Designed lakehouse architecture, partition strategies, and autonomous quality assertion gates.",
+      purpose: "Bring clinical and claims data from several source systems into one warehouse where reporting can trust it.",
+      challenge: "Feeds arrived with inconsistent schemas and no blocking checks, so bad rows surfaced in clinician reports rather than at load time.",
+      solution: "Wrote the load path as reviewed SQL, user-defined functions and stored procedures in Redshift, then added quality benchmarks that hold a batch when counts, keys or null rates fall outside the expected range.",
+      role: "Principal Data Engineer. Owned the load logic, the governance standards and the quality benchmarks.",
     },
     arch: [
-      "Source Systems    → S3 Raw Staging (HL7 / FHIR / Parquet feeds)",
-      "Bronze Layer      → Delta Lake append-only ingestion with schema tracking",
-      "                  → Automated column type coercion & quarantine routing",
-      "Silver Layer      → PySpark deduplication & entity normalization",
-      "                  → Automated assertion gate via Great Expectations",
-      "Gold Layer        → Star schema clinical marts in Databricks SQL",
-      "                  → Sub-second query serving for clinical intelligence",
+      "Source Systems  → Clinical and claims extracts from multiple providers",
+      "Staging         → Type and null enforcement on load",
+      "Batch Check     → Row counts, claim key uniqueness, null patient references",
+      "Warehouse       → Redshift tables with reviewed SQL, UDFs and stored procedures",
+      "Reporting       → Analytics and operational reports read only checked data",
     ],
     codeSnippet: {
-      title: "bronze_to_silver_assertion_gate.py",
-      language: "python",
-      code: `@dlt.table(
-    name="silver_clinical_records",
-    comment="Cleansed & assertion-verified clinical encounters"
+      title: "staging_claims_batch_check.sql",
+      language: "sql",
+      code: `with batch_stats as (
+    select
+        count(*)                                        as row_count,
+        count(distinct claim_id)                        as distinct_claims,
+        sum(case when patient_id is null then 1 else 0 end) as null_patients
+    from staging.claims
+    where batch_id = :batch_id
 )
-@dlt.expect_or_drop("valid_encounter_id", "encounter_id IS NOT NULL")
-@dlt.expect_or_quarantine("valid_patient_ref", "patient_sk > 0")
-@dlt.expect_or_fail("timestamp_within_range", "event_time >= '2020-01-01'")
-def silver_clinical_records():
-    return (
-        dlt.read("bronze_raw_feeds")
-        .withColumn("ingestion_ts", F.current_timestamp())
-        .withColumn("patient_sk", F.coalesce(F.col("patient_id"), F.lit(-1)))
-        .dropDuplicates(["encounter_id", "source_feed_id"])
-    )`,
+select
+    row_count,
+    row_count - distinct_claims as duplicate_claims,
+    null_patients
+from batch_stats
+where row_count - distinct_claims > 0
+   or null_patients > 0;`,
     },
     impact: [
-      "50M+ daily records processed within a 15-minute SLA window.",
-      "95% reduction in downstream data anomalies via automated blocking gates.",
-      "40% compute cost reduction through optimized Delta Lake file compacting (Z-ORDER on patient_id).",
-      "Zero silent data corruptions reported across 18 consecutive months.",
+      "One load path for clinical and claims data, with checks that run before anything reaches a report.",
+      "Governance standards and quality benchmarks documented for HIPAA-regulated data.",
+      "Query logic kept in reviewed SQL, user-defined functions and stored procedures rather than ad hoc scripts.",
+      "Mentored junior engineers on the load and review process.",
     ],
-    stack: ["Databricks", "Delta Lake", "PySpark", "Great Expectations", "Python", "AWS S3"],
+    stack: ["AWS Redshift", "Advanced SQL", "Stored Procedures", "Python", "HIPAA Data Governance"],
   },
   {
     id: 2,
-    title: "Healthcare Claims Analytics Warehouse",
-    subtitle: "High-Throughput AWS Redshift & Stored Procedure Reconciliation",
-    category: "AWS Redshift & Analytics",
-    highlightMetric: "35% Redshift Query Latency Cut",
+    title: "Reusable PySpark data quality framework",
+    subtitle: "Structured and semi-structured feeds, checked on every run",
+    category: "PySpark & Data Quality",
+    highlightMetric: "One check set, every feed",
     overview: {
-      purpose: "Scalable enterprise claims analytics warehouse serving financial reconciliations, payer analytics, and regulatory reporting.",
-      challenge: "Massive table skew, unoptimized slice distribution, and manual reconciliation routines led to 4+ hour query timeouts during month-end claim reporting.",
-      solution: "Redesigned table distribution keys (KEY on claim_id) and COMPOUND sort keys on service_date. Automated end-to-end reconciliation routines with custom PL/pgSQL stored procedures.",
-      role: "Senior Data Engineer — Executed cluster optimization, data modeling, and automated reconciliation harness.",
+      purpose: "Stop rewriting the same quality checks for every new source.",
+      challenge: "Structured and semi-structured payloads arrived in different shapes, so each pipeline carried its own copy of the same assertions and anomalies were found after publication.",
+      solution: "Built a reusable PySpark framework that parses both payload shapes, runs one shared assertion set, and writes flagged records to a side table with the failing rule attached.",
+      role: "Senior Software (Data) Engineer and team lead. Designed the framework and led the four-engineer team using it.",
     },
     arch: [
-      "Inbound Claims   → S3 Manifest Load via Redshift COPY with COMPUPDATE",
-      "Staging Tables   → Diststyle KEY (claim_id) with automated vacuuming",
-      "Reconciliation   → PL/pgSQL automated stored procedures asserting source vs target hashes",
-      "Reporting Views  → Materialized views refreshed concurrently for sub-second dashboards",
+      "Sources          → Structured tables and semi-structured payloads",
+      "Parse            → Shared PySpark readers for both shapes",
+      "Assertions       → One rule set: keys, null rates, ranges, freshness",
+      "Flagged Records  → Written to a side table with the failing rule",
+      "Delivery         → Clean output handed to downstream consumers",
     ],
     codeSnippet: {
-      title: "sp_reconcile_claims_batch.sql",
-      language: "sql",
-      code: `CREATE OR REPLACE PROCEDURE sp_reconcile_claims_batch(
-    p_batch_id IN VARCHAR(64),
-    p_status OUT VARCHAR(32)
-) AS $$
-DECLARE
-    v_src_count BIGINT;
-    v_tgt_count BIGINT;
-    v_variance NUMERIC(8,4);
-BEGIN
-    SELECT count(*), sum(checksum) INTO v_src_count FROM staging_claims WHERE batch_id = p_batch_id;
-    SELECT count(*), sum(checksum) INTO v_tgt_count FROM warehouse_claims WHERE batch_id = p_batch_id;
-    
-    v_variance := ABS(v_src_count - v_tgt_count) / NULLIF(v_src_count, 0) * 100.0;
-    
-    IF v_variance > 0.0001 THEN
-        INSERT INTO reconciliation_quarantine VALUES (p_batch_id, 'VARIANCE_THRESHOLD_EXCEEDED', sysdate);
-        p_status := 'QUARANTINED';
-        RAISE EXCEPTION 'Claims batch % failed reconciliation gate', p_batch_id;
-    END IF;
-    
-    p_status := 'PROMOTED';
-END;
-$$ LANGUAGE plpgsql;`,
+      title: "quality_framework.py",
+      language: "python",
+      code: `def run_checks(df, spec):
+    failures = {}
+    for column, rule in spec.items():
+        if column not in df.columns:
+            failures[column] = "missing_column"
+            continue
+        if rule.get("unique") and df.count() != df.select(column).distinct().count():
+            failures[column] = "duplicate_values"
+        if rule.get("not_null"):
+            nulls = df.filter(F.col(column).isNull()).count()
+            if nulls:
+                failures[column] = f"{nulls} nulls"
+    return failures`,
     },
     impact: [
-      "35% query latency cut across high-concurrency executive dashboard queries.",
-      "Eliminated manual month-end reconciliation — automated gates run autonomously every hour.",
-      "100% HIPAA compliance and zero audit deficiencies across 5 annual regulatory cycles.",
-      "Reliably handles $4B+ in annual reconciled healthcare claims volume.",
+      "The same check set runs across feeds instead of a new script per pipeline.",
+      "Anomaly detection runs on its own schedule and records what failed.",
+      "Team of four engineers delivered projects on time while holding SLA.",
     ],
-    stack: ["AWS Redshift", "Advanced SQL", "PL/pgSQL", "Python", "AWS S3", "HIPAA Data Governance"],
+    stack: ["PySpark", "Python", "Databricks", "Delta Lake", "Advanced SQL"],
   },
   {
     id: 3,
-    title: "Automated SQL Data Testing Harness",
-    subtitle: "Declarative Schema Drift Sentinel & Invariant Testing Engine",
-    category: "Data Quality & CI/CD",
-    highlightMetric: "100% Test Coverage Across Dev/Stage/Prod",
+    title: "Claims reconciliation and reporting",
+    subtitle: "ODI, Oracle SQL and Python on US healthcare claims",
+    category: "Oracle & ETL",
+    highlightMetric: "35% faster report generation",
     overview: {
-      purpose: "Built an automated continuous-integration data testing harness to prevent breaking upstream schema changes from corrupting production analytics.",
-      challenge: "Frequent upstream application releases introduced breaking column type changes and missing nullable invariants, breaking downstream pipelines without warning.",
-      solution: "Engineered a declarative Python & SQL test harness that runs pre-merge regression tests against ephemeral test containers, asserting contract invariants before code deployment.",
-      role: "Lead Data / QA Engineer — Designed test assertion DSL, CI/CD automated test gates, and schema drift sentinels.",
+      purpose: "Keep healthcare claims reporting accurate and fast enough for month-end use.",
+      challenge: "Report runs were slow and reconciliation between source and target was done by hand, so a mismatch could sit unnoticed until someone compared the numbers.",
+      solution: "Built and maintained the ETL in ODI with Oracle SQL and Python, then replaced the manual comparison with scheduled reconciliation queries that flag duplicates and missing claims.",
+      role: "Software (Data) Engineer. Owned the claims ETL, query tuning and reconciliation routines.",
     },
     arch: [
-      "PR Trigger       → GitHub Actions initiates ephemeral PostgreSQL/DuckDB container",
-      "Synthetic Feeds → Generates boundary-condition payloads with deliberate edge cases",
-      "Assertion Suite  → Runs 120+ invariant rules (Nullability, Foreign Keys, Range Bounds)",
-      "Drift Sentinel   → Diffs AST schema contracts against current production catalog",
-      "Promotion Gate   → Merges only upon 100% assertion pass; alerts Slack on failure",
+      "Claims Sources   → Payer and provider claim files",
+      "ETL              → ODI mappings with Oracle SQL and Python",
+      "Staging          → Batch loaded and keyed by claim_id",
+      "Reconciliation   → Scheduled checks for duplicates and missing claims",
+      "Reporting        → Tuned queries feeding operational reports",
     ],
     codeSnippet: {
-      title: "test_schema_drift_sentinel.py",
-      language: "python",
-      code: `def test_assert_zero_schema_drift():
-    prod_catalog = fetch_catalog_schema(env="production")
-    pr_catalog = extract_ddl_contract_schema(git_ref="HEAD")
-    
-    drift_report = compare_catalogs(
-        baseline=prod_catalog,
-        candidate=pr_catalog,
-        rules={"allow_add_nullable_column": True, "allow_drop_column": False}
-    )
-    
-    assert drift_report.has_breaking_changes is False, (
-        f"Breaking schema drift detected: {drift_report.breaking_diffs}"
-    )`,
+      title: "reconcile_claims_batch.sql",
+      language: "sql",
+      code: `select claim_id, 'duplicate' as issue
+from claims_stage
+where batch_id = :batch_id
+group by claim_id
+having count(*) > 1
+
+union all
+
+select s.claim_id, 'missing_in_target'
+from claims_stage s
+where s.batch_id = :batch_id
+  and not exists (
+      select 1 from claims_target t
+      where t.claim_id = s.claim_id
+  );`,
     },
     impact: [
-      "Prevented 42 breaking schema changes from reaching production over 12 months.",
-      "Reduced pipeline deployment incident rate from 14% to 0%.",
-      "Zero unannounced upstream breaking changes survived into staging.",
-      "Adopted across 4 distributed engineering teams as standard release protocol.",
+      "Report generation time cut by 35% after rewriting the queries.",
+      "Manual reconciliation replaced by scheduled checks that name the problem claim.",
+      "Requirements gathered directly with business analysts before each pipeline change.",
+      "ETL run in ODI over Oracle SQL and Python for US healthcare claims.",
     ],
-    stack: ["Python", "PyTest", "PostgreSQL", "GitHub Actions", "Docker", "Schema Registry"],
+    stack: ["Oracle SQL", "ODI", "Python", "ETL", "Reconciliation"],
   },
 ];
 
@@ -272,29 +248,14 @@ export function LayoutShell() {
 
   return (
     <div className="relative min-h-screen bg-canvas text-slate-100 selection:bg-cyan-500/30 selection:text-white overflow-x-hidden font-sans">
-      {/* ─── ANALOG DEPTH: FILM GRAIN OVERLAY ──────────────────────────────── */}
-      <div className="film-grain" aria-hidden="true" />
-
       {/* ─── SMOOTH SCROLL (LENIS) & CUSTOM INTERACTIVE CURSOR ─────────────── */}
-      <SmoothScroll />
-      <CustomCursor />
 
       {/* ─── AMBIENT GRID & RADIAL AURA BACKGROUND ─────────────────────────── */}
-      <div
-        className="fixed inset-0 pointer-events-none -z-10 bg-grid-white/[0.02] bg-[size:32px_32px]"
-        aria-hidden="true"
-      />
-      <div
-        className="fixed inset-0 pointer-events-none -z-10 mask-radial-faded opacity-60"
-        style={{
-          background:
-            "radial-gradient(circle 800px at 15% 15%, rgba(34, 211, 238, 0.08), transparent 70%), radial-gradient(circle 700px at 85% 30%, rgba(52, 211, 153, 0.06), transparent 70%), radial-gradient(circle 900px at 50% 85%, rgba(15, 23, 42, 0.9), transparent 80%)",
-        }}
-        aria-hidden="true"
-      />
+
+
 
       {/* ─── 1. STICKY MINIMALIST NAVIGATION BAR ──────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full glass-nav transition-all duration-200">
+      <header className="sticky top-0 z-50 w-full glass-nav transition-colors duration-200">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Monogram & Live Status */}
@@ -304,27 +265,23 @@ export function LayoutShell() {
                 className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-md"
                 aria-label="Sabrin Singh Home"
               >
-                <div className="w-8 h-8 rounded border border-slate-800 bg-slate-900/90 flex items-center justify-center font-mono font-bold text-xs text-cyan-400 group-hover:border-cyan-400/50 group-hover:shadow-glow-cyan transition-all">
-                  SLS
-                </div>
                 <div className="flex flex-col">
-                  <span className="font-semibold text-sm tracking-tight text-slate-100 group-hover:text-cyan-400 transition-colors">
+                  <span className="font-semibold text-sm tracking-tight text-slate-100 group-hover:text-slate-400 transition-colors">
                     Sabrin Lal Singh
                   </span>
-                  <span className="font-mono text-[10px] text-cyan-400">
-                    Lead Data / QA Engineer · Data Lead
+                  <span className="font-mono text-xs text-slate-400 whitespace-nowrap">
+                    Principal data engineer
                   </span>
                 </div>
               </a>
 
               {/* Live Reactive Kathmandu Clock */}
               <div className="hidden xl:flex items-center gap-2 pl-4 border-l border-slate-800 text-xs font-mono text-slate-400">
-                <span className="status-beacon-live" />
+                <span className="status-dot" />
                 <span className="text-slate-300">
                   {kathmanduTime ? `${kathmanduTime} NPT` : "Kathmandu (UTC+5:45)"}
                 </span>
-                <span className="text-slate-500">•</span>
-                <span className="text-emerald-400 font-medium">Available for Manager and Lead Roles</span>
+                <span className="text-slate-400 whitespace-nowrap">Kathmandu</span>
               </div>
             </div>
 
@@ -334,7 +291,7 @@ export function LayoutShell() {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="px-3 py-1.5 rounded-full text-slate-300 hover:text-cyan-400 hover:bg-slate-900/90 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                  className="px-3 py-1.5 rounded-[8px] text-slate-300 hover:text-slate-100 hover:bg-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 >
                   {link.label}
                 </a>
@@ -349,19 +306,16 @@ export function LayoutShell() {
                 download="Sabrin_Lal_Singh_CV.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-slate-700 font-mono text-xs transition-all"
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-400 hover:border-slate-700 text-sm transition-colors"
                 title="Download Sabrin's Resume (PDF)"
               >
-                <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                <FileText className="w-3.5 h-3.5 text-slate-400" />
                 <span>Resume</span>
               </a>
 
-              {/* View Counter Telemetry Pill */}
-              <ViewCounter variant="nav" />
-
               <a
                 href="#contact"
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-cyan-400 text-slate-950 hover:bg-cyan-300 font-mono text-xs font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-cyan-400 text-slate-950 hover:bg-cyan-300 text-sm font-semibold shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
                 <Terminal className="w-3.5 h-3.5" />
                 <span>Contact</span>
@@ -375,7 +329,7 @@ export function LayoutShell() {
                 aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
                 aria-expanded={mobileMenuOpen}
               >
-                {mobileMenuOpen ? <X className="w-5 h-5 text-cyan-400" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 text-slate-400" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -389,29 +343,27 @@ export function LayoutShell() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="lg:hidden border-b border-slate-800 bg-slate-950/98 backdrop-blur-2xl px-5 py-5 space-y-4 shadow-2xl"
+              className="lg:hidden border-b border-slate-800 bg-slate-950 px-5 py-5 space-y-4"
             >
               <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-300">
                 <div className="flex items-center gap-2">
-                  <span className="status-beacon-live" />
+                  <span className="status-dot" />
                   <span>{kathmanduTime ? `${kathmanduTime} NPT` : "Kathmandu, Nepal"}</span>
                 </div>
-                <span className="text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800/80 text-[11px]">
-                  Available for Manager and Lead Roles
-                </span>
+                <span className="text-xs text-slate-400">Open to lead roles</span>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-1 mb-2">Navigation</p>
+                <p className="text-xs text-slate-400 px-1 mb-2">Navigation</p>
                 <div className="grid grid-cols-2 gap-2">
                   {ALL_NAV_LINKS.map((link) => (
                     <a
                       key={link.label}
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-mono text-slate-200 hover:text-cyan-400 bg-slate-900/50 hover:bg-slate-900 border border-slate-800/80 hover:border-cyan-500/40 transition-all"
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-mono text-slate-200 hover:text-slate-400 bg-slate-900/50 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 transition-colors"
                     >
-                      <span className="text-cyan-500 text-[10px]">#</span>
+                      <span className="text-cyan-500 text-xs">#</span>
                       <span className="truncate">{link.label}</span>
                     </a>
                   ))}
@@ -427,7 +379,7 @@ export function LayoutShell() {
                   }}
                   className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-slate-300 hover:text-slate-100 transition-colors"
                 >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400" />
+                  <Mail className="w-3.5 h-3.5 text-slate-400" />
                   <span>Copy Direct Email</span>
                 </button>
 
@@ -437,7 +389,7 @@ export function LayoutShell() {
                     setMobileMenuOpen(false);
                     window.dispatchEvent(new CustomEvent("open-command-palette"));
                   }}
-                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-cyan-400/10 border border-cyan-400/30 text-xs font-mono text-cyan-400 hover:bg-cyan-400 hover:text-slate-950 transition-all"
+                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border border-slate-800 text-xs font-mono text-slate-400 hover:bg-slate-900 transition-colors"
                 >
                   <Search className="w-3.5 h-3.5" />
                   <span>Search Palette (⌘K)</span>
@@ -449,150 +401,119 @@ export function LayoutShell() {
       </header>
 
       {/* ─── 2. CENTRAL CONTENT CONTAINER WITH STRICT PADDING BOUNDARIES ───── */}
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12 md:py-20">
+      <main id="main" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 py-8 md:py-12">
 
-        {/* ─── HERO SECTION: MINIMALIST TYPOGRAPHIC DATA ARCHITECTURE ──────── */}
-        <section id="home" className="relative pt-4 sm:pt-8 overflow-hidden rounded-2xl" aria-label="Hero Introduction">
-          {/* Interactive Generative Data Mesh Canvas */}
-          <HeroDataMesh />
-
-          {/* Diagnostic Prompt Header */}
-          <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-800 bg-slate-900/90 text-xs font-mono text-slate-300 mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-slate-400">$ system.status</span>
-            <span className="text-slate-600">/</span>
-            <span className="text-cyan-400">DATA_ENGINEERING: HEALTHY</span>
-            <span className="text-slate-600">/</span>
-            <span className="text-emerald-400">QA_GATES: PASSING</span>
-          </div>
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Typographic Core */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="space-y-2">
-                <p className="font-mono text-xs uppercase tracking-widest text-cyan-400">
-                  <TextScramble text="// LEAD DATA & QA ENGINEER · DATA LEAD & MANAGER" />
-                </p>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-50 leading-[1.1]">
-                  Leading Data Teams, Resilient Lakehouses &amp;{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-emerald-300 to-emerald-400">
-                    Automated Quality Gates
-                  </span>
-                </h1>
+        {/* ─── HERO ─────────────────────────────────────────────────────────── */}
+        <section id="home" className="relative pt-2 sm:pt-4" aria-label="Introduction">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            <div className="lg:col-span-7">
+              <div className="flex items-center gap-3">
+                <img
+                  src="/images/profile-400.webp"
+                  alt="Sabrin Lal Singh"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-full object-cover border"
+                />
+                <p className="eyebrow">Principal data engineer, Kathmandu</p>
               </div>
+              <h1 className="mt-6 text-[32px] sm:text-[42px] lg:text-[52px] font-medium tracking-[-0.02em] text-slate-50 leading-[1.08] text-balance">
+                I lead data teams and build pipelines that check their own work
+              </h1>
 
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-                Lead Data Engineer &amp; Data Lead / Manager based in Kathmandu, Nepal (available globally).
-                9+ years directing high-throughput data delivery, hardening petabyte-scale Medallion lakehouses,
-                and establishing autonomous QA assertion gates across{" "}
+              <p className="mt-5 text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+                Nine years of healthcare data work in{" "}
+                <strong className="text-slate-100 font-semibold">Redshift</strong>,{" "}
                 <strong className="text-slate-100 font-semibold">Databricks</strong>,{" "}
-                <strong className="text-slate-100 font-semibold">Snowflake</strong>,{" "}
-                <strong className="text-slate-100 font-semibold">AWS Redshift</strong>, and{" "}
-                <strong className="text-slate-100 font-semibold">PostgreSQL</strong>.
+                <strong className="text-slate-100 font-semibold">Snowflake</strong> and{" "}
+                <strong className="text-slate-100 font-semibold">PySpark</strong>, plus the checks that stop bad
+                records before they reach a report. Working with teams anywhere.
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Magnetic strength={0.3}>
-                  <a
-                    href="#engineering-focus"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-cyan-400 text-slate-950 font-semibold text-sm hover:bg-cyan-300 transition-all hover:shadow-glow-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                  >
-                    <span>Inspect Focus &amp; Delivery</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </a>
-                </Magnetic>
+              {/* One primary action, one secondary. Everything else moved out. */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a href="#contact" className="btn-primary text-sm">
+                  <span>Talk about a lead role</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
 
-                <Magnetic strength={0.25}>
-                  <a
-                    href="/Sabrin_Singh_Resume.pdf"
-                    download="Sabrin_Lal_Singh_CV.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 hover:text-cyan-400 hover:border-slate-700 font-mono text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                  >
-                    <FileText className="w-4 h-4 text-cyan-400" />
-                    <span>Download Resume (PDF)</span>
-                  </a>
-                </Magnetic>
-
-                <Magnetic strength={0.25}>
-                  <a
-                    href="#telemetry"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 font-mono text-sm transition-all"
-                  >
-                    <Activity className="w-4 h-4 text-emerald-400" />
-                    <span>Telemetry Simulator</span>
-                  </a>
-                </Magnetic>
-
-                <Magnetic strength={0.2}>
-                  <button
-                    type="button"
-                    onClick={handleCopyEmail}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-slate-200 text-sm font-mono transition-colors"
-                  >
-                    {copiedEmail ? (
-                      <>
-                        <Check className="w-4 h-4 text-emerald-400" />
-                        <span className="text-emerald-400">Copied Email</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4" />
-                        <span>Copy Email</span>
-                      </>
-                    )}
-                  </button>
-                </Magnetic>
+                <a
+                  href="/Sabrin_Singh_Resume.pdf"
+                  download="Sabrin_Lal_Singh_CV.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-quiet text-sm"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Résumé (PDF)</span>
+                </a>
               </div>
+
+              <p className="mt-4 text-sm text-slate-400">Kathmandu or remote.</p>
+
             </div>
 
-            {/* Right: Live Interactive Photo / Video Hologram */}
-            <div className="lg:col-span-5 flex justify-center">
-              <HeroCinematicPhoto />
-            </div>
+            {/* The one rich moment: a gate run, as a real table */}
+            <figure className="lg:col-span-5 panel rounded-[14px] overflow-hidden">
+              <figcaption className="flex items-center justify-between px-4 py-3 border-b">
+                <span className="text-sm text-slate-300">silver_claims · gate run</span>
+                <span className="text-sm text-slate-400 tabular-nums">14:02 NPT</span>
+              </figcaption>
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="text-xs text-slate-400">
+                    <th scope="col" className="px-4 py-2 font-normal">Batch</th>
+                    <th scope="col" className="px-2 py-2 font-normal text-right">Rows</th>
+                    <th scope="col" className="px-4 py-2 font-normal text-right">Check</th>
+                  </tr>
+                </thead>
+                <tbody className="font-mono tabular-nums">
+                  {[
+                    ["8845", "1,203,551", "pass"],
+                    ["8844", "1,210,033", "quarantine"],
+                    ["8843", "1,198,402", "pass"],
+                    ["8842", "1,204,880", "pass"],
+                  ].map(([batch, rows, state]) => (
+                    <tr key={batch} className="border-t">
+                      <td className="px-4 py-2.5 text-slate-300">{batch}</td>
+                      <td className="px-2 py-2.5 text-right text-slate-400">{rows}</td>
+                      <td className="px-4 py-2.5 text-right">
+                        <span className="inline-flex items-center gap-2 text-xs">
+                          <span className={state === "pass" ? "status-dot" : "status-dot status-dot-fail"} />
+                          <span className={state === "pass" ? "text-emerald-400" : "text-rose-400"}>
+                            {state}
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="px-4 py-3 border-t text-xs text-slate-400">
+                Batch 8844 held for 3 null claim IDs. Nothing unvalidated reached Gold.
+              </p>
+            </figure>
           </div>
 
-          {/* High-Contrast Quantitative Metrics Strip */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl glass-card border border-slate-800">
-            <div className="p-3">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-slate-50 tabular-nums">
-                50M+
+          {/* Four figures, divided by hairlines. No cards, no accents competing. */}
+          <dl className="mt-14 grid grid-cols-2 sm:grid-cols-4 border-t border-slate-800 divide-slate-800 sm:divide-x">
+            {[
+              ["35%", "faster reporting after tuning"],
+              ["4", "engineers led"],
+              ["9+", "years in production"],
+              ["99.9%", "reliability SLA"],
+            ].map(([figure, label], i) => (
+              <div
+                key={label}
+                className={`py-6 sm:px-6 ${i === 0 ? "sm:pl-0" : ""} ${i > 1 ? "border-t sm:border-t-0 border-slate-800" : ""}`}
+              >
+                <dt className="font-mono text-2xl sm:text-3xl text-slate-50 tabular-nums">{figure}</dt>
+                <dd className="mt-1 text-sm text-slate-400">{label}</dd>
               </div>
-              <div className="text-xs font-mono text-slate-400 mt-1">
-                Daily Records Ingested
-              </div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-emerald-400 tabular-nums">
-                95%
-              </div>
-              <div className="text-xs font-mono text-slate-400 mt-1">
-                Anomaly Drop via Automated Gates
-              </div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-cyan-400 tabular-nums">
-                9+ Yrs
-              </div>
-              <div className="text-xs font-mono text-slate-400 mt-1">
-                Data &amp; QA Production Experience
-              </div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-slate-50 tabular-nums">
-                99.98%
-              </div>
-              <div className="text-xs font-mono text-slate-400 mt-1">
-                Data Reliability SLA Maintained
-              </div>
-            </div>
-          </div>
+            ))}
+          </dl>
         </section>
 
-        {/* ─── KINETIC VELOCITY RIBBON (HIGH-IMPACT TICKER) ────────────────── */}
-        <VelocityRibbon />
 
         {/* ─── ACTIVE FOCUS AREAS ───────────────────────────────────────────── */}
         <Currently />
@@ -600,73 +521,60 @@ export function LayoutShell() {
         {/* ─── SPLIT GRID: DATA ENGINEERING VS. QUALITY ASSURANCE SYSTEMS ──── */}
         <section id="engineering-focus" className="space-y-8" aria-label="Core Engineering Duality">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400">
-              <Layers className="w-3.5 h-3.5" />
-              <span>// ARCHITECTURAL DUALITY</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Engineering Focus: Pipeline Ingestion &amp; Quality Systems
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+              Engineering focus: pipeline ingestion and quality systems
             </h2>
             <p className="text-slate-400 text-sm sm:text-base max-w-3xl">
-              High-scale analytics demands two synchronized competencies: the capability to ingest
-              and process petabytes with minimal latency, and the automated rigor to guarantee
-              uncompromising schema integrity.
+              Two things have to work at the same time: moving the data, and proving it is correct.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left: Data Engineering Workflows */}
-            <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 hover:border-cyan-500/40 hover:shadow-glow-cyan transition-all duration-200 flex flex-col justify-between">
+            {/* Left: Data engineering workflows */}
+            <div className="panel rounded-[14px] p-6 sm:p-8 hover:border-slate-700 transition-colors flex flex-col justify-between">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
-                    <Database className="w-6 h-6" />
-                  </div>
-                  <span className="font-mono text-xs px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-400">
-                    INGESTION &amp; SCALE
-                  </span>
+                  <p className="eyebrow">Ingestion and scale</p>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-slate-50">
-                    Data Engineering Workflows
+                  <h3 className="text-xl font-medium text-slate-50">
+                    Data engineering workflows
                   </h3>
                   <p className="text-sm text-slate-300 leading-relaxed">
-                    Architecting resilient lakehouses and distributed compute pipelines that process
-                    petabyte-scale clinical feeds, claims data, and analytical logs with predictable
-                    latency and optimized cloud compute spend.
+                    Redshift and Databricks pipelines that move clinical feeds and claims data with predictable latency.
                   </p>
                 </div>
 
                 {/* Workflow Architecture Pipeline */}
-                <div className="space-y-2 font-mono text-xs">
-                  <span className="text-slate-400 uppercase tracking-wider text-[10px]">
-                    Pipeline Stages
+                <div className="space-y-2 text-sm">
+                  <span className="text-slate-400 text-xs">
+                    Pipeline stages
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-cyan-400 font-bold">1. Bronze</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Raw feeds, append-only, schema discovery</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-400 font-medium">1. Raw</div>
+                      <div className="text-slate-400 text-xs mt-1">Raw feeds, append-only, schema discovery</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-cyan-400 font-bold">2. Silver</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Coerced types, deduplication, cleansed</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-400 font-medium">2. Curated</div>
+                      <div className="text-slate-400 text-xs mt-1">Coerced types, deduplication, cleansed</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-cyan-400 font-bold">3. Gold</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Aggregations, dimensional star schemas</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-400 font-medium">3. Reporting</div>
+                      <div className="text-slate-400 text-xs mt-1">Aggregations, dimensional star schemas</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Technical Stack Tags */}
                 <div className="space-y-2">
-                  <span className="font-mono text-slate-400 uppercase tracking-wider text-[10px]">
-                    Verified Toolchain
+                  <span className="text-xs text-slate-400">
+                    Tools in use
                   </span>
-                  <div className="flex flex-wrap gap-1.5 font-mono text-xs">
+                  <div className="flex flex-wrap gap-x-2 gap-y-1 text-sm">
                     {[
-                      "Databricks Lakehouse",
+                      "Databricks",
                       "PySpark",
                       "Delta Lake",
                       "AWS Redshift",
@@ -677,7 +585,7 @@ export function LayoutShell() {
                     ].map((tool) => (
                       <span
                         key={tool}
-                        className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300"
+                        className="text-slate-300 after:content-[','] last:after:content-none"
                       >
                         {tool}
                       </span>
@@ -686,74 +594,68 @@ export function LayoutShell() {
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-slate-800 text-xs font-mono text-cyan-400 flex items-center justify-between">
-                <span>// Throughput: 50M+ rows/day</span>
+              <div className="pt-6 mt-6 border-t border-slate-800 text-xs font-mono text-slate-400 flex items-center justify-between">
+                <span>Loads: hourly clinical batches</span>
                 <span className="text-slate-400">AWS Redshift / Databricks</span>
               </div>
             </div>
 
-            {/* Right: Quality Assurance Systems */}
-            <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 hover:border-emerald-500/40 hover:shadow-glow-emerald transition-all duration-200 flex flex-col justify-between">
+            {/* Right: Quality assurance systems */}
+            <div className="panel rounded-[14px] p-6 sm:p-8 hover:border-slate-700 transition-colors flex flex-col justify-between">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <span className="font-mono text-xs px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-emerald-400">
-                    AUTOMATED GATES
-                  </span>
+                  <p className="eyebrow">Automated gates</p>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-slate-50">
-                    Quality Assurance Systems
+                  <h3 className="text-xl font-medium text-slate-50">
+                    Quality assurance systems
                   </h3>
                   <p className="text-sm text-slate-300 leading-relaxed">
-                    Embedding autonomous validation assertion gates directly into the data flight
-                    path. Intercepting schema drift, null explosions, and anomalies before data
-                    contaminates downstream reporting warehouses.
+                    Assertions run on every load, not in a dashboard a day later. Schema drift, null
+                    spikes and out-of-range values get caught before the data lands in a reporting
+                    warehouse.
                   </p>
                 </div>
 
                 {/* QA Verification Protocol */}
-                <div className="space-y-2 font-mono text-xs">
-                  <span className="text-slate-400 uppercase tracking-wider text-[10px]">
-                    Verification Protocols
+                <div className="space-y-2 text-sm">
+                  <span className="text-slate-400 text-xs">
+                    Verification steps
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-emerald-400 font-bold">1. Contract</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Schema boundary &amp; type expectation checks</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-200">1. Contract</div>
+                      <div className="text-slate-400 text-xs mt-1">Schema boundary &amp; type expectation checks</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-emerald-400 font-bold">2. Gate Scan</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Great Expectations statistical bounds</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-200">2. Gate Scan</div>
+                      <div className="text-slate-400 text-xs mt-1">Row counts, unique keys and null bounds</div>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                      <div className="text-emerald-400 font-bold">3. Quarantine</div>
-                      <div className="text-slate-400 text-[11px] mt-1">Autonomous isolation of dirty feeds</div>
+                    <div className="border-l pl-3">
+                      <div className="text-slate-200">3. Quarantine</div>
+                      <div className="text-slate-400 text-xs mt-1">Failed rows held out of reporting</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Technical Stack Tags */}
                 <div className="space-y-2">
-                  <span className="font-mono text-slate-400 uppercase tracking-wider text-[10px]">
+                  <span className="text-xs text-slate-400">
                     Verification Frameworks
                   </span>
-                  <div className="flex flex-wrap gap-1.5 font-mono text-xs">
+                  <div className="flex flex-wrap gap-x-2 gap-y-1 text-sm">
                     {[
-                      "Great Expectations",
-                      "Automated Assertions",
-                      "Schema Drift Sentinel",
-                      "CI/CD Data Gate",
-                      "Reconciliation Harness",
-                      "HIPAA Compliance",
-                      "ETL Test Suites",
+                      "PySpark assertions",
+                      "SQL checks",
+                      "Row count gates",
+                      "Null and duplicate checks",
+                      "Reconciliation",
+                      "HIPAA handling",
                     ].map((tool) => (
                       <span
                         key={tool}
-                        className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300"
+                        className="text-slate-300 after:content-[','] last:after:content-none"
                       >
                         {tool}
                       </span>
@@ -762,16 +664,16 @@ export function LayoutShell() {
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-slate-800 text-xs font-mono text-emerald-400 flex items-center justify-between">
-                <span>// Gate Latency: &lt; 20ms</span>
-                <span className="text-slate-400">Zero Silent Corruptions</span>
+              <div className="pt-6 mt-6 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                <span>Checks run before the load completes</span>
+                <span>Hourly clinical batches</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* ─── 4. INTERACTIVE TOPOLOGY & ARCHITECTURE (DATA PIPELINE VISUAL) ── */}
-        <section id="pipeline-visual" aria-label="Interactive Pipeline Architecture">
+        <section id="pipeline-visual" className="space-y-8" aria-label="Interactive Pipeline Architecture">
           <DataPipelineVisual />
         </section>
 
@@ -783,16 +685,13 @@ export function LayoutShell() {
         {/* ─── 6. PRODUCTION CASE STUDIES (PROJECTS WITH INTERACTIVE TABS) ───── */}
         <section id="projects" className="space-y-8" aria-label="Selected Production Projects">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400">
-              <Sparkles className="w-3.5 h-3.5" />
-              <TextScramble text="// PRODUCTION CASE STUDIES" />
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Documented Systems &amp; Technical Architecture
+            <p className="eyebrow">Production case studies</p>
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+              Documented systems and technical architecture
             </h2>
             <p className="text-slate-400 text-sm max-w-2xl">
-              Real problem statements, architecture flows, production code snippets, and verified
-              quantitative business impacts.
+              Problem statements, architecture, and the checks that ran on each system. Figures
+              come from the same work described in my CV.
             </p>
           </div>
 
@@ -802,36 +701,36 @@ export function LayoutShell() {
               return (
                 <SpotlightCard
                   key={project.id}
-                  className="glass-panel rounded-2xl p-6 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between"
+                  className="panel rounded-[14px] p-6 hover:border-slate-700 transition-colors flex flex-col justify-between"
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs text-cyan-400 uppercase">
+                      <span className="text-sm text-slate-400">
                         {project.category}
                       </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-emerald-400">
+                      <span className="text-xs text-slate-400">
                         {project.highlightMetric}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-bold text-slate-100">{project.title}</h3>
+                      <h3 className="text-lg font-medium text-slate-100">{project.title}</h3>
                       <p className="text-xs text-slate-400 font-mono mt-0.5">{project.subtitle}</p>
                     </div>
 
                     {/* Tabs Control */}
-                    <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-900 border border-slate-800 font-mono text-[11px]">
+                    <div className="flex items-center gap-4 border-b text-xs">
                       {(["overview", "arch", "code", "impact"] as ProjectTab[]).map((tab) => (
                         <button
                           key={tab}
                           type="button"
                           onClick={() => setProjectTab(project.id, tab)}
-                          className={`flex-1 py-1 rounded transition-colors text-center capitalize ${currentTab === tab
-                              ? "bg-slate-800 text-cyan-400 font-bold"
-                              : "text-slate-400 hover:text-slate-200"
+                          className={`-mb-px border-b px-3 py-2 transition-colors ${currentTab === tab
+                              ? "border-signal text-slate-100"
+                              : "border-transparent text-slate-400 hover:text-slate-300"
                             }`}
                         >
-                          {tab}
+                          {{ overview: "Overview", arch: "Architecture", code: "Code", impact: "Impact" }[tab]}
                         </button>
                       ))}
                     </div>
@@ -841,42 +740,42 @@ export function LayoutShell() {
                       {currentTab === "overview" && (
                         <div className="space-y-2.5">
                           <div>
-                            <span className="font-mono text-[10px] text-slate-500 uppercase">Challenge:</span>
+                            <span className="font-mono text-xs text-slate-400">Challenge</span>
                             <p className="text-slate-300 leading-relaxed mt-0.5">{project.overview.challenge}</p>
                           </div>
                           <div>
-                            <span className="font-mono text-[10px] text-slate-500 uppercase">Solution:</span>
+                            <span className="font-mono text-xs text-slate-400">Solution</span>
                             <p className="text-slate-300 leading-relaxed mt-0.5">{project.overview.solution}</p>
                           </div>
                         </div>
                       )}
 
                       {currentTab === "arch" && (
-                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-[11px] border border-slate-900 space-y-2 overflow-x-auto">
+                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-xs border border-slate-900 space-y-2 overflow-x-auto">
                           {project.arch.map((line, i) => {
                             const parts = line.split("→");
                             if (parts.length === 2) {
                               return (
                                 <div key={i} className="flex items-center gap-2">
-                                  <span className="shrink-0 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-cyan-400 font-semibold text-[10px]">
+                                  <span className="shrink-0 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400 font-semibold text-xs">
                                     {parts[0].trim()}
                                   </span>
-                                  <span className="text-emerald-400 text-[10px]">→</span>
-                                  <span className="text-slate-300 text-[11px] leading-tight">
+                                  <span className="text-slate-500 text-xs">→</span>
+                                  <span className="text-slate-300 text-xs leading-tight">
                                     {parts[1].trim()}
                                   </span>
                                 </div>
                               );
                             }
-                            return <div key={i} className="text-slate-300 text-[11px] whitespace-pre">{line}</div>;
+                            return <div key={i} className="text-slate-300 text-xs whitespace-pre">{line}</div>;
                           })}
                         </div>
                       )}
 
                       {currentTab === "code" && (
-                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-[10px] text-slate-300 overflow-x-auto border border-slate-900 max-h-48">
-                          <div className="text-slate-500 mb-1">// {project.codeSnippet.title}</div>
-                          <pre className="text-cyan-300 whitespace-pre leading-relaxed">{project.codeSnippet.code}</pre>
+                        <div className="p-3 rounded-lg bg-slate-950 font-mono text-xs text-slate-300 overflow-x-auto border border-slate-900 max-h-48">
+                          <div className="text-slate-400 mb-1">// {project.codeSnippet.title}</div>
+                          <pre className="text-slate-300 whitespace-pre leading-relaxed">{project.codeSnippet.code}</pre>
                         </div>
                       )}
 
@@ -884,7 +783,7 @@ export function LayoutShell() {
                         <ul className="space-y-1.5">
                           {project.impact.map((point, i) => (
                             <li key={i} className="flex items-start gap-2 text-slate-300 leading-relaxed">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-slate-500 flex-shrink-0 mt-0.5" />
                               <span>{point}</span>
                             </li>
                           ))}
@@ -894,9 +793,9 @@ export function LayoutShell() {
                   </div>
 
                   {/* Stack Footer */}
-                  <div className="pt-4 mt-4 border-t border-slate-800 flex flex-wrap gap-1 font-mono text-[10px] text-slate-400">
+                  <div className="pt-4 mt-4 border-t flex flex-wrap gap-x-2 gap-y-1 text-xs text-slate-400">
                     {project.stack.map((s) => (
-                      <span key={s} className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
+                      <span key={s} className="after:content-[','] last:after:content-none">
                         {s}
                       </span>
                     ))}
@@ -910,15 +809,12 @@ export function LayoutShell() {
         {/* ─── 7. CAREER JOURNEY & PRODUCTION HISTORY ───────────────────────── */}
         <section id="experience" className="space-y-8" aria-label="Career Experience">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-emerald-400">
-              <Clock className="w-3.5 h-3.5" />
-              <span>// CAREER JOURNEY</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Production History &amp; Technical Ownership
+            <p className="eyebrow">Career journey</p>
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+              Production history and technical ownership
             </h2>
             <p className="text-slate-400 text-sm max-w-2xl">
-              9+ years leading data reliability, lakehouse modernization, and enterprise healthcare
+              9+ years on data reliability, quality checks, and enterprise healthcare
               quality architecture across Nepal and US clients.
             </p>
           </div>
@@ -927,26 +823,28 @@ export function LayoutShell() {
             {experience.map((job) => (
               <div
                 key={`${job.company}-${job.period}`}
-                className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 hover:border-slate-700 transition-all"
+                className="panel rounded-[14px] p-6 sm:p-8 border border-slate-800 hover:border-slate-700 transition-colors"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   <div className="lg:col-span-3 space-y-1">
-                    <span className="font-mono text-xs px-2.5 py-1 rounded bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 font-semibold inline-block">
+                    <span className="text-sm text-slate-400 tabular-nums inline-block">
                       {job.period}
                     </span>
-                    <p className="font-mono text-xs text-slate-400 mt-2 flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                    <p className="text-sm text-slate-400 mt-2 flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
                       <span>{job.location}</span>
                     </p>
                   </div>
 
                   <div className="lg:col-span-9 space-y-3">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h3 className="text-xl font-bold text-slate-100">{job.role}</h3>
-                      <span className="font-mono text-sm text-emerald-400 font-semibold">{job.company}</span>
+                      <h3 className="text-xl font-medium text-slate-100">{job.role}</h3>
+                      <span className="font-mono text-sm text-slate-400">{job.company}</span>
                     </div>
 
-                    <p className="text-sm text-slate-300 leading-relaxed">{job.description}</p>
+                    {job.highlights.length === 0 && (
+                      <p className="text-sm text-slate-300 leading-relaxed">{job.description}</p>
+                    )}
 
                     <ul className="space-y-1.5 pt-2">
                       {job.highlights.map((h, i) => (
@@ -970,66 +868,95 @@ export function LayoutShell() {
         {/* ─── 9. VERIFIED CREDENTIALS & CERTIFICATIONS ─────────────────────── */}
         <section id="certifications" className="space-y-8" aria-label="Credentials and Certifications">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400">
-              <Award className="w-3.5 h-3.5" />
-              <span>// VERIFIED CREDENTIALS</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Industry Certifications &amp; Training
+            <p className="eyebrow">Credentials and certifications</p>
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+              Certifications and training
             </h2>
             <p className="text-slate-400 text-sm max-w-2xl">
-              Rigorous credentials validating expertise across distributed lakehouses, cloud data
-              warehousing, and engineering best practices.
+              Certifications and course work across distributed data, cloud data
+              warehousing and engineering practice.
             </p>
           </div>
 
           {/* Industry Certifications Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {certifications.map((cert) => {
+            {certifications
+              .filter((cert) => cert.type === "certification")
+              .map((cert) => {
               const IconComp = cert.icon;
               return (
                 <div
                   key={cert.name}
-                  className="glass-panel rounded-xl p-5 border border-slate-800 hover:border-cyan-400/50 hover:shadow-glow-cyan transition-all flex flex-col justify-between space-y-3"
+                  className="panel rounded-xl p-5 border border-slate-800 hover:border-slate-700 transition-colors flex flex-col justify-between space-y-3"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-cyan-400">
+                      <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
                         {cert.issuer}
                       </span>
-                      <span className="font-mono text-[10px] text-slate-500">{cert.year}</span>
+                      <span className="font-mono text-xs text-slate-400">{cert.year}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {IconComp && <IconComp className="w-4 h-4 text-slate-400 flex-shrink-0" />}
-                      <h4 className="text-sm font-bold text-slate-100 line-clamp-2">{cert.name}</h4>
+                      <h4 className="text-sm font-medium text-slate-100 line-clamp-2">{cert.name}</h4>
                     </div>
                   </div>
 
-                  <span className="font-mono text-[10px] text-emerald-400 pt-2 border-t border-slate-800 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>Verified Credential</span>
-                  </span>
+                  {cert.verifyUrl ? (
+                    <a
+                      href={cert.verifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-xs text-slate-300 hover:text-slate-100 pt-2 border-t border-slate-800 flex items-center gap-1"
+                    >
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>Verify credential</span>
+                      <ArrowUpRight className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <span className="font-mono text-xs text-slate-400 pt-2 border-t border-slate-800 flex items-center gap-1">
+                      {cert.type === "certification" ? (
+                        <Award className="w-3 h-3" />
+                      ) : (
+                        <FileText className="w-3 h-3" />
+                      )}
+                      <span>{cert.type === "certification" ? "Certification" : "Course"}</span>
+                    </span>
+                  )}
                 </div>
               );
             })}
           </div>
 
+          <p className="text-sm text-slate-400">
+            Also completed {certifications.filter((c) => c.type === "course").length} data engineering courses
+            from IBM, Databricks and Coursera. Credentials and course records are listed on{" "}
+            <a
+              href="https://linkedin.com/in/sabrin-lal-singh-478218a0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 underline decoration-slate-700 underline-offset-4 transition-colors hover:text-slate-100 hover:decoration-slate-500"
+            >
+              LinkedIn
+            </a>.
+          </p>
+
           {/* Education & Leadership Honors Strip */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
             {/* Leadership Award */}
-            <div className="lg:col-span-5 p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-900/60 to-slate-950 border border-amber-500/30 flex flex-col justify-between space-y-4">
+            <div className="lg:col-span-5 panel rounded-[14px] p-6 flex flex-col justify-between gap-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 font-semibold flex items-center gap-1.5">
+                  <span className="eyebrow flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5" />
-                    <span>LEADERSHIP HONOR</span>
+                    Award
                   </span>
-                  <span className="font-mono text-xs text-amber-300/80">2023</span>
+                  <span className="text-sm text-slate-400 tabular-nums">2023</span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-50 pt-1">
+                <h3 className="text-lg font-medium text-slate-50 pt-1">
                   {awards[0].title}
                 </h3>
-                <p className="font-mono text-xs text-cyan-400">
+                <p className="text-sm text-slate-400">
                   {awards[0].organization}
                 </p>
                 <p className="text-xs text-slate-300 leading-relaxed pt-1">
@@ -1037,42 +964,40 @@ export function LayoutShell() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-amber-500/20 font-mono text-[11px] text-slate-400 flex items-center justify-between">
-                <span>Recognized by Executive Leadership</span>
-                <span className="text-amber-300">★ High Distinction</span>
+              <div className="pt-3 border-t text-xs text-slate-400 flex items-center justify-between">
+                <span>Recognized by executive leadership</span>
+                <span className="text-slate-300">High distinction</span>
               </div>
             </div>
 
             {/* Formal Engineering & Leadership Education */}
-            <div className="lg:col-span-7 p-6 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div className="lg:col-span-7 p-6 rounded-[14px] bg-slate-900/50 border border-slate-800 space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
-                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
-                  ACADEMIC &amp; MANAGEMENT PEDIGREE
-                </span>
+                <span className="text-xs text-slate-400">Education</span>
                 <div className="space-y-3 pt-1">
                   {education.map((edu, i) => (
                     <div key={i} className="space-y-1">
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-bold text-slate-100">{edu.degree}</h4>
+                          <h4 className="text-sm font-medium text-slate-100">{edu.degree}</h4>
                           {"gpa" in edu && (
-                            <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 font-mono text-[10px] font-bold">
+                            <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 text-xs">
                               {edu.gpa}
                             </span>
                           )}
                         </div>
-                        <span className="font-mono text-xs text-cyan-400">{edu.period}</span>
+                        <span className="text-sm text-slate-400">{edu.period}</span>
                       </div>
                       <p className="text-xs text-slate-300">{edu.institution} · {edu.location}</p>
-                      <p className="text-[11px] text-slate-400 font-mono">{edu.highlights}</p>
+                      <p className="text-xs text-slate-400 font-mono">{edu.highlights}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 font-mono text-[11px] text-emerald-400 flex items-center gap-1.5">
+              <div className="pt-3 border-t border-slate-800 text-xs text-slate-400 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Verified Dual Pedigree: MBA (Lincoln Univ, 3.78 GPA) · B.E. Computer Engineering (Tribhuvan Univ)</span>
+                <span>MBA, Lincoln University · B.E. Computer Engineering, Tribhuvan University</span>
               </div>
             </div>
           </div>
@@ -1081,15 +1006,12 @@ export function LayoutShell() {
         {/* ─── 10. PEER RECOMMENDATIONS & EXECUTIVE REFERENCES ─────────────── */}
         <section className="space-y-8" aria-label="Peer Recommendations">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-emerald-400">
-              <Quote className="w-3.5 h-3.5" />
-              <span>// LEADERSHIP ENDORSEMENTS &amp; REFERENCES</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-              Recommendations from Engineering Leadership
+            <p className="eyebrow">Leadership endorsements</p>
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+              Recommendations from engineering leadership
             </h2>
             <p className="text-slate-400 text-sm max-w-2xl">
-              Feedback from senior colleagues and direct contact references available for verification.
+              Written on LinkedIn by people I worked with, reproduced here in their words.
             </p>
           </div>
 
@@ -1097,17 +1019,17 @@ export function LayoutShell() {
             {recommendations.slice(0, 2).map((rec, i) => (
               <div
                 key={i}
-                className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-4 flex flex-col justify-between"
+                className="panel rounded-[14px] p-6 sm:p-8 border border-slate-800 space-y-4 flex flex-col justify-between"
               >
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   "{rec.text}"
                 </p>
-                <div className="pt-4 border-t border-slate-800 flex items-center justify-between font-mono text-xs">
+                <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-sm">
                   <div>
-                    <div className="font-bold text-slate-100">{rec.author}</div>
-                    <div className="text-[11px] text-slate-400">{rec.role}</div>
+                    <div className="font-medium text-slate-100">{rec.author}</div>
+                    <div className="text-xs text-slate-400">{rec.role}</div>
                   </div>
-                  <span className="text-[10px] text-slate-500">{rec.company}</span>
+                  <span className="text-xs text-slate-400">{rec.company}</span>
                 </div>
               </div>
             ))}
@@ -1116,25 +1038,21 @@ export function LayoutShell() {
 
         {/* ─── 11. CONTACT & TERMINAL FOOTER ─────────────────────────────────── */}
         <section id="contact" className="space-y-6" aria-label="Contact Section">
-          <div className="glass-panel rounded-2xl p-6 sm:p-10 border border-slate-800 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400 px-3 py-1 rounded-full bg-slate-900 border border-slate-800">
-              <Mail className="w-3.5 h-3.5" />
-              <span>// DIRECT TECHNICAL CHANNEL</span>
-            </div>
+          <div className="panel rounded-[14px] p-6 sm:p-10 space-y-6">
+            <p className="eyebrow">Contact</p>
 
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50 max-w-xl mx-auto">
-              Ready to Solidify Your Data Quality &amp; Pipeline Delivery?
+            <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50 max-w-xl">
+              Open to a lead data role
             </h2>
 
-            <p className="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
-              Available for Lead Data Engineer, Lead QA Engineer, and Data Lead / Manager roles,
-              lakehouse modernization initiatives, and enterprise automated QA advisory.
+            <p className="text-slate-400 text-sm max-w-lg leading-relaxed">
+              Data lead, lead data engineer, or data quality lead. Kathmandu or remote.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <a
-                href="mailto:sabrinlalsingh@gmail.com?subject=Leadership / Technical Inquiries — Sabrin Singh"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-400 text-slate-950 font-semibold text-sm hover:bg-cyan-300 transition-all hover:shadow-glow-cyan"
+                href="mailto:sabrinlalsingh@gmail.com?subject=Leadership / Technical Inquiries, Sabrin Singh"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg btn-primary text-sm transition-colors"
               >
                 <Mail className="w-4 h-4" />
                 <span>sabrinlalsingh@gmail.com</span>
@@ -1143,10 +1061,10 @@ export function LayoutShell() {
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 font-mono text-sm transition-colors"
+                className="btn-quiet text-sm"
               >
                 {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedEmail ? "Email Copied" : "Copy to Clipboard"}</span>
+                <span>{copiedEmail ? "Email copied" : "Copy email"}</span>
               </button>
 
               <a
@@ -1154,10 +1072,10 @@ export function LayoutShell() {
                 download="Sabrin_Lal_Singh_CV.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-100 font-mono text-sm transition-colors"
+                className="btn-quiet text-sm"
               >
-                <FileText className="w-4 h-4 text-emerald-400" />
-                <span>Download Resume (PDF)</span>
+                <FileText className="w-4 h-4" />
+                <span>Résumé (PDF)</span>
               </a>
             </div>
 
@@ -1168,7 +1086,7 @@ export function LayoutShell() {
                   href="https://github.com/sabrinsingh"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+                  className="flex items-center gap-1.5 hover:text-slate-400 transition-colors"
                 >
                   <Github className="w-4 h-4" />
                   <span>GitHub</span>
@@ -1177,30 +1095,24 @@ export function LayoutShell() {
                   href="https://linkedin.com/in/sabrin-lal-singh-478218a0"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+                  className="flex items-center gap-1.5 hover:text-slate-400 transition-colors"
                 >
                   <Linkedin className="w-4 h-4" />
                   <span>LinkedIn</span>
                 </a>
               </div>
 
-              <div className="flex items-center gap-2 text-slate-500">
-                <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="flex items-center gap-2 text-slate-400">
+                <MapPin className="w-3.5 h-3.5 text-slate-400" />
                 <span>Kathmandu, Nepal (27.7172° N, 85.3240° E)</span>
               </div>
             </div>
 
-            {/* Real-time View Counter & Telemetry Strip */}
-            <div className="pt-6">
-              <ViewCounter variant="footer" />
-            </div>
           </div>
 
-          <footer className="py-6 text-center text-xs font-mono text-slate-400 space-y-1">
-            <p>© {new Date().getFullYear()} Sabrin Lal Singh. Designed with UI/UX Pro Max Architecture.</p>
-            <p className="text-slate-400">
-              Host: Netlify • Edge SSL • Multi-Theme Engine (Cyber / OLED / Tokyo / Studio) • High-Contrast WCAG AAA
-            </p>
+          <footer className="py-6 text-center text-xs text-slate-400 space-y-1">
+            <p>© {new Date().getFullYear()} Sabrin Lal Singh. All rights reserved.</p>
+            <p className="text-slate-400">Built with React, TypeScript &amp; Vite · Kathmandu, Nepal</p>
           </footer>
         </section>
       </main>
