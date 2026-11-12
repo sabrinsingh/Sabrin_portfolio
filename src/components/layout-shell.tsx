@@ -456,7 +456,7 @@ export function LayoutShell() {
             {/* The one rich moment: a gate run, as a real table */}
             <figure className="lg:col-span-5 panel rounded-[14px] overflow-hidden">
               <figcaption className="flex items-center justify-between px-4 py-3 border-b">
-                <span className="text-sm text-slate-300">silver_claims · gate run</span>
+                <span className="text-sm text-slate-300">silver_claims · sample gate run</span>
                 <span className="text-sm text-slate-400 tabular-nums">14:02 NPT</span>
               </figcaption>
               <table className="w-full text-left text-sm">
@@ -501,7 +501,7 @@ export function LayoutShell() {
               ["35%", "faster reporting after tuning"],
               ["4", "engineers led"],
               ["9+", "years in production"],
-              ["99.9%", "reliability SLA"],
+              ["5", "certifications"],
             ].map(([figure, label], i) => (
               <div
                 key={label}
@@ -579,7 +579,6 @@ export function LayoutShell() {
                       "Delta Lake",
                       "AWS Redshift",
                       "Snowflake",
-                      "PostgreSQL",
                       "Python",
                       "Advanced SQL",
                     ].map((tool) => (
@@ -595,7 +594,7 @@ export function LayoutShell() {
               </div>
 
               <div className="pt-6 mt-6 border-t border-slate-800 text-xs font-mono text-slate-400 flex items-center justify-between">
-                <span>Loads: hourly clinical batches</span>
+                <span>Loads: scheduled clinical batches</span>
                 <span className="text-slate-400">AWS Redshift / Databricks</span>
               </div>
             </div>
@@ -666,7 +665,7 @@ export function LayoutShell() {
 
               <div className="pt-6 mt-6 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
                 <span>Checks run before the load completes</span>
-                <span>Hourly clinical batches</span>
+                <span>Scheduled clinical batches</span>
               </div>
             </div>
           </div>
