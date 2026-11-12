@@ -19,7 +19,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SpotlightCard } from "@/components/spotlight-card";
 import { DataPipelineVisual } from "@/components/data-pipeline-visual";
 import { Currently } from "@/components/currently";
-import { PipelineSimulator } from "@/components/pipeline-simulator";
 import { ArchitecturalPrinciples } from "@/components/principles";
 import { certifications, recommendations, experience, education, awards } from "@/data/portfolio";
 
@@ -27,21 +26,20 @@ import { certifications, recommendations, experience, education, awards } from "
 const PRIMARY_NAV_LINKS = [
   { label: "Architecture", href: "#engineering-focus" },
   { label: "Flow", href: "#pipeline-visual" },
-  { label: "Telemetry", href: "#telemetry" },
   { label: "Work", href: "#projects" },
   { label: "Experience", href: "#experience" },
+  { label: "Principles", href: "#principles" },
 ];
 
 const ALL_NAV_LINKS = [
   { label: "Overview", href: "#home" },
   { label: "Architecture & Focus", href: "#engineering-focus" },
   { label: "Pipeline Flow Topology", href: "#pipeline-visual" },
-  { label: "Live Telemetry Simulator", href: "#telemetry" },
   { label: "Production Case Studies", href: "#projects" },
   { label: "Career Experience", href: "#experience" },
   { label: "Engineering Principles", href: "#principles" },
-  { label: "Credentials & Certs", href: "#certifications" },
-  { label: "Direct Inquiries", href: "#contact" },
+  { label: "Credentials & Education", href: "#certifications" },
+  { label: "Direct Contact", href: "#contact" },
 ];
 
 // ─── PROJECT CASE STUDIES WITH TABBED PAPER TRAIL ───────────────────────────
@@ -407,30 +405,25 @@ export function LayoutShell() {
         <section id="home" className="relative pt-2 sm:pt-4" aria-label="Introduction">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             <div className="lg:col-span-7">
-              <div className="flex items-center gap-3">
-                <img
-                  src="/images/profile-400.webp"
-                  alt="Sabrin Lal Singh"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full object-cover border"
-                />
-                <p className="eyebrow">Principal data engineer, Kathmandu</p>
+              <div className="flex items-center gap-2">
+                <span className="status-dot" aria-hidden="true" />
+                <p className="eyebrow">Principal Data Engineer &amp; Data Lead</p>
               </div>
               <h1 className="mt-6 text-[32px] sm:text-[42px] lg:text-[52px] font-medium tracking-[-0.02em] text-slate-50 leading-[1.08] text-balance">
                 I lead data teams and build pipelines that check their own work
               </h1>
 
               <p className="mt-5 text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-                Nine years of healthcare data work in{" "}
-                <strong className="text-slate-100 font-semibold">Redshift</strong>,{" "}
+                Nine years of healthcare data engineering across{" "}
+                <strong className="text-slate-100 font-semibold">AWS Redshift</strong>,{" "}
                 <strong className="text-slate-100 font-semibold">Databricks</strong>,{" "}
-                <strong className="text-slate-100 font-semibold">Snowflake</strong> and{" "}
-                <strong className="text-slate-100 font-semibold">PySpark</strong>, plus the checks that stop bad
-                records before they reach a report. Working with teams anywhere.
+                <strong className="text-slate-100 font-semibold">Snowflake</strong>,{" "}
+                <strong className="text-slate-100 font-semibold">Delta Lake</strong>, and{" "}
+                <strong className="text-slate-100 font-semibold">PySpark</strong>, with automated validation benchmarks
+                aligned with U.S. healthcare standards (HIPAA). Available for Manager and Lead roles.
               </p>
 
-              {/* One primary action, one secondary. Everything else moved out. */}
+              {/* Actions */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <a href="#contact" className="btn-primary text-sm">
                   <span>Talk about a lead or manager role</span>
@@ -445,54 +438,67 @@ export function LayoutShell() {
                   className="btn-quiet text-sm"
                 >
                   <FileText className="w-4 h-4" />
-                  <span>Résumé (PDF)</span>
+                  <span>Download CV (PDF)</span>
                 </a>
               </div>
 
-              <p className="mt-4 text-sm text-slate-400">Kathmandu or remote.</p>
-
+              <p className="mt-4 text-sm text-slate-400">Kathmandu, Nepal · Available for Global Remote &amp; Relocation</p>
             </div>
 
-            {/* The one rich moment: a gate run, as a real table */}
-            <figure className="lg:col-span-5 panel rounded-[14px] overflow-hidden">
-              <figcaption className="flex items-center justify-between px-4 py-3 border-b">
-                <span className="text-sm text-slate-300">silver_claims · sample gate run</span>
-                <span className="text-sm text-slate-400 tabular-nums">14:02 NPT</span>
-              </figcaption>
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="text-xs text-slate-400">
-                    <th scope="col" className="px-4 py-2 font-normal">Batch</th>
-                    <th scope="col" className="px-2 py-2 font-normal text-right">Rows</th>
-                    <th scope="col" className="px-4 py-2 font-normal text-right">Check</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono tabular-nums">
-                  {[
-                    ["8845", "1,203,551", "pass"],
-                    ["8844", "1,210,033", "quarantine"],
-                    ["8843", "1,198,402", "pass"],
-                    ["8842", "1,204,880", "pass"],
-                  ].map(([batch, rows, state]) => (
-                    <tr key={batch} className="border-t">
-                      <td className="px-4 py-2.5 text-slate-300">{batch}</td>
-                      <td className="px-2 py-2.5 text-right text-slate-400">{rows}</td>
-                      <td className="px-4 py-2.5 text-right">
-                        <span className="inline-flex items-center gap-2 text-xs">
-                          <span className={state === "pass" ? "status-dot" : "status-dot status-dot-fail"} />
-                          <span className={state === "pass" ? "text-emerald-400" : "text-rose-400"}>
-                            {state}
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p className="px-4 py-3 border-t text-xs text-slate-400">
-                Batch 8844 held for 3 null claim IDs. Nothing unvalidated reached Gold.
-              </p>
-            </figure>
+            {/* Executive Profile Card — 100% Grounded in Official CV */}
+            <div className="lg:col-span-5 panel rounded-[14px] p-6 space-y-5 border border-slate-800">
+              <div className="flex items-center gap-4">
+                <img
+                  src="/images/profile-400.webp"
+                  alt="Sabrin Lal Singh — Principal Data Engineer & Data Manager"
+                  width={88}
+                  height={88}
+                  className="h-20 w-20 sm:h-22 sm:w-22 rounded-xl object-cover border border-slate-700 shrink-0"
+                />
+                <div className="min-w-0 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="status-dot" aria-hidden="true" />
+                    <span className="text-xs text-emerald-400 font-medium">Available for Manager &amp; Lead Roles</span>
+                  </div>
+                  <h2 className="text-lg font-medium text-slate-100 truncate">Sabrin Lal Singh</h2>
+                  <p className="text-xs text-slate-400 truncate">
+                    Principal Data Engineer · Data Lead
+                  </p>
+                  <p className="text-xs text-slate-400 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    Kathmandu, Nepal (UTC+5:45)
+                  </p>
+                </div>
+              </div>
+
+              {/* Verified Credentials Directly From Official CV */}
+              <div className="pt-4 border-t border-slate-800 space-y-2 text-xs">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-slate-400">Education:</span>
+                  <span className="text-right text-slate-200 font-medium">
+                    MBA (Lincoln Univ, 2026) · B.E. (TU, 2016)
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-slate-400">Leadership:</span>
+                  <span className="text-right text-slate-200">
+                    Managed &amp; mentored 4 engineers (Techkraft)
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-slate-400">Honors:</span>
+                  <span className="text-right text-emerald-400 font-medium">
+                    Best Employee Award 2023 (Techkraft)
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-slate-400">Core Stack:</span>
+                  <span className="text-right text-slate-300 font-mono text-[11px]">
+                    Redshift · Databricks · PySpark · Snowflake
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Four figures, divided by hairlines. No cards, no accents competing. */}
@@ -674,11 +680,6 @@ export function LayoutShell() {
         {/* ─── 4. INTERACTIVE TOPOLOGY & ARCHITECTURE (DATA PIPELINE VISUAL) ── */}
         <section id="pipeline-visual" className="space-y-8" aria-label="Interactive Pipeline Architecture">
           <DataPipelineVisual />
-        </section>
-
-        {/* ─── 5. INTERACTIVE MISSION CONTROL: PIPELINE TELEMETRY SIMULATOR ── */}
-        <section id="telemetry" className="space-y-6" aria-label="Interactive Telemetry Simulator">
-          <PipelineSimulator />
         </section>
 
         {/* ─── 6. PRODUCTION CASE STUDIES (PROJECTS WITH INTERACTIVE TABS) ───── */}
@@ -996,7 +997,7 @@ export function LayoutShell() {
 
               <div className="pt-3 border-t border-slate-800 text-xs text-slate-400 flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>MBA, Lincoln University · B.E. Computer Engineering, Tribhuvan University</span>
+                <span>MBA, Lincoln University · B.E. Computer Engineering, Tribhuvan University · +2 Science, HSEB</span>
               </div>
             </div>
           </div>

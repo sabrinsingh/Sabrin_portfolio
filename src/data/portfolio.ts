@@ -252,6 +252,13 @@ export const education = [
         location: "Lalitpur, Nepal",
         period: "2012 – 2016",
         highlights: "Core engineering foundation in algorithms, database design, distributed systems, and computer networks."
+    },
+    {
+        degree: "+2 Science (Higher Secondary)",
+        institution: "Xavier International College",
+        location: "Kathmandu, Nepal",
+        period: "2010 – 2012",
+        highlights: "Mathematics and Physics focus."
     }
 ];
 
