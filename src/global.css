@@ -1,191 +1,104 @@
-@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ==========================================================================
-   Design System Tokens (3-Layer Architecture)
-   Layer 1: Primitives (Strict Slate, Cyan-400, Emerald-400)
-   Layer 2: Semantics (Canvas, Surface, Line, Status)
-   Layer 3: Components (Glass Panels, Badges, Telemetry Grids)
+   Tokens: one graphite ramp, one signal accent, semantic pass and fail.
+   The world is a reconciliation ledger: cool graphite, hairline rules,
+   tabular figures, and colour only where it carries meaning.
    ========================================================================== */
 
 @layer base {
   :root {
-    /* Strict Slate Dark Architecture Tokens */
-    --canvas-bg: #020617; /* slate-950 */
-    --canvas-bg-subtle: #080f1e;
-    --surface-bg: #0f172a; /* slate-900 */
-    --surface-elevated: #151f32; /* slate-850 */
-    --surface-highlight: #1e293b; /* slate-800 */
+    --canvas: #0b0d0f;
+    --canvas-subtle: #111316;
+    --surface: #111316;
+    --surface-elevated: #161a1d;
+    --surface-highlight: #1d2126;
 
-    --line-subtle: #1e293b; /* slate-800 */
-    --line-strong: #334155; /* slate-700 */
+    --line-subtle: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
 
-    --text-primary: #f8fafc; /* slate-50 (contrast > 16:1 against slate-950) */
-    --text-secondary: #cbd5e1; /* slate-300 (contrast > 11:1 against slate-950) */
-    --text-muted: #94a3b8; /* slate-400 (contrast > 7.3:1 against slate-950) */
+    --text-primary: #f4f5f6;
+    --text-secondary: #b3b9c1;
+    --text-muted: #868d97;
 
-    --accent-cyan: #22d3ee; /* cyan-400 (contrast > 9.5:1 against slate-950) */
-    --accent-emerald: #34d399; /* emerald-400 (contrast > 10.2:1 against slate-950) */
-    --accent-amber: #fbbf24;
-    --accent-rose: #fb7185;
+    --signal: #d8a247;
+    --pass: #4f9d75;
+    --fail: #c2565b;
 
-    /* Transition & Micro-Interaction Tokens */
-    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-    --dur-instant: 100ms;
-    --dur-fast: 150ms;
-    --dur-normal: 250ms;
-    --dur-slow: 400ms;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-feedback: 120ms;
+    --dur-enter: 240ms;
 
-    /* Compatibility variables */
-    --background: 222 47% 3%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 187 92% 54%;
-    --primary-foreground: 222 47% 3%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 13%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 158 64% 52%;
-    --accent-foreground: 222 47% 3%;
-    --destructive: 350 89% 60%;
+    --radius: 10px;
+
+    /* HSL aliases for the few components that read raw variables. */
+    --background: 210 15% 5%;
+    --foreground: 210 6% 96%;
+    --card: 210 12% 8%;
+    --card-foreground: 210 6% 96%;
+    --popover: 210 12% 8%;
+    --popover-foreground: 210 6% 96%;
+    --primary: 38 65% 56%;
+    --primary-foreground: 210 15% 5%;
+    --secondary: 210 9% 14%;
+    --secondary-foreground: 210 6% 96%;
+    --muted: 204 14% 10%;
+    --muted-foreground: 214 8% 56%;
+    --accent: 38 65% 56%;
+    --accent-foreground: 210 15% 5%;
+    --destructive: 358 47% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 33% 17%;
-    --hairline: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 187 92% 54%;
-    --radius: 0.5rem;
+    --border: 210 9% 18%;
+    --hairline: 210 9% 18%;
+    --input: 210 9% 18%;
+    --ring: 38 65% 56%;
   }
 
-  /* OLED Pitch Black Theme (Ultra-High Contrast Hacker/Terminal) */
-  .theme-oled {
-    --canvas-bg: #000000;
-    --canvas-bg-subtle: #09090b;
-    --surface-bg: #0c0c0e;
-    --surface-elevated: #141417;
-    --surface-highlight: #27272a;
-    --line-subtle: #27272a;
-    --line-strong: #3f3f46;
-    --text-primary: #ffffff;
-    --text-secondary: #d4d4d8;
-    --text-muted: #a1a1aa;
-    --accent-cyan: #38bdf8;
-    --accent-emerald: #10b981;
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 240 6% 5%;
-    --card-foreground: 0 0% 100%;
-    --border: 240 6% 15%;
-    --primary: 199 89% 48%;
-    --accent: 160 84% 39%;
-  }
-
-  /* Tokyo Midnight Theme (Cyber Indigo & Radiant Violet Glow) */
-  .theme-tokyo {
-    --canvas-bg: #070913;
-    --canvas-bg-subtle: #0d1124;
-    --surface-bg: #11162e;
-    --surface-elevated: #181f3f;
-    --surface-highlight: #232d59;
-    --line-subtle: #202952;
-    --line-strong: #32407d;
-    --text-primary: #f1f3fd;
-    --text-secondary: #c2c9ee;
-    --text-muted: #8b97d1;
-    --accent-cyan: #38bdf8;
-    --accent-emerald: #a78bfa;
-    --background: 231 46% 5%;
-    --foreground: 230 50% 98%;
-    --card: 230 45% 12%;
-    --card-foreground: 230 50% 98%;
-    --border: 230 35% 22%;
-    --primary: 258 90% 66%;
-    --accent: 199 89% 48%;
-  }
-
-  /* Studio Light Theme (Clean Architectural Alabaster) */
-  .light {
-    --canvas-bg: #f8fafc;
-    --canvas-bg-subtle: #f1f5f9;
-    --surface-bg: #ffffff;
-    --surface-elevated: #f8fafc;
-    --surface-highlight: #f1f5f9;
-    --line-subtle: #e2e8f0;
-    --line-strong: #cbd5e1;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
-    --accent-cyan: #0284c7;
-    --accent-emerald: #059669;
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 199 89% 48%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 0 0% 100%;
-    --accent: 160 84% 39%;
-    --accent-foreground: 0 0% 100%;
-  }
-
-  /* Global Scroll-Behavior & Viewport Resiliency */
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
-    overscroll-behavior-y: none;
-    text-size-adjust: 100%;
-    background-color: var(--canvas-bg);
+    scroll-padding-top: 5rem;
+    background-color: var(--canvas);
     color: var(--text-primary);
+    text-size-adjust: 100%;
   }
 
   body {
-    background-color: var(--canvas-bg);
+    background-color: var(--canvas);
     color: var(--text-primary);
-    font-family: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
     overflow-x: hidden;
     min-height: 100vh;
   }
 
-  /* Accessible Selection Highlighting */
   ::selection {
-    background: rgba(34, 211, 238, 0.28);
+    background: rgba(216, 162, 71, 0.26);
     color: #ffffff;
   }
 
-  /* Custom Sleek Dark Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
-
   ::-webkit-scrollbar-track {
-    background: #020617;
+    background: var(--canvas);
   }
-
   ::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 4px;
-    border: 2px solid #020617;
+    background: #2a2f35;
+    border-radius: 6px;
+    border: 3px solid var(--canvas);
   }
-
   ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
+    background: #3a4048;
   }
 
-  /* Universal Box-Sizing & Border Reset */
   *,
   *::before,
   *::after {
@@ -194,152 +107,113 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Numerical Data Tabular Numbers (Prevents Metric Jitter) */
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
   .tabular-nums,
   code,
   pre,
   .metric-value {
     font-variant-numeric: tabular-nums;
   }
-}
 
-/* ==========================================================================
-   Modern Design Patterns & Component Utilities
-   ========================================================================== */
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+}
 
 @layer utilities {
-  /* Subtle Repeating Glassmorphism Grid Overlay (bg-grid-white/[0.02]) */
-  .bg-grid-white\/\[0\.02\] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgba(255, 255, 255, 0.025)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
+  /* Raised surface: a step up in the ramp plus a hairline. No blur, no
+     inner highlight, no coloured shadow. */
+  .panel {
+    background-color: var(--surface);
+    border: 1px solid var(--line-subtle);
   }
 
-  .bg-grid-technical {
-    background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 32px 32px;
+  .panel-raised {
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--line-subtle);
   }
 
-  /* Masking utility to softly fade background grids into canvas edges */
-  .mask-radial-faded {
-    mask-image: radial-gradient(ellipse 65% 50% at 50% 0%, #000 70%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 65% 50% at 50% 0%, #000 70%, transparent 100%);
-  }
-
-  /* Glassmorphism Surface Backdrops */
-  .glass-nav {
-    background: rgba(2, 6, 23, 0.82);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(30, 41, 59, 0.85);
-  }
-
-  .glass-panel {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(30, 41, 59, 0.9);
-  }
-
+  /* Names kept so existing markup resolves to a quiet surface. */
+  .glass-nav,
+  .glass-panel,
   .glass-card {
-    background: rgba(21, 31, 50, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(51, 65, 85, 0.6);
+    background-color: var(--surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--line-subtle);
   }
 
-  /* Micro-Hover Scaling & Glow Transitions */
-  .hover-lift {
-    transition: transform var(--dur-fast) var(--ease-spring),
-                border-color var(--dur-fast) ease,
-                box-shadow var(--dur-fast) ease;
+  .hairline {
+    border-color: var(--line-subtle);
   }
 
-  .hover-lift:hover {
-    transform: translateY(-2px);
-  }
-
-  .hover-glow-cyan:hover {
-    border-color: rgba(34, 211, 238, 0.5);
-    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.7),
-                0 0 20px -2px rgba(34, 211, 238, 0.2);
-  }
-
-  .hover-glow-emerald:hover {
-    border-color: rgba(52, 211, 153, 0.5);
-    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.7),
-                0 0 20px -2px rgba(52, 211, 153, 0.2);
-  }
-
-  /* Pulse beacon for live telemetry status */
-  .status-beacon-live {
-    position: relative;
+  /* The one accent-bearing control on a screen. */
+  .btn-primary {
     display: inline-flex;
-    height: 0.625rem;
-    width: 0.625rem;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: var(--radius);
+    background-color: var(--signal);
+    color: #1a1305;
+    font-weight: 500;
+    transition: background-color var(--dur-feedback) var(--ease);
   }
 
-  .status-beacon-live::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 9999px;
-    background-color: var(--accent-emerald);
-    opacity: 0.75;
-    animation: beacon 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  .btn-primary:hover {
+    background-color: #e8c489;
   }
 
-  .status-beacon-live::after {
-    content: "";
-    position: relative;
+  .btn-quiet {
     display: inline-flex;
-    height: 0.625rem;
-    width: 0.625rem;
-    border-radius: 9999px;
-    background-color: var(--accent-emerald);
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: var(--radius);
+    background-color: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--text-secondary);
+    font-weight: 400;
+    transition: border-color var(--dur-feedback) var(--ease), color var(--dur-feedback) var(--ease);
+  }
+
+  .btn-quiet:hover {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.24);
   }
 }
 
-/* ==========================================================================
-   Components: Currently & Data Pipeline Visual Additions
-   ========================================================================== */
+/* Meta label: sentence case, normal tracking, muted. Not an uppercase tag. */
+.eyebrow {
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+/* Pass and fail marks carry meaning, so they keep colour. */
 .status-dot {
-  position: relative;
   display: inline-flex;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: hsl(152 75% 45%);
+  background-color: var(--pass);
 }
 
-.status-dot-pulse {
-  position: relative;
-  display: inline-flex;
-  width: 6px;
-  height: 6px;
-}
-
-.status-dot-pulse::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  background-color: hsl(152 75% 45% / 0.35);
-  animation: beacon-pulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-.status-dot-pulse::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background-color: hsl(152 75% 48%);
-}
-
-@keyframes beacon-pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(2.2); opacity: 0; }
-  100% { transform: scale(1); opacity: 0; }
+.status-dot-fail {
+  background-color: var(--fail);
 }
 
 .scrollbar-hide {
@@ -350,63 +224,26 @@
   display: none;
 }
 
-.text-editorial {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  letter-spacing: -0.018em;
+/* Long code and diagram lines scroll inside their own box instead of
+   clipping on narrow screens. */
+pre,
+code {
+  max-width: 100%;
 }
 
-.text-editorial-italic {
-  font-family: Georgia, "Times New Roman", serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.015em;
+pre {
+  overflow-x: auto;
 }
 
-.eyebrow {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* ==========================================================================
-   Analog Depth: Cinematic Grain & Vignette Overlay
-   ========================================================================== */
-.film-grain {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0.038;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Technical Hairline Crosshair Motif */
-.crosshair-grid {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-}
-
-/* ==========================================================================
-   Accessibility & Motion Preferences
-   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
