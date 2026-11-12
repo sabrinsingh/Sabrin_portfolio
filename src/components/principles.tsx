@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, ChevronRight, Binary } from "lucide-react";
+import { ShieldCheck, ChevronRight } from "lucide-react";
 
 interface Principle {
   id: string;
@@ -13,43 +13,27 @@ interface Principle {
 const PRINCIPLES: Principle[] = [
   {
     id: "01",
-    title: "Validation as Code",
+    title: "Validation as code",
     tagline: "Correctness before throughput",
     description:
-      "Data quality is not an after-the-fact monitoring alert; it is a fundamental unit of software engineering. Every ingestion flight path must carry deterministic, automated assertion gates before writing to Silver or Gold partitions.",
-    rule: "Assertion Rule: Never allow an untyped or unvalidated partition into an executive dashboard.",
+      "Bad data should not reach a dashboard and get noticed a week later. Every load passes the same assertions before it writes to Silver or Gold.",
+    rule: "No partition reaches an executive dashboard without passing its assertions.",
   },
   {
     id: "02",
-    title: "Automate the Repetitive",
+    title: "Automate the repetitive",
     tagline: "Zero manual reconciliation",
     description:
-      "Turn repeatable validation and operational checks into deterministic test suites. If a human engineer inspects a schema, null frequency, or row count twice, an automated gate should check it forever.",
-    rule: "Operational Rule: Every recurring manual reconciliation is an unbuilt CI/CD assertion gate.",
+      "If an engineer checks a schema, a null rate or a row count twice, that check becomes a test suite. Test suites do not get tired.",
+    rule: "Every manual reconciliation I run twice becomes a CI assertion.",
   },
   {
     id: "03",
-    title: "Auditable Lineage",
-    tagline: "From raw telemetry to executive metric",
+    title: "Deterministic reconciliation",
+    tagline: "Stored procedures and checks on both sides",
     description:
-      "Maintain strict visibility into where raw bytes originate, how transformations mutate types, and where downstream aggregates land. Full lineage tracking is how enterprise compliance and stakeholder trust are maintained.",
-    rule: "Lineage Rule: Every downstream metric must trace back to its raw ingestion batch and partition ID.",
-  },
-  {
-    id: "04",
-    title: "Engineer for Failure",
-    tagline: "Idempotent retries & ACID guarantees",
-    description:
-      "Distributed networks and upstream healthcare feeds will inevitably drop or corrupt batches. Architect pipelines with idempotent restarts, isolated dead-letter quarantine queues, and Delta Lake ACID transaction safety.",
-    rule: "Failure Rule: A pipeline failure must be entirely replayable without duplicating a single record.",
-  },
-  {
-    id: "05",
-    title: "Deterministic Reconciliation",
-    tagline: "Automated stored procedures & zero silent errors",
-    description:
-      "Mission-critical clinical and claims records cannot tolerate silent failures. Every pipeline boundary must perform mathematical checksum balance checks between source systems and target lakehouse warehouses.",
-    rule: "Reconciliation Rule: Balanced checksums or immediate automated quarantine notification.",
+      "Clinical and claims records go wrong quietly when a number drifts. Every boundary between source and warehouse gets a checksum that compares both sides.",
+    rule: "Checksums balance, or the batch goes to quarantine and someone gets told.",
   },
 ];
 
@@ -61,17 +45,14 @@ export function ArchitecturalPrinciples() {
   };
 
   return (
-    <div className="space-y-8" id="principles">
+    <div className="space-y-8">
       <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400">
-          <Binary className="w-3.5 h-3.5" />
-          <span>// ARCHITECTURAL PHILOSOPHY</span>
-        </div>
-        <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-50">
-          Five Non-Negotiable Engineering Laws
+        <p className="eyebrow">Architectural philosophy</p>
+        <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50">
+          How I run a data pipeline
         </h2>
         <p className="text-slate-400 text-sm max-w-2xl">
-          Core engineering disciplines honed across 9+ years building high-throughput production data systems where silent failure is not an option.
+          Three rules from nine years of production healthcare data work, where a quiet failure becomes a wrong number in a report.
         </p>
       </div>
 
@@ -85,31 +66,31 @@ export function ArchitecturalPrinciples() {
                 key={p.id}
                 type="button"
                 onClick={() => handleSelect(p.id)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center justify-between group ${
+                className={`w-full text-left p-4 rounded-xl border transition-colors duration-150 flex items-center justify-between group ${
                   isActive
-                    ? "bg-slate-900 border-cyan-500/50 shadow-lg shadow-cyan-500/5"
+                    ? "bg-slate-900 border-slate-700"
                     : "bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/40"
                 }`}
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <span
-                    className={`font-mono text-xs px-2 py-0.5 rounded font-bold ${
+                    className={`font-mono text-xs px-2 py-0.5 rounded font-medium ${
                       isActive
-                        ? "bg-cyan-400 text-slate-950"
-                        : "bg-slate-900 text-slate-500 group-hover:text-slate-300"
+                        ? "bg-signal text-ink-950"
+                        : "bg-slate-900 text-slate-400 group-hover:text-slate-300"
                     }`}
                   >
                     {p.id}
                   </span>
                   <div className="min-w-0">
                     <p
-                      className={`text-sm font-semibold truncate transition-colors ${
+                      className={`text-sm font-medium truncate transition-colors ${
                         isActive ? "text-slate-50" : "text-slate-300 group-hover:text-slate-100"
                       }`}
                     >
                       {p.title}
                     </p>
-                    <p className="text-xs font-mono text-slate-500 truncate mt-0.5">
+                    <p className="text-xs font-mono text-slate-400 truncate mt-0.5">
                       {p.tagline}
                     </p>
                   </div>
@@ -118,7 +99,7 @@ export function ArchitecturalPrinciples() {
                 <ChevronRight
                   className={`w-4 h-4 transition-transform shrink-0 ${
                     isActive
-                      ? "text-cyan-400 translate-x-1"
+                      ? "text-slate-400 translate-x-1"
                       : "text-slate-600 group-hover:text-slate-400"
                   }`}
                 />
@@ -139,27 +120,27 @@ export function ArchitecturalPrinciples() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-md space-y-6 shadow-xl"
+                  className="panel rounded-[14px] p-6 sm:p-8 space-y-6"
                 >
                   <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-2xl font-bold text-cyan-400">
+                      <span className="font-mono text-2xl font-medium text-slate-400">
                         // {current.id}
                       </span>
                       <div>
-                        <h3 className="text-lg font-bold text-slate-100">{current.title}</h3>
-                        <p className="font-mono text-xs text-emerald-400">{current.tagline}</p>
+                        <h3 className="text-lg font-medium text-slate-100">{current.title}</h3>
+                        <p className="font-mono text-xs text-slate-400">{current.tagline}</p>
                       </div>
                     </div>
-                    <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0" />
+                    <ShieldCheck className="w-5 h-5 text-slate-400 shrink-0" />
                   </div>
 
                   <p className="text-sm text-slate-300 leading-relaxed">
                     {current.description}
                   </p>
 
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 font-mono text-xs text-cyan-300/90 flex items-start gap-3">
-                    <span className="text-cyan-400 font-bold shrink-0">LAW:</span>
+                  <div className="p-4 rounded-[10px] bg-slate-950 border border-slate-800 font-mono text-xs text-slate-200 flex items-start gap-3">
+                    <span className="text-slate-400 shrink-0">Rule</span>
                     <span>{current.rule}</span>
                   </div>
                 </motion.div>
