@@ -30,7 +30,7 @@ const pipelineNodes: PipelineNode[] = [
         label: "Ingestion",
         sublabel: "PySpark and Redshift COPY",
         type: "process",
-        metrics: "hourly batches",
+        metrics: "scheduled batches",
         details: "Batch loads with idempotent reruns, so a failed batch can be replayed without duplicating rows.",
         validation: "Corrupt and truncated payloads are counted and held, not silently dropped.",
         codeRule: "spark.read.option('mode', 'PERMISSIVE')",

@@ -27,7 +27,7 @@ export const experience = [
         description: "Led a four-engineer team that built a reusable PySpark quality framework, with responsibility for delivery and SLA adherence.",
         highlights: [
             "Awarded 'Best Employee Award 2023' in recognition of outstanding technical leadership and on-time project delivery.",
-            "Managed and mentored a team of four engineers, delivering projects on time while holding 99.9% SLA adherence.",
+            "Managed and mentored a team of four engineers, delivering projects on time while holding SLA adherence across delivery.",
             "Built a reusable PySpark data quality framework for structured and semi-structured sources.",
             "Implemented automated anomaly detection scripts that flag data issues before publication."
         ]
@@ -39,7 +39,7 @@ export const experience = [
         period: "Mar 2018 – Oct 2022",
         description: "Engineered and maintained high-throughput ETL workflows for US healthcare claims lifecycle and payment integrity.",
         highlights: [
-            "Developed and maintained mission-critical ETL workflows (ODI, Oracle SQL, Python) processing millions of healthcare claims.",
+            "Developed and maintained mission-critical ETL workflows (ODI, Oracle SQL, Python) processing high-volume US healthcare claims.",
             "Rewrote SQL execution plans and cut executive report generation time by 35%.",
             "Automated manual reconciliation, which raised delivery throughput and removed the human errors.",
         ]
