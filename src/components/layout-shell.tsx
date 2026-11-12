@@ -350,7 +350,7 @@ export function LayoutShell() {
                   <span className="status-dot" />
                   <span>{kathmanduTime ? `${kathmanduTime} NPT` : "Kathmandu, Nepal"}</span>
                 </div>
-                <span className="text-xs text-slate-400">Open to lead roles</span>
+                <span className="text-xs text-slate-400">Open to lead and manager roles</span>
               </div>
 
               <div className="space-y-1">
@@ -433,7 +433,7 @@ export function LayoutShell() {
               {/* One primary action, one secondary. Everything else moved out. */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <a href="#contact" className="btn-primary text-sm">
-                  <span>Talk about a lead role</span>
+                  <span>Talk about a lead or manager role</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
 
@@ -1041,11 +1041,11 @@ export function LayoutShell() {
             <p className="eyebrow">Contact</p>
 
             <h2 className="text-2xl sm:text-4xl font-medium tracking-tight text-slate-50 max-w-xl">
-              Open to a lead data role
+              Open to a lead or manager role in data
             </h2>
 
             <p className="text-slate-400 text-sm max-w-lg leading-relaxed">
-              Data lead, lead data engineer, or data quality lead. Kathmandu or remote.
+              Data engineering manager, data lead, or lead data engineer. Kathmandu or remote.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
