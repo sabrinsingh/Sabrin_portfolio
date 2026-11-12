@@ -74,3 +74,7 @@ export default defineConfig([
 
 ## Deployment Update
 Triggering new build.
+
+## Design
+
+The interface was rebuilt following the [unslop](https://github.com/heydamir/unslop) method by Damir Sokolovsky (CC BY 4.0): one neutral ramp, one accent, and a single strong visual per page.

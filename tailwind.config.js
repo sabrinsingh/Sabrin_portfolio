@@ -1,10 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
       xs: "375px",
@@ -16,150 +13,118 @@ export default {
     },
     extend: {
       colors: {
-        // Strict Slate Palette (Structural Dark Theme Architecture)
+        // One neutral ramp, tinted cool like a terminal ledger. Every
+        // surface, border and text role comes from these steps.
+        ink: {
+          50: "#f4f5f6",
+          100: "#e6e8ea",
+          200: "#d2d6da",
+          300: "#b3b9c1",
+          400: "#868d97",
+          500: "#5c636d",
+          600: "#3a4048",
+          700: "#2a2f35",
+          800: "#1d2126",
+          850: "#161a1d",
+          900: "#111316",
+          950: "#0b0d0f",
+        },
+
+        // Legacy ramp name kept so unreviewed components inherit the new
+        // neutrals instead of drifting back to blue-slate.
         slate: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b", // Structural borders & divider lines
-          850: "#151f32", // Intermediate card & component elevation
-          900: "#0f172a", // Elevated surfaces & panels
-          950: "#020617", // Deep Canvas Background
+          50: "#f4f5f6",
+          100: "#e6e8ea",
+          200: "#d2d6da",
+          300: "#b3b9c1",
+          400: "#868d97",
+          500: "#5c636d",
+          600: "#3a4048",
+          700: "#2a2f35",
+          800: "#1d2126",
+          850: "#161a1d",
+          900: "#111316",
+          950: "#0b0d0f",
         },
-        // Data & QA Accent Highlights (High-Contrast & Precise)
+
+        // One accent. Used for the primary action, the selection and the one
+        // figure that matters. "cyan" keeps the old class names working.
+        signal: "#d8a247",
         cyan: {
-          400: "#22d3ee", // Primary Data Accent
-          500: "#06b6d4",
-          900: "#164e63",
-          950: "#083344",
+          300: "#e8c489",
+          400: "#d8a247",
+          500: "#b8862f",
+          900: "#3a2b12",
+          950: "#241a0a",
         },
+
+        // Semantic only: pass and fail states. Never decoration.
+        pass: "#4f9d75",
+        fail: "#c2565b",
         emerald: {
-          400: "#34d399", // QA & Pass Gate Accent
-          500: "#10b981",
-          900: "#064e3b",
-          950: "#022c22",
-        },
-        amber: {
-          400: "#fbbf24", // Telemetry Warning Accent
-          950: "#451a03",
+          300: "#7fbf9c",
+          400: "#4f9d75",
+          500: "#3d7d5c",
+          900: "#16301f",
+          950: "#0d1f14",
         },
         rose: {
-          400: "#fb7185", // QA Failure / Anomaly Accent
-          950: "#4c0519",
+          400: "#c2565b",
+          950: "#2a1214",
         },
-        // Semantic Token Aliases
-        canvas: {
-          DEFAULT: "#020617", // slate-950
-          subtle: "#060d1d",
+        amber: {
+          300: "#e8c489",
+          400: "#d8a247",
+          950: "#241a0a",
         },
-        surface: {
-          DEFAULT: "#0f172a", // slate-900
-          elevated: "#151f32", // slate-850
-          highlight: "#1e293b", // slate-800
-        },
+
+        canvas: { DEFAULT: "#0b0d0f", subtle: "#111316" },
+        surface: { DEFAULT: "#111316", elevated: "#161a1d", highlight: "#1d2126" },
         line: {
-          subtle: "#1e293b", // slate-800
-          strong: "#334155", // slate-700
-          cyan: "rgba(34, 211, 238, 0.3)",
-          emerald: "rgba(52, 211, 153, 0.3)",
+          subtle: "rgba(255,255,255,0.08)",
+          strong: "rgba(255,255,255,0.14)",
         },
-        // Design System CSS Variable Integration
-        border: "hsl(var(--border, 217 33% 17%))",
-        input: "hsl(var(--input, 217 33% 17%))",
-        ring: "hsl(var(--ring, 187 92% 54%))",
-        background: "hsl(var(--background, 222 47% 3%))",
-        foreground: "hsl(var(--foreground, 210 40% 98%))",
-        primary: {
-          DEFAULT: "hsl(var(--primary, 187 92% 54%))",
-          foreground: "hsl(var(--primary-foreground, 222 47% 3%))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary, 217 33% 17%))",
-          foreground: "hsl(var(--secondary-foreground, 210 40% 98%))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive, 350 89% 60%))",
-          foreground: "hsl(var(--destructive-foreground, 0 0% 100%))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted, 217 33% 13%))",
-          foreground: "hsl(var(--muted-foreground, 215 20% 65%))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent, 158 64% 52%))",
-          foreground: "hsl(var(--accent-foreground, 222 47% 3%))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card, 222 47% 6%))",
-          foreground: "hsl(var(--card-foreground, 210 40% 98%))",
-        },
+
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+        secondary: { DEFAULT: "hsl(var(--secondary))", foreground: "hsl(var(--secondary-foreground))" },
+        destructive: { DEFAULT: "hsl(var(--destructive))", foreground: "hsl(var(--destructive-foreground))" },
+        muted: { DEFAULT: "hsl(var(--muted))", foreground: "hsl(var(--muted-foreground))" },
+        accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
+        card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
       },
       fontFamily: {
-        // Sharp sans-serif for headings, branding, and clean UI navigation
-        sans: [
-          "Geist",
-          "Inter",
-          "Outfit",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          '"Segoe UI"',
-          "Roboto",
-          "sans-serif",
-        ],
-        heading: [
-          "Geist",
-          "Inter",
-          "Outfit",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
-        ],
-        // Elegant, high-legibility monospace for data elements, pipeline metrics, and technical blocks
-        mono: [
-          '"JetBrains Mono"',
-          '"Fira Code"',
-          '"Geist Mono"',
-          '"IBM Plex Mono"',
-          "ui-monospace",
-          "SFMono-Regular",
-          "Menlo",
-          "Monaco",
-          "Consolas",
-          "monospace",
-        ],
-        display: [
-          "Geist",
-          "Inter",
-          "Outfit",
-          "sans-serif",
-        ],
+        sans: ["Geist", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "sans-serif"],
+        heading: ["Geist", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        display: ["Geist", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ['"Geist Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
-        "glow-cyan": "0 0 24px -4px rgba(34, 211, 238, 0.25)",
-        "glow-cyan-lg": "0 0 40px -8px rgba(34, 211, 238, 0.35)",
-        "glow-emerald": "0 0 24px -4px rgba(52, 211, 153, 0.25)",
-        "glow-emerald-lg": "0 0 40px -8px rgba(52, 211, 153, 0.35)",
-        "surface-raised": "0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05)",
+        // No glow. Depth on a dark screen comes from surface steps and
+        // hairlines; these names stay so old classes resolve to nothing loud.
+        "glow-cyan": "0 1px 0 0 rgba(255,255,255,0.04)",
+        "glow-cyan-lg": "0 1px 0 0 rgba(255,255,255,0.06)",
+        "glow-emerald": "0 1px 0 0 rgba(255,255,255,0.04)",
+        "glow-emerald-lg": "0 1px 0 0 rgba(255,255,255,0.06)",
+        "surface-raised": "0 8px 24px -16px rgba(0,0,0,0.9)",
       },
       borderRadius: {
-        lg: "var(--radius, 0.5rem)",
-        md: "calc(var(--radius, 0.5rem) - 2px)",
-        sm: "calc(var(--radius, 0.5rem) - 4px)",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       animation: {
-        "pulse-subtle": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "beacon": "ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite",
-        "scanline": "scanline 8s linear infinite",
+        // Only motion that explains a state change is left.
+        "fade-rise": "fade-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both",
       },
       keyframes: {
-        scanline: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(1000%)" },
+        "fade-rise": {
+          from: { opacity: "0", transform: "translateY(6px)" },
+          to: { opacity: "1", transform: "none" },
         },
       },
     },
